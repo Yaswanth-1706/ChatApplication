@@ -33,7 +33,7 @@ exports.createUser=async(req,res)=>{
         return res.status(200).json({message:"temporaryuser registerd succcessfully and otp sent successfully",temporaryRecord})
     }catch(err)
     {
-       return res.status(400).json({message:err.message})
+       return res.status(400).json({message:err})
     }
 }
 exports.userLogin=async(req,res)=>{
