@@ -1,0 +1,287 @@
+
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --wa-green:        #25d366;
+  --wa-green-dark:   #128c7e;
+  --wa-green-deeper: #075e54;
+  --wa-teal:         #00bcd4;
+  --wa-purple:       #9c27b0;
+  --wa-pink:         #e91e63;
+  --wa-yellow:       #ffc107;
+  --wa-blue:         #2196f3;
+
+  --bg-page:         #ece5dd;
+  --bg-card:         #ffffff;
+  --bg-input:        #f7faf9;
+  --text-primary:    #111b21;
+  --text-secondary:  #667781;
+  --text-muted:      #aaa;
+  --border:          #e0e0e0;
+
+  --radius-md:       14px;
+  --radius-pill:     999px;
+  --font:            'Nunito', sans-serif;
+  --transition:      0.2s ease;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body, #root { height: 100%; width: 100%; }
+body { font-family: var(--font); -webkit-font-smoothing: antialiased; }
+
+/* ── PAGE WRAPPER (the outer <div>) ── */
+div:has(> .UserRegister) {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-page);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Ccircle cx='10' cy='10' r='2' fill='%2325d366' fill-opacity='0.1'/%3E%3Ccircle cx='50' cy='30' r='3' fill='%23128c7e' fill-opacity='0.07'/%3E%3Ccircle cx='70' cy='60' r='2' fill='%239c27b0' fill-opacity='0.07'/%3E%3Ccircle cx='20' cy='65' r='2.5' fill='%23e91e63' fill-opacity='0.06'/%3E%3Ccircle cx='40' cy='50' r='1.5' fill='%23ffc107' fill-opacity='0.08'/%3E%3C/svg%3E");
+  padding: 24px;
+}
+
+/* ── CARD ── */
+.UserRegister {
+  background: var(--bg-card);
+  border-radius: 20px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.12);
+  padding: 40px 36px 32px;
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+/* rainbow top strip */
+.UserRegister::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 5px;
+  background: linear-gradient(90deg,
+    var(--wa-green-deeper),
+    var(--wa-green),
+    var(--wa-teal),
+    var(--wa-blue),
+    var(--wa-purple),
+    var(--wa-pink)
+  );
+}
+
+/* watermark emoji */
+.UserRegister::after {
+  content: '✍️';
+  position: absolute;
+  top: 18px; right: 22px;
+  font-size: 2rem;
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+/* ── HEADING — injected via first label or we target h2 if present ── */
+/* Since there's no h2 in the JSX, we style the form itself as a titled block.
+   Add a data-title or just rely on the strip + spacing. */
+
+/* ── LABELS ── */
+.UserRegister label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-top: 18px;
+  margin-bottom: 6px;
+}
+
+/* first label gets a heading treatment */
+.UserRegister label:first-of-type {
+  margin-top: 12px;
+}
+
+/* ── HIDE <br> tags ── */
+.UserRegister br { display: none; }
+
+/* ── TEXT / EMAIL / PASSWORD INPUTS ── */
+.UserRegister input[type="text"],
+.UserRegister input[type="email"],
+.UserRegister input[type="Password"],
+.UserRegister input[type="password"] {
+  font-family: var(--font);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  background: var(--bg-input);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  width: 100%;
+  outline: none;
+  display: block;
+  transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+}
+
+.UserRegister input[type="text"]::placeholder,
+.UserRegister input[type="email"]::placeholder,
+.UserRegister input[type="Password"]::placeholder,
+.UserRegister input[type="password"]::placeholder {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.UserRegister input[type="text"]:focus,
+.UserRegister input[type="email"]:focus,
+.UserRegister input[type="Password"]:focus,
+.UserRegister input[type="password"]:focus {
+  border-color: var(--wa-green);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(37,211,102,0.15);
+}
+
+/* ── SELECT (Gender) ── */
+.UserRegister select {
+  font-family: var(--font);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  background: var(--bg-input);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px 40px 12px 16px;
+  width: 100%;
+  outline: none;
+  display: block;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23667781' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-color: var(--bg-input);
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.UserRegister select:focus {
+  border-color: var(--wa-teal);
+  box-shadow: 0 0 0 3px rgba(0,188,212,0.15);
+  background-color: #fff;
+}
+
+/* ── FILE INPUT (Profile Pic) ── */
+.UserRegister input[type="file"] {
+  font-family: var(--font);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--wa-green-dark);
+  background: #e8fdf1;
+  border: 1.5px dashed var(--wa-green);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  width: 100%;
+  display: block;
+  cursor: pointer;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.UserRegister input[type="file"]:hover {
+  background: #d4fae6;
+  border-color: var(--wa-green-dark);
+}
+
+.UserRegister input[type="file"]::file-selector-button {
+  font-family: var(--font);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--wa-green-dark);
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: 5px 14px;
+  margin-right: 12px;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+.UserRegister input[type="file"]::file-selector-button:hover {
+  background: var(--wa-green);
+}
+
+/* ── SUBMIT BUTTON ── */
+.UserRegister input[type="submit"] {
+  font-family: var(--font);
+  font-size: 1rem;
+  font-weight: 800;
+  color: #ffffff;
+  background: var(--wa-green-dark);
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: 13px;
+  width: 100%;
+  margin-top: 28px;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+}
+
+.UserRegister input[type="submit"]:hover {
+  background: var(--wa-green);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(37,211,102,0.4);
+}
+
+.UserRegister input[type="submit"]:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* ── FOOTER LINKS ── */
+.UserRegister p {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-align: center;
+  margin-top: 16px;
+}
+
+/* the "login here" p — second one is the clickable link */
+.UserRegister p:last-of-type {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--wa-green-dark);
+  cursor: pointer;
+  margin-top: 4px;
+  position: relative;
+  display: inline-block;
+  align-self: center;
+  transition: color var(--transition);
+}
+
+.UserRegister p:last-of-type::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: -2px;
+  height: 2px;
+  background: var(--wa-green);
+  border-radius: var(--radius-pill);
+  transform: scaleX(0);
+  transition: transform var(--transition);
+}
+
+.UserRegister p:last-of-type:hover {
+  color: var(--wa-green);
+}
+
+.UserRegister p:last-of-type:hover::after {
+  transform: scaleX(1);
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 480px) {
+  .UserRegister {
+    padding: 36px 20px 28px;
+    border-radius: 16px;
+  }
+}

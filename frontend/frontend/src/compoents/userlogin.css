@@ -1,0 +1,222 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --wa-green:        #25d366;
+  --wa-green-dark:   #128c7e;
+  --wa-green-deeper: #075e54;
+  --wa-yellow:       #ffc107;
+  --wa-teal:         #00bcd4;
+  --wa-purple:       #9c27b0;
+  --wa-pink:         #e91e63;
+
+  --bg-page:         #ece5dd;
+  --bg-card:         #ffffff;
+  --text-primary:    #111b21;
+  --text-secondary:  #667781;
+  --text-muted:      #aaa;
+  --border:          #e0e0e0;
+
+  --radius-sm:       8px;
+  --radius-md:       14px;
+  --radius-pill:     999px;
+  --font:            'Nunito', sans-serif;
+  --transition:      0.2s ease;
+}
+
+/* ── RESET ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body, #root { height: 100%; width: 100%; }
+
+body {
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── PAGE WRAPPER ── */
+.login-page-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-page);
+  /* same dot-pattern as chat wallpaper */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Ccircle cx='10' cy='10' r='2' fill='%2325d366' fill-opacity='0.1'/%3E%3Ccircle cx='50' cy='30' r='3' fill='%23128c7e' fill-opacity='0.07'/%3E%3Ccircle cx='70' cy='60' r='2' fill='%239c27b0' fill-opacity='0.07'/%3E%3Ccircle cx='20' cy='65' r='2.5' fill='%23e91e63' fill-opacity='0.06'/%3E%3Ccircle cx='40' cy='50' r='1.5' fill='%23ffc107' fill-opacity='0.08'/%3E%3C/svg%3E");
+  padding: 24px;
+}
+
+/* ── CARD ── */
+.UserLogin {
+  background: var(--bg-card);
+  border-radius: 20px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.12);
+  padding: 40px 36px 32px;
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* coloured top strip */
+.UserLogin::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, var(--wa-green-deeper), var(--wa-green), var(--wa-teal), var(--wa-purple), var(--wa-pink));
+}
+
+/* ── LOGO / ICON AREA ── */
+.UserLogin::after {
+  content: '💬';
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  font-size: 2rem;
+  opacity: 0.18;
+}
+
+/* ── HEADING ── */
+.UserLogin h2 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--wa-green-deeper);
+  margin-bottom: 6px;
+  letter-spacing: -0.01em;
+}
+
+.UserLogin h2::after {
+  content: ' 👋';
+  font-size: 1.4rem;
+}
+
+/* ── LABELS ── */
+.UserLogin label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-top: 20px;
+  margin-bottom: 6px;
+}
+
+/* ── TEXT / EMAIL / PASSWORD INPUTS ── */
+.UserLogin input[type="email"],
+.UserLogin input[type="Password"],
+.UserLogin input[type="password"] {
+  font-family: var(--font);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  background: #f7faf9;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  width: 100%;
+  outline: none;
+  transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+  display: block;
+}
+
+.UserLogin input[type="email"]::placeholder,
+.UserLogin input[type="Password"]::placeholder,
+.UserLogin input[type="password"]::placeholder {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.UserLogin input[type="email"]:focus,
+.UserLogin input[type="Password"]:focus,
+.UserLogin input[type="password"]:focus {
+  border-color: var(--wa-green);
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(37,211,102,0.15);
+}
+
+/* hide the <br/> spacing effect — gaps handled by label margin */
+.UserLogin br { display: none; }
+
+/* ── SUBMIT BUTTON ── */
+.UserLogin input[type="submit"] {
+  font-family: var(--font);
+  font-size: 1rem;
+  font-weight: 800;
+  color: #ffffff;
+  background: var(--wa-green-dark);
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: 13px;
+  width: 100%;
+  margin-top: 28px;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+}
+
+.UserLogin input[type="submit"]:hover {
+  background: var(--wa-green);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(37,211,102,0.4);
+}
+
+.UserLogin input[type="submit"]:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* ── FOOTER ── */
+.form-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-top: 20px;
+}
+
+.form-footer p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.register-link {
+  font-size: 0.88rem !important;
+  font-weight: 700 !important;
+  color: var(--wa-green-dark) !important;
+  cursor: pointer;
+  position: relative;
+  transition: color var(--transition);
+}
+
+.register-link::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: -1px;
+  height: 2px;
+  background: var(--wa-green);
+  border-radius: var(--radius-pill);
+  transform: scaleX(0);
+  transition: transform var(--transition);
+}
+
+.register-link:hover {
+  color: var(--wa-green) !important;
+}
+
+.register-link:hover::after {
+  transform: scaleX(1);
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 480px) {
+  .UserLogin {
+    padding: 36px 22px 28px;
+    border-radius: 16px;
+  }
+  .UserLogin h2 { font-size: 1.5rem; }
+}

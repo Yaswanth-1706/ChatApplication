@@ -1,0 +1,29 @@
+const mongoose=require("mongoose")
+const temporarySchema=new mongoose.Schema({
+    name:{
+        type:String,
+        required:true
+    },
+    email:{
+        type:String,
+        required:true,
+        unique:true
+    },
+    password:{
+        type:String,
+        required:true
+    },
+    gender:{
+     type:String,
+     required:true,
+     enum:["male","female"]
+    },
+    profilepic:{
+      type:String,
+      required:true,
+      default:""
+    },
+    otp:String,
+    otpExpires:Date
+},{timestamps:true})
+module.exports=mongoose.model("temporary",temporarySchema)

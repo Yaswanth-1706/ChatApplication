@@ -1,0 +1,11 @@
+const express =require("express")
+const controller=require("../controllers/messageConroller")
+const jwtMiddleware=require("../middelwares/jwtmiddleware")
+const imagemiddleware=require("../middelwares/imageMiddleware")
+const router=express.Router()
+router.post("/send/:id",jwtMiddleware.verifyToken,imagemiddleware.single("file"),controller.sendMessage)
+router.get("/:id",jwtMiddleware.verifyToken,controller.getMessages)
+router.delete("/delete/:id",jwtMiddleware.verifyToken,controller.deleteChat)
+router.delete(
+  "/singleDelete/:messageId",jwtMiddleware.verifyToken,controller.singleDeleteMessage)
+module.exports=router
