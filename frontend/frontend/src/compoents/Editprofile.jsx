@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import './editProfile.css';
+import './editprofile.css';
 
 const Editprofile = () => {
     const location = useLocation();
