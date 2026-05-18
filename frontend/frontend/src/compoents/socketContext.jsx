@@ -12,8 +12,8 @@ export const SocketContextProvider = ({ children, currentUser }) => {
 
   useEffect(() => {
     if (currentUser) {
-      // Initialize connection
-      const socketInstance = io("http://localhost:8000", {
+      // Initialize connection pointing to the live Render backend URL
+      const socketInstance = io("https://chatapplication-backend-v90l.onrender.com", {
         query: { userId: currentUser._id },
       });
 

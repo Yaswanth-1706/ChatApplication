@@ -8,7 +8,7 @@ const Home = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // ================= STATES =================
+  // STATES
   const [searchTerm, setSearchTerm] = useState("");
   const [userList, setUserList] = useState([]);
   const [selectedChat, setSelectedChat] = useState(null);
@@ -18,22 +18,26 @@ const Home = () => {
   const [preview, setPreview] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [fullscreenImage, setFullscreenImage] = useState(null);
-  //REFS 
+  
+  // REFS 
   const messagesEndRef = useRef(null);
   const socket = useRef(null);
   const fileInputRef = useRef(null); // Ref added to handle input clearing
-  //AUTO SCROLL
+  
+  // AUTO SCROLL
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chatMessages]);
-  //AUTH
+  
+  // AUTH
   const currentUserId = localStorage.getItem("userId");
   const token = localStorage.getItem("token");
-  //SOCKET
+  
+  // SOCKET
   useEffect(() => {
     if (!currentUserId) return;
 
-    socket.current = io("http://localhost:8000", {
+    socket.current = io("https://chatapplication-backend-v90l.onrender.com", {
       query: { userId: currentUserId }
     });
 
@@ -51,11 +55,11 @@ const Home = () => {
     return () => socket.current?.disconnect();
   }, [currentUserId]);
 
-  //FETCH USERS
+  // FETCH USERS
   const fetchUsers = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:8000/user/search?search=${searchTerm || "a"}`,
+        `https://chatapplication-backend-v90l.onrender.com/user/search?search=${searchTerm || "a"}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setUserList(
@@ -66,12 +70,12 @@ const Home = () => {
     }
   };
 
-  //FETCH CHAT
+  // FETCH CHAT
   const fetchChat = async () => {
     if (!selectedChat) return;
     try {
       const res = await axios.get(
-        `http://localhost:8000/message/${selectedChat._id}`,
+        `https://chatapplication-backend-v90l.onrender.com/message/${selectedChat._id}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setChatMessages(res.data);
@@ -80,7 +84,7 @@ const Home = () => {
     }
   };
 
-  //HELPER TO CLEAR FILE INPUT
+  // HELPER TO CLEAR FILE INPUT
   const clearFileSelection = () => {
     setFile(null);
     setPreview(null);
@@ -88,7 +92,8 @@ const Home = () => {
       fileInputRef.current.value = ""; // Resets the DOM input value to allow selecting the same file
     }
   };
-  //SEND MESSAGE
+  
+  // SEND MESSAGE
   const sendMessage = async () => {
     if ((!newMessage.trim() && !file) || !selectedChat) return;
     try {
@@ -97,7 +102,7 @@ const Home = () => {
       if (file) formData.append("file", file);
 
       const res = await axios.post(
-        `http://localhost:8000/message/send/${selectedChat._id}`,
+        `https://chatapplication-backend-v90l.onrender.com/message/send/${selectedChat._id}`,
         formData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -112,13 +117,13 @@ const Home = () => {
     }
   };
 
-  //DELETE CHAT 
+  // DELETE CHAT 
   const deleteChat = async () => {
     if (!selectedChat) return;
     if (!window.confirm("Delete whole chat?")) return;
     try {
       await axios.delete(
-        `http://localhost:8000/message/delete/${selectedChat._id}`,
+        `https://chatapplication-backend-v90l.onrender.com/message/delete/${selectedChat._id}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setChatMessages([]);
@@ -128,11 +133,11 @@ const Home = () => {
     }
   };
 
-  //DELETE SINGLE MESSAGE 
+  // DELETE SINGLE MESSAGE 
   const singleDelete = async (messageId) => {
     try {
       await axios.delete(
-        `http://localhost:8000/message/singleDelete/${messageId}`,
+        `https://chatapplication-backend-v90l.onrender.com/message/singleDelete/${messageId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setChatMessages((prev) => prev.filter((msg) => msg._id !== messageId));
@@ -141,11 +146,11 @@ const Home = () => {
     }
   };
 
-  //NAVIGATE HELPERS
+  // NAVIGATE HELPERS
   const goToMyProfile = () => {
     navigate("/editProfile", {
       state: {
-        img: `http://localhost:8000${location.state.profilepic}`,
+        img: `https://chatapplication-backend-v90l.onrender.com${location.state.profilepic}`,
         name: location.state.name,
         email: location.state.email,
         gender: location.state.gender,
@@ -157,7 +162,7 @@ const Home = () => {
     e?.stopPropagation();
     navigate("/viewProfile", {
       state: {
-        img: `http://localhost:8000${user.profilepic}`,
+        img: `https://chatapplication-backend-v90l.onrender.com${user.profilepic}`,
         name: user.name,
         email: user.email,
         gender: user.gender,
@@ -165,10 +170,11 @@ const Home = () => {
     });
   };
 
-  //EFFECTS
+  // EFFECTS
   useEffect(() => { fetchUsers(); }, [searchTerm]);
   useEffect(() => { fetchChat(); }, [selectedChat]);
-  //LOGOUT
+  
+  // LOGOUT
   const logout = () => {
     socket.current?.disconnect();
     localStorage.clear();
@@ -176,14 +182,15 @@ const Home = () => {
   };
 
   if (!location.state) return <h1>No User Data Found</h1>;
+  
   // UI
   return (
     <div className="container">
-      {/*SIDEBAR */}
+      {/* SIDEBAR */}
       <div className="results">
         <div className="header-row">
           <img
-            src={`http://localhost:8000${location.state.profilepic}`}
+            src={`https://chatapplication-backend-v90l.onrender.com${location.state.profilepic}`}
             className="searchProfile"
             alt="profile"
             title="View my profile"
@@ -209,7 +216,7 @@ const Home = () => {
               onClick={() => setSelectedChat(user)}
             >
               <img
-                src={`http://localhost:8000${user.profilepic}`}
+                src={`https://chatapplication-backend-v90l.onrender.com${user.profilepic}`}
                 className="searchProfile"
                 alt=""
                 title={`View ${user.name}'s profile`}
@@ -226,14 +233,14 @@ const Home = () => {
         </div>
       </div>
 
-      {/*CHAT WINDOW*/}
+      {/* CHAT WINDOW */}
       <div className="chat-window">
         {selectedChat ? (
           <>
             {/* HEADER */}
             <header className="chat-header">
               <img
-                src={`http://localhost:8000${selectedChat.profilepic}`}
+                src={`https://chatapplication-backend-v90l.onrender.com${selectedChat.profilepic}`}
                 alt=""
                 title={`View ${selectedChat.name}'s profile`}
                 onClick={(e) => goToUserProfile(selectedChat, e)}
@@ -269,27 +276,27 @@ const Home = () => {
 
                   {msg.file && msg.fileType?.startsWith("image") && (
                     <img
-                      src={`http://localhost:8000${msg.file}`}
+                      src={`https://chatapplication-backend-v90l.onrender.com${msg.file}`}
                       className="chat-image"
                       alt="chat"
-                      onClick={() => setFullscreenImage(`http://localhost:8000${msg.file}`)}
+                      onClick={() => setFullscreenImage(`https://chatapplication-backend-v90l.onrender.com${msg.file}`)}
                     />
                   )}
 
                   {msg.file && msg.fileType?.startsWith("video") && (
                     <video controls className="chat-video">
-                      <source src={`http://localhost:8000${msg.file}`} type={msg.fileType} />
+                      <source src={`https://chatapplication-backend-v90l.onrender.com${msg.file}`} type={msg.fileType} />
                     </video>
                   )}
 
                   {msg.file && msg.fileType?.startsWith("audio") && (
                     <audio controls>
-                      <source src={`http://localhost:8000${msg.file}`} type={msg.fileType} />
+                      <source src={`https://chatapplication-backend-v90l.onrender.com${msg.file}`} type={msg.fileType} />
                     </audio>
                   )}
 
                   {msg.file && msg.fileType === "application/pdf" && (
-                    <a href={`http://localhost:8000${msg.file}`} target="_blank" rel="noreferrer">
+                    <a href={`https://chatapplication-backend-v90l.onrender.com${msg.file}`} target="_blank" rel="noreferrer">
                       📄 Open PDF
                     </a>
                   )}
@@ -335,7 +342,7 @@ const Home = () => {
                   <input
                     type="file"
                     hidden
-                    ref={fileInputRef} /* Attached ref here */
+                    ref={fileInputRef}
                     accept="image/*,video/*,audio/*,.pdf"
                     onChange={(e) => {
                       const f = e.target.files[0];
