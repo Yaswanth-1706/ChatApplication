@@ -14,7 +14,10 @@ mongoose.connect(process.env.Mongo_URI).then(()=>{
 })
 //const app=express()
 app.use(express.json())
-app.use(cors())
+app.use(cors({
+   origin:"https://chatapplication-frontend-f0uo.onrender.com",
+   credentials:true
+}))
 app.use("/public", express.static("public"))
 app.use("/user",UserRouter)
 app.use("/message",messageRouter)
