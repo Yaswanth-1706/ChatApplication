@@ -19,7 +19,7 @@ app.use("/public", express.static("public"))
 app.use("/user",UserRouter)
 app.use("/message",messageRouter)
 app.use("/uploads",express.static(path.join(__dirname,"uploads")))
-const port=8000
+const port=process.env.port||8000
 server.listen(port,()=>{
     console.log(`sever is running on port:${port}`)
 })
