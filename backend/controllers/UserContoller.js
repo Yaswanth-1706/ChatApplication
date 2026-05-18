@@ -29,7 +29,7 @@ exports.createUser=async(req,res)=>{
         temporaryRecord.otp=otp
         temporaryRecord.otpExpires=Date.now()+5*60*1000
         await temporaryRecord.save()
-       // await sendOtpEmail(email,otp)
+        await sendOtpEmail(email,otp)
         return res.status(200).json({message:"temporaryuser registerd succcessfully and otp sent successfully",temporaryRecord})
     }catch(err)
     {
