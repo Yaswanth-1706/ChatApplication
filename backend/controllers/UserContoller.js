@@ -17,13 +17,13 @@ exports.createUser=async(req,res)=>{
             return res.status(400).json({message:"This email was alredy registerd"})
         }
         const hashedPassword=await bcrypt.hash(password,10)
-        const Avatar=profilepic||`/${gender}.png`
+        const Avatar=profilepic||`/public/${gender}.png`
         const temporaryRecord=await temporary.create({
             name,
             email,
             password:hashedPassword,
             gender,
-            profilepic:"/public"+Avatar
+            profilepic:Avatar
         })
         const otp=generateOtp()
         temporaryRecord.otp=otp
