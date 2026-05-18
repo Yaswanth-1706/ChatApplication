@@ -23,6 +23,3 @@ const port=process.env.PORT||8000
 server.listen(port,()=>{
     console.log(`sever is running on port:${port}`)
 })
-app.use('/',(req,res)=>{
-    res.send("<h1>welcome</h1>")
-})
