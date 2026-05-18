@@ -285,3 +285,10 @@ div:has(> .UserRegister) {
     border-radius: 16px;
   }
 }
+.register-error-msg {
+  color: #e53935;
+  font-weight: 500;
+  font-size: 14px;
+  margin-bottom: 12px;
+  text-align: left;
+}
