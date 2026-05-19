@@ -36,8 +36,8 @@ exports.sendOtpEmail = async (email, otp) => {
 
     } catch (err) {
 
-        console.log("Send mail error:", err.message)
+    console.log("FULL MAIL ERROR:", err)
 
-        throw new Error("Failed to send OTP email")
-    }
+    throw err
 }
+    }
