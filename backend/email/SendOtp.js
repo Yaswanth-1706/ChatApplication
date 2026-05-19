@@ -5,21 +5,28 @@ dotenv.config()
 
 // ================= TRANSPORTER =================
 
+const dns = require("dns")
+
 const transporter = nodemailer.createTransport({
 
-    service: "gmail",
+    host: "smtp.gmail.com",
 
-    family: 4,
+    port: 587,
+
+    secure: false,
 
     auth: {
         user: process.env.Email_User,
         pass: process.env.Email_Pass
     },
 
+    tls: {
+        family: 4
+    },
+
     connectionTimeout: 60000,
     greetingTimeout: 60000,
     socketTimeout: 60000
-
 })
 // ================= SEND OTP EMAIL =================
 exports.sendOtpEmail = async (email, otp) => {
