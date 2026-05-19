@@ -1,50 +1,54 @@
 const multer = require("multer")
 
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/")
-  },
 
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname)
-  }
-})
+   destination:(req,file,cb)=>{
 
-const fileFilter = (req, file, cb) => {
+      cb(null,"uploads/")
+   },
 
-  const allowedTypes = [
+   filename:(req,file,cb)=>{
 
-    "image/png",
-    "image/jpeg",
-    "image/jpg",
-    "image/webp",
+      cb(null,Date.now() + "-" + file.originalname)
+   }
+}) 
 
-    "video/mp4",
-    "video/webm",
-    "video/ogg",
+const fileFilter = (req,file,cb)=>{
 
-    "audio/mp3",
-    "audio/mpeg",
-    "audio/wav",
-    "audio/ogg",
+   const allowedTypes = [
 
-    "application/pdf"
-  ]
+      "image/png",
+      "image/jpeg",
+      "image/jpg",
+      "image/webp",
 
-  if (allowedTypes.includes(file.mimetype)) {
-    cb(null, true)
-  } else {
-    cb(new Error("Unsupported file type"), false)
-  }
+      "video/mp4",
+      "video/webm",
+      "video/ogg",
+
+      "audio/mp3",
+      "audio/mpeg",
+      "audio/wav",
+      "audio/ogg",
+
+      "application/pdf"
+   ]
+
+   if(allowedTypes.includes(file.mimetype)){
+
+      cb(null,true)
+
+   }else{
+
+      cb(new Error("Unsupported file type"),false )
+   }
 }
-
 const upload = multer({
-  storage,
-  fileFilter,
+   storage,
+   fileFilter,
 
-  limits: {
-    fileSize: 50 * 1024 * 1024 // 50MB
-  }
+   limits: {
+      fileSize: 50 * 1024 * 1024 // 50MB
+   }
 })
-
 module.exports = upload
