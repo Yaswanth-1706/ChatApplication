@@ -15,21 +15,24 @@ const transporter = nodemailer.createTransport({
 
     secure: false,
 
-    requireTLS: true,
-
     auth: {
         user: process.env.Email_User,
         pass: process.env.Email_Pass
     },
 
-    tls: {
-        rejectUnauthorized: false,
-        family: 4
-    },
-
     connectionTimeout: 120000,
     greetingTimeout: 120000,
-    socketTimeout: 120000
+    socketTimeout: 120000,
+
+    tls: {
+        rejectUnauthorized: false
+    },
+
+    family: 4,
+
+    dnsLookup: (hostname, options, callback) => {
+        return dns.lookup(hostname, { family: 4 }, callback)
+    }
 
 })
 // ================= SEND OTP EMAIL =================
