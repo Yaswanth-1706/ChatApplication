@@ -23,7 +23,5 @@ const userSchema=new mongoose.Schema({
       required:true,
       default:""
     },
-    otp:String,
-    otpExpires:Date
 },{timestamps:true})
 module.exports=mongoose.model("users",userSchema)

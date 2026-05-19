@@ -55,7 +55,15 @@ const UserRegister = () => {
                     "Content-Type": "multipart/form-data",
                 },
             });
-            navigate("/verfiyEmail", {
+            // navigate("/verfiyEmail", {
+            //     state: {
+            //         name: data.name,
+            //         email: data.email,
+            //         password: data.password,
+            //         profilepic: data.profilepic
+            //     }
+            // })
+            navigate("/", {
                 state: {
                     name: data.name,
                     email: data.email,

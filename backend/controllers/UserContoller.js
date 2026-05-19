@@ -18,19 +18,19 @@ exports.createUser=async(req,res)=>{
         }
         const hashedPassword=await bcrypt.hash(password,10)
         const Avatar=profilepic||`/public/${gender}.png`
-        const temporaryRecord=await temporary.create({
+        const userRecord=await user.create({
             name,
             email,
             password:hashedPassword,
             gender,
             profilepic:Avatar
         })
-        const otp=generateOtp()
-        temporaryRecord.otp=otp
-        temporaryRecord.otpExpires=Date.now()+5*60*1000
-        await temporaryRecord.save()
-        await sendOtpEmail(email,otp)
-        return res.status(200).json({message:"temporaryuser registerd succcessfully and otp sent successfully",temporaryRecord})
+        // const otp=generateOtp()
+        // temporaryRecord.otp=otp
+        // temporaryRecord.otpExpires=Date.now()+5*60*1000
+        // await temporaryRecord.save()
+        // await sendOtpEmail(email,otp)
+        return res.status(200).json({message:"temporaryuser registerd succcessfully and otp sent successfully",userRecord})
     }catch(err)
     {
        return res.status(400).json({message:err.message})
