@@ -8,33 +8,18 @@ dotenv.config()
 const dns = require("dns")
 
 const transporter = nodemailer.createTransport({
-
-    host: "smtp.gmail.com",
-
+    host: "74.125.130.108",  // smtp.gmail.com IPv4
     port: 587,
-
     secure: false,
-
     auth: {
         user: process.env.Email_User,
         pass: process.env.Email_Pass
     },
-
-    connectionTimeout: 120000,
-    greetingTimeout: 120000,
-    socketTimeout: 120000,
-
     tls: {
-        rejectUnauthorized: false
-    },
-
-    family: 4,
-
-    dnsLookup: (hostname, options, callback) => {
-        return dns.lookup(hostname, { family: 4 }, callback)
+        rejectUnauthorized: false,
+        servername: "smtp.gmail.com"  // Required for TLS cert validation
     }
-
-})
+});
 // ================= SEND OTP EMAIL =================
 exports.sendOtpEmail = async (email, otp) => {
     try {
