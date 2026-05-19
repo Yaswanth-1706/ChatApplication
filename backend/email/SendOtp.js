@@ -13,14 +13,12 @@ const transporter = nodemailer.createTransport({
 
     secure: true,
 
+    family: 4,
+
     auth: {
         user: process.env.Email_User,
         pass: process.env.Email_Pass
-    },
-
-    connectionTimeout: 30000,
-    greetingTimeout: 30000,
-    socketTimeout: 30000
+    }
 
 })
 // ================= SEND OTP EMAIL =================
