@@ -4,14 +4,11 @@ const dotenv = require("dotenv")
 dotenv.config()
 
 // ================= TRANSPORTER =================
+const nodemailer = require("nodemailer")
 
 const transporter = nodemailer.createTransport({
 
-    host: "smtp.gmail.com",
-
-    port: 587,
-
-    secure: false,
+    service: "gmail",
 
     family: 4,
 
