@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
 
 *, *::before, *::after {
@@ -691,6 +692,51 @@ audio { width: 220px; }
     justify-content: center;
   }
 
-  .message-bubble { max-width: 80%; }
+  .message-bubble { max-width: 78%; }
   .messages-area { padding: 10px 4%; }
+
+  /* Fix chat header on mobile */
+  .chat-header {
+    padding: 8px 10px;
+    gap: 8px;
+  }
+
+  .chat-header h2 {
+    font-size: 14px;
+  }
+
+  .chat-header p {
+    font-size: 11px;
+  }
+
+  .chat-header img {
+    width: 36px;
+    height: 36px;
+  }
+
+  /* Shrink delete button on mobile */
+  .delete-chat-btn {
+    font-size: 11px;
+    padding: 5px 8px;
+    gap: 3px;
+  }
+
+  .delete-chat-btn::before {
+    font-size: 12px;
+  }
+
+  /* Fix image size in bubble on mobile */
+  .chat-image {
+    max-width: 200px;
+    max-height: 200px;
+  }
+
+  /* Fix sent messages not hugging right */
+  .message-bubble.sent {
+    margin-right: 4px;
+  }
+
+  .message-bubble.received {
+    margin-left: 4px;
+  }
 }
