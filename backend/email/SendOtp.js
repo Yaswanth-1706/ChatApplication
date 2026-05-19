@@ -1,23 +1,33 @@
-const { Resend } = require("resend");
+const axios = require("axios");
 const dotenv = require("dotenv");
 dotenv.config();
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 exports.sendOtpEmail = async (email, otp) => {
     try {
-        const data = await resend.emails.send({
-            from: "onboarding@resend.dev",
-            to: email,
-            subject: "Your OTP for Email Verification",
-            html: `
-                <h2>Your OTP is: ${otp}</h2>
-                <p>OTP valid for 5 minutes</p>
-            `
-        });
-        console.log("Email sent:", data);
+        const response = await axios.post(
+            "https://api.brevo.com/v3/smtp/email",
+            {
+                sender: {
+                    name: "chatApp",
+                    email: process.env.BREVO_SENDER_EMAIL
+                },
+                to: [{ email: email }],
+                subject: "Your OTP for Email Verification",
+                htmlContent: `
+                    <h2>Your OTP is: ${otp}</h2>
+                    <p>OTP valid for 5 minutes</p>
+                `
+            },
+            {
+                headers: {
+                    "api-key": process.env.BREVO_API_KEY,
+                    "Content-Type": "application/json"
+                }
+            }
+        );
+        console.log("Email sent:", response.data);
     } catch (err) {
-        console.log("FULL MAIL ERROR:", err);
+        console.log("FULL MAIL ERROR:", err.response?.data || err.message);
         throw err;
     }
 };
