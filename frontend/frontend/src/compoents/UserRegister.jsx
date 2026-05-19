@@ -102,7 +102,7 @@ const UserRegister = () => {
                 </select><br />
                 <label>Profile Pic</label><br />
                 <input type="file" name="profilepic" accept="image/*" onChange={changeHandler}/><br />
-                <input type="submit" value={"Verify Email"} /><br/>
+                <input type="submit" value={"Register"} /><br/>
                 <p>if you already have an account</p><br/>
                 <p onClick={() => { navigate("/") }}>login here</p>
             </form>
