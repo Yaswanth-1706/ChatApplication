@@ -1,45 +1,30 @@
-const nodemailer = require("nodemailer")
-const dotenv = require("dotenv")
+const Brevo = require("@getbrevo/brevo");
+const dotenv = require("dotenv");
+dotenv.config();
 
-dotenv.config()
+const apiInstance = new Brevo.TransactionalEmailsApi();
+apiInstance.authentications["apiKey"].apiKey = process.env.BREVO_API_KEY;
 
-// ================= TRANSPORTER =================
-
-const dns = require("dns")
-
-const transporter = nodemailer.createTransport({
-    host: "74.125.130.108",  // smtp.gmail.com IPv4
-    port: 587,
-    secure: false,
-    auth: {
-        user: process.env.Email_User,
-        pass: process.env.Email_Pass
-    },
-    tls: {
-        rejectUnauthorized: false,
-        servername: "smtp.gmail.com"  // Required for TLS cert validation
-    }
-});
-// ================= SEND OTP EMAIL =================
 exports.sendOtpEmail = async (email, otp) => {
     try {
+        const sendSmtpEmail = new Brevo.SendSmtpEmail();
 
-        const info = await transporter.sendMail({
-            from: process.env.Email_User,
-            to: email,
-            subject: "Your OTP for Email Verification",
-            html: `
-                <h2>Your OTP is : ${otp}</h2>
-                <p>OTP valid for 5 minutes</p>
-            `
-        })
+        sendSmtpEmail.subject = "Your OTP for Email Verification";
+        sendSmtpEmail.htmlContent = `
+            <h2>Your OTP is: ${otp}</h2>
+            <p>OTP valid for 5 minutes</p>
+        `;
+        sendSmtpEmail.sender = { 
+            name: "chatApp", 
+            email: process.env.BREVO_SENDER_EMAIL
+        };
+        sendSmtpEmail.to = [{ email: email }];
 
-        console.log("Email sent:", info.response)
+        const data = await apiInstance.sendTransacEmail(sendSmtpEmail);
+        console.log("Email sent:", data);
 
     } catch (err) {
-
-    console.log("FULL MAIL ERROR:", err)
-
-    throw err
-}
+        console.log("FULL MAIL ERROR:", err);
+        throw err;
     }
+};
