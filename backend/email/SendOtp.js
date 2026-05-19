@@ -15,18 +15,22 @@ const transporter = nodemailer.createTransport({
 
     secure: false,
 
+    requireTLS: true,
+
     auth: {
         user: process.env.Email_User,
         pass: process.env.Email_Pass
     },
 
     tls: {
+        rejectUnauthorized: false,
         family: 4
     },
 
-    connectionTimeout: 60000,
-    greetingTimeout: 60000,
-    socketTimeout: 60000
+    connectionTimeout: 120000,
+    greetingTimeout: 120000,
+    socketTimeout: 120000
+
 })
 // ================= SEND OTP EMAIL =================
 exports.sendOtpEmail = async (email, otp) => {
