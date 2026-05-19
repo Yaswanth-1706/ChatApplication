@@ -25,6 +25,8 @@ const fileFilter = (req,file,cb)=>{
       "video/mp4",
       "video/webm",
       "video/ogg",
+      "video/quicktime",
+      "application/octet-stream",
 
       "audio/mp3",
       "audio/mpeg",
