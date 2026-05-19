@@ -1,61 +1,94 @@
-import React, { useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import axios from "axios"
-import './userlogin.css'
+import "./userlogin.css"
+
 const UserLogin = () => {
-  const location=useLocation()
-  const navigate=useNavigate()
-  const [data,setData]=useState({
-          email:"",
-          password:"",
-      });
-   const changeHandler=(e)=>{
+  const navigate = useNavigate()
+
+  const [data, setData] = useState({
+    email: "",
+    password: ""
+  })
+
+  const changeHandler = (e) => {
     setData({
-        ...data,
-        [e.target.name]:e.target.value
+      ...data,
+      [e.target.name]: e.target.value
     })
   }
-  const submitHandler=async(e)=>{
-   e.preventDefault()
-   try{
-   const responce= await axios.post("https://chatapplication-backend-v90l.onrender.com/user/login",data)
-   console.log(responce.data.User.name,responce.data.User._id)
-   localStorage.setItem("token", responce.data.token)
-   localStorage.setItem("userId",responce.data.User._id)
-    navigate("/Home",{
-      state:{
-        name:responce.data.User.name,
 
-        email:responce.data.User.email,
+  const submitHandler = async (e) => {
+    e.preventDefault()
 
-        password:responce.data.User.password,
-       
-        gender:responce.data.User.gender,
+    try {
+      const response = await axios.post(
+        "https://chatapplication-backend-v90l.onrender.com/user/login",
+        data
+      )
 
-        profilepic:responce.data.User.profilepic
-      } 
-    })
-   }
-   catch(err){
-    console.log(err.message)
-   }
-}
+      const user = response.data.User
+      const token = response.data.token
+
+      // STORE AUTH DATA
+      localStorage.setItem("token", token)
+      localStorage.setItem("userId", user._id)
+
+      // NAVIGATE WITHOUT SENSITIVE DATA
+      navigate("/Home", {
+        state: {
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+          gender: user.gender,
+          profilepic: user.profilepic // Cloudinary URL
+        }
+      })
+
+    } catch (err) {
+      console.log(err.response?.data || err.message)
+    }
+  }
+
   return (
-  <div className="login-page-wrapper"> {/* New Wrapper */}
-    <form className='UserLogin' onSubmit={submitHandler}>
-      <h2>Login</h2>
-      <label>User Email</label><br/>
-      <input type="email" name="email" placeholder="Enter your email" onChange={changeHandler}/><br/>
-      <label>Password</label><br/>
-      <input type="Password" name="password" placeholder="Enter your password" onChange={changeHandler}/><br/>
-      <input type="submit" value={"Login"} /><br/>
-      <div className="form-footer">
-        <p>If you do not have an account</p>
-        <p className="register-link" onClick={()=>{navigate("/register")}}>Register here</p>
-      </div>
-    </form>
-  </div>
-)
+    <div className="login-page-wrapper">
+      <form className="UserLogin" onSubmit={submitHandler}>
+
+        <h2>Login</h2>
+
+        <label>User Email</label>
+        <input
+          type="email"
+          name="email"
+          placeholder="Enter your email"
+          onChange={changeHandler}
+          required
+        />
+
+        <label>Password</label>
+        <input
+          type="password"
+          name="password"
+          placeholder="Enter your password"
+          onChange={changeHandler}
+          required
+        />
+
+        <input type="submit" value="Login" />
+
+        <div className="form-footer">
+          <p>If you do not have an account</p>
+          <p
+            className="register-link"
+            onClick={() => navigate("/register")}
+          >
+            Register here
+          </p>
+        </div>
+
+      </form>
+    </div>
+  )
 }
 
 export default UserLogin

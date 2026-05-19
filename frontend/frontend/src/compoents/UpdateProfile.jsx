@@ -1,73 +1,114 @@
-import React, { useEffect } from 'react'
-import { useState } from 'react'
-import axios from 'axios'
-import { useLocation, useNavigate } from 'react-router-dom'
-import './updateProfile.css'
+import React, { useState } from "react"
+import axios from "axios"
+import { useNavigate } from "react-router-dom"
+import "./updateProfile.css"
 
 const UpdateProfile = () => {
-    const location = useLocation()
-    const navigate = useNavigate()
-    const [data, setData] = useState({
-        name: "",
-        password: "",
-        profilepic: ""
-    });
+  const navigate = useNavigate()
 
-    const changeHandler = (e) => {
-        if (e.target.name === "profilepic") {
-            setData({
-                ...data,
-                profilepic: e.target.files[0]
-            })
+  const [data, setData] = useState({
+    name: "",
+    password: "",
+    profilepic: null
+  })
+
+  const [loading, setLoading] = useState(false)
+
+  const changeHandler = (e) => {
+    if (e.target.name === "profilepic") {
+      setData({
+        ...data,
+        profilepic: e.target.files[0]
+      })
+    } else {
+      setData({
+        ...data,
+        [e.target.name]: e.target.value
+      })
+    }
+  }
+
+  const submitHandler = async (e) => {
+    e.preventDefault()
+    setLoading(true)
+
+    try {
+      const formData = new FormData()
+
+      // Only send fields if provided (prevents overwriting with empty values)
+      if (data.name.trim()) {
+        formData.append("name", data.name)
+      }
+
+      if (data.password.trim()) {
+        formData.append("password", data.password)
+      }
+
+      if (data.profilepic) {
+        formData.append("profilepic", data.profilepic)
+      }
+
+      const token = localStorage.getItem("token")
+
+      const response = await axios.put(
+        "https://chatapplication-backend-v90l.onrender.com/user/updateprofile",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data"
+          }
         }
-        else {
-            setData({
-                ...data,
-                [e.target.name]: e.target.value
-            })
-        }
-    } 
+      )
 
-    const submitHandler = async (e) => {
-        e.preventDefault();
-        
-        const formData = new FormData();
-        formData.append("name", data.name);
-        formData.append("password", data.password);
+      console.log("Profile updated:", response.data)
 
-        // CRITICAL: This key "profilepic" must match the backend
-        if (data.profilepic) {
-            formData.append("profilepic", data.profilepic);
-        }
+      setLoading(false)
+      navigate(-1)
 
-        try {
-            const token = localStorage.getItem("token")
-            const response = await axios.put("https://chatapplication-backend-v90l.onrender.com/user/updateprofile", formData, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "multipart/form-data",
-                },
-            });
-            navigate(-1);
-        } catch (err) {
-            console.log("Error details:", err.response?.data || err.message);
-        }
-    };
+    } catch (err) {
+      setLoading(false)
+      console.log("Update error:", err.response?.data || err.message)
+    }
+  }
 
-    return (
-        <div>
-            <form className='UserRegister' onSubmit={submitHandler}>
-                <h3>update</h3>
-                <label>user name</label>
-                <input type="text" name="name" placeholder="enter your name" onChange={changeHandler}/><br/>
-                <label>Password</label><br/>
-                <input type="Password" name="password" placeholder="enter your Password" onChange={changeHandler}/><br/>
-                <label>Profile Pic</label><br />
-                <input type="file" name="profilepic" accept="image/*" onChange={changeHandler}/><br />
-                <input type="submit" value={"update"} /><br/>
-            </form>
-        </div>
-    )
+  return (
+    <div className="update-container">
+      <form className="UserRegister" onSubmit={submitHandler}>
+
+        <h3>Update Profile</h3>
+
+        <label>User Name</label>
+        <input
+          type="text"
+          name="name"
+          placeholder="Enter new name"
+          onChange={changeHandler}
+        />
+
+        <label>Password</label>
+        <input
+          type="password"
+          name="password"
+          placeholder="Enter new password"
+          onChange={changeHandler}
+        />
+
+        <label>Profile Picture</label>
+        <input
+          type="file"
+          name="profilepic"
+          accept="image/*"
+          onChange={changeHandler}
+        />
+
+        <button type="submit" disabled={loading}>
+          {loading ? "Updating..." : "Update"}
+        </button>
+
+      </form>
+    </div>
+  )
 }
 
 export default UpdateProfile

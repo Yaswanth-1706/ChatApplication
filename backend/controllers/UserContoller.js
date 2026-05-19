@@ -9,7 +9,7 @@ dotEnv.config()
 exports.createUser=async(req,res)=>{
     try{
         const {name,email,password,gender}=req.body
-        const profilepic=req.file?`/uploads/${req.file.filename}`:null
+        const profilepic=req.file?req.file.path:null
         console.log(req.body)
         const User=await user.findOne({email})
         if(User)
@@ -17,7 +17,7 @@ exports.createUser=async(req,res)=>{
             return res.status(400).json({message:"This email was alredy registerd"})
         }
         const hashedPassword=await bcrypt.hash(password,10)
-        const Avatar=profilepic||`/public/${gender}.png`
+        const Avatar=profilepic||"/public"+`/${gender}.png`
         const userRecord=await user.create({
             name,
             email,

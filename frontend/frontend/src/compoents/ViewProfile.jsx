@@ -1,51 +1,58 @@
-import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import './viewprofile.css';
+import React from "react"
+import { useLocation, useNavigate } from "react-router-dom"
+import "./viewprofile.css"
 
 const ViewProfile = () => {
-    const location = useLocation();
-    const navigate = useNavigate();
+  const location = useLocation()
+  const navigate = useNavigate()
 
-    if (!location.state) {
-        return (
-            <div className='profile-container'>
-                <h1>No Profile Data</h1>
-            </div>
-        );
-    }
-
-    const { img, name, email, gender } = location.state;
-
+  // Guard clause
+  if (!location.state) {
     return (
-        <div className='profile-container'>
-            <div className='profile-card'>
+      <div className="profile-container">
+        <h1>No Profile Data Available</h1>
+      </div>
+    )
+  }
 
-                <button
-                    className='back-btn'
-                    onClick={() => navigate(-1)}
-                >
-                    ← Back
-                </button>
+  // Direct Cloudinary-ready data
+  const { name, email, gender, profilepic } = location.state
 
-                <img
-                    className='profile-image'
-                    src={img}
-                    alt={name}
-                />
+  return (
+    <div className="profile-container">
+      <div className="profile-card">
 
-                <h2 className='profile-name'>{name}</h2>
+        {/* BACK BUTTON */}
+        <button
+          className="back-btn"
+          onClick={() => navigate(-1)}
+        >
+          ← Back
+        </button>
 
-                <p className='profile-email'>{email}</p>
+        {/* PROFILE IMAGE */}
+        <img
+          className="profile-image"
+          src={profilepic}
+          alt={name}
+        />
 
-                <div className='profile-details'>
-                    <div className='detail-item'>
-                        <span>Gender :</span> {gender}
-                    </div>
-                </div>
+        {/* NAME */}
+        <h2 className="profile-name">{name}</h2>
 
-            </div>
+        {/* EMAIL */}
+        <p className="profile-email">{email}</p>
+
+        {/* DETAILS */}
+        <div className="profile-details">
+          <div className="detail-item">
+            <span>Gender:</span> {gender}
+          </div>
         </div>
-    );
-};
 
-export default ViewProfile;
+      </div>
+    </div>
+  )
+}
+
+export default ViewProfile
