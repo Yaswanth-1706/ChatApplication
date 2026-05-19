@@ -9,16 +9,20 @@ const transporter = nodemailer.createTransport({
 
     host: "smtp.gmail.com",
 
-    port: 465,
+    port: 587,
 
-    secure: true,
+    secure: false,
 
     family: 4,
 
     auth: {
         user: process.env.Email_User,
         pass: process.env.Email_Pass
-    }
+    },
+
+    connectionTimeout: 60000,
+    greetingTimeout: 60000,
+    socketTimeout: 60000
 
 })
 // ================= SEND OTP EMAIL =================
