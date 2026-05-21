@@ -1,6 +1,3 @@
-/* =====================
-   RESET & BASE
-   ===================== */
 * {
   margin: 0;
   padding: 0;
@@ -8,9 +5,7 @@
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
 }
 
-/* =====================
-   .container  (root flex wrapper)
-   ===================== */
+/* FULL PAGE */
 .container {
   display: flex;
   height: 100vh;
@@ -19,10 +14,11 @@
 }
 
 /* =====================
-   .results  (sidebar)
+   SIDEBAR
    ===================== */
 .results {
   width: 30%;
+  min-width: 280px;
   background: #111b21;
   border-right: 1px solid #2a3942;
   display: flex;
@@ -30,18 +26,19 @@
   flex-shrink: 0;
 }
 
-/* ---- .header-row ---- */
+/* SIDEBAR HEADER ROW */
 .header-row {
   height: 60px;
   background: #202c33;
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: space-between;
   padding: 0 16px;
-  gap: 12px;
+  gap: 10px;
+  flex-shrink: 0;
 }
 
-/* profile pic of logged-in user */
 .searchProfile {
   width: 40px;
   height: 40px;
@@ -51,10 +48,9 @@
   flex-shrink: 0;
 }
 
-/* username text */
 .header-row p {
   flex: 1;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 500;
   color: #e9edef;
   white-space: nowrap;
@@ -62,7 +58,6 @@
   text-overflow: ellipsis;
 }
 
-/* logout button */
 .header-row button {
   background: transparent;
   color: #aebac1;
@@ -73,6 +68,7 @@
   font-size: 13px;
   font-weight: 500;
   white-space: nowrap;
+  flex-shrink: 0;
   transition: background 0.15s, color 0.15s;
 }
 
@@ -81,7 +77,7 @@
   color: #e9edef;
 }
 
-/* ---- search input (direct child of .results) ---- */
+/* SEARCH INPUT */
 .results > input {
   margin: 8px 12px;
   padding: 9px 14px;
@@ -90,7 +86,7 @@
   border-radius: 8px;
   outline: none;
   font-size: 14px;
-  color: #d1d7db;
+  color: #e9edef;
   flex-shrink: 0;
 }
 
@@ -98,20 +94,20 @@
   color: #8696a0;
 }
 
-/* ---- user list container (last div child of .results) ---- */
+/* USER LIST SCROLL CONTAINER */
 .results > div {
   overflow-y: auto;
   flex: 1;
 }
 
-/* scrollbar */
 .results > div::-webkit-scrollbar { width: 5px; }
 .results > div::-webkit-scrollbar-track { background: transparent; }
 .results > div::-webkit-scrollbar-thumb { background: #374045; border-radius: 3px; }
 
-/* ---- each user card (div > div) ---- */
+/* EACH USER CARD */
 .results > div > div {
   display: flex;
+  flex-direction: row;
   align-items: center;
   gap: 12px;
   padding: 12px 16px;
@@ -124,7 +120,6 @@
   background: #202c33;
 }
 
-/* contact avatar */
 .results > div > div img {
   width: 49px;
   height: 49px;
@@ -134,7 +129,6 @@
   cursor: pointer;
 }
 
-/* contact name */
 .results h3 {
   margin: 0;
   font-size: 16px;
@@ -145,21 +139,14 @@
   text-overflow: ellipsis;
 }
 
-/* online/offline status */
 .results p {
   margin: 2px 0 0;
   font-size: 13px;
   color: #8696a0;
 }
 
-/* online dot when text is "Online" */
-.results p[data-status="online"],
-.results p:not(:empty) {
-  color: #8696a0;
-}
-
 /* =====================
-   .chat-window  (right panel)
+   CHAT WINDOW
    ===================== */
 .chat-window {
   flex: 1;
@@ -169,11 +156,12 @@
   min-width: 0;
 }
 
-/* ---- chat header ---- */
+/* CHAT HEADER */
 .chat-window header {
   height: 60px;
   background: #202c33;
   display: flex;
+  flex-direction: row;
   align-items: center;
   gap: 14px;
   padding: 0 16px;
@@ -181,7 +169,6 @@
   flex-shrink: 0;
 }
 
-/* selected contact avatar */
 .chat-window header img {
   width: 40px;
   height: 40px;
@@ -191,7 +178,6 @@
   flex-shrink: 0;
 }
 
-/* selected contact name */
 .chat-window header h2 {
   flex: 1;
   font-size: 16px;
@@ -202,7 +188,6 @@
   text-overflow: ellipsis;
 }
 
-/* delete chat button */
 .chat-window header button {
   background: transparent;
   color: #aebac1;
@@ -213,6 +198,7 @@
   font-size: 13px;
   font-weight: 500;
   white-space: nowrap;
+  flex-shrink: 0;
   transition: background 0.15s, color 0.15s;
 }
 
@@ -221,7 +207,9 @@
   color: #e9edef;
 }
 
-/* ---- .messages-area ---- */
+/* =====================
+   MESSAGES AREA
+   ===================== */
 .messages-area {
   flex: 1;
   overflow-y: auto;
@@ -235,7 +223,6 @@
 .messages-area::-webkit-scrollbar-track { background: transparent; }
 .messages-area::-webkit-scrollbar-thumb { background: #374045; border-radius: 3px; }
 
-/* each message wrapper div */
 .messages-area > div {
   max-width: 65%;
   padding: 7px 10px 8px;
@@ -244,21 +231,18 @@
   word-wrap: break-word;
 }
 
-/* SENT bubble */
 .sent {
   align-self: flex-end;
   background: #005c4b;
   border-top-right-radius: 0;
 }
 
-/* RECEIVED bubble */
 .received {
   align-self: flex-start;
   background: #202c33;
   border-top-left-radius: 0;
 }
 
-/* 🗑 single-delete button inside bubble */
 .messages-area > div > button {
   border: none;
   background: transparent;
@@ -277,16 +261,14 @@
   opacity: 1;
 }
 
-/* message text */
 .messages-area > div > p {
   margin: 0;
   font-size: 14.2px;
   color: #e9edef;
   line-height: 1.45;
-  padding-right: 16px;
+  padding-right: 14px;
 }
 
-/* image in bubble */
 .messages-area > div > img {
   width: 240px;
   border-radius: 6px;
@@ -295,7 +277,6 @@
   display: block;
 }
 
-/* video in bubble */
 .messages-area > div > video {
   width: 260px;
   border-radius: 6px;
@@ -303,13 +284,11 @@
   display: block;
 }
 
-/* audio in bubble */
 .messages-area > div > audio {
   margin-top: 6px;
   width: 250px;
 }
 
-/* PDF link */
 .messages-area > div > a {
   display: inline-block;
   margin-top: 6px;
@@ -323,18 +302,20 @@
   text-decoration: underline;
 }
 
-/* ---- input area (last div child of .chat-window) ---- */
+/* =====================
+   INPUT AREA
+   ===================== */
 .chat-window > div:last-child {
   background: #202c33;
   padding: 10px 16px;
   display: flex;
+  flex-direction: row;
   align-items: center;
   gap: 10px;
   flex-shrink: 0;
   flex-wrap: wrap;
 }
 
-/* file preview container inside input area */
 .chat-window > div:last-child > div {
   display: flex;
   align-items: center;
@@ -343,7 +324,6 @@
   margin-bottom: 4px;
 }
 
-/* preview thumbnail */
 .chat-window > div:last-child > div > img {
   width: 80px;
   height: 80px;
@@ -351,13 +331,12 @@
   border-radius: 6px;
 }
 
-/* clear preview "X" button */
 .chat-window > div:last-child > div > button {
   background: #3b4a54;
   color: #e9edef;
   border: none;
-  width: 24px;
-  height: 24px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   cursor: pointer;
   font-size: 13px;
@@ -372,7 +351,6 @@
   background: #525f67;
 }
 
-/* text input */
 .chat-window > div:last-child input[type="text"],
 .chat-window > div:last-child input:not([type="file"]) {
   flex: 1;
@@ -391,14 +369,12 @@
   color: #8696a0;
 }
 
-/* file input */
 .chat-window > div:last-child input[type="file"] {
   color: #8696a0;
   font-size: 13px;
   max-width: 160px;
 }
 
-/* send button */
 .chat-window > div:last-child > button {
   width: 42px;
   height: 42px;
@@ -420,7 +396,9 @@
   background: #02c79a;
 }
 
-/* ---- empty state h2 ---- */
+/* =====================
+   EMPTY STATE
+   ===================== */
 .chat-window > h2 {
   text-align: center;
   margin-top: 50px;
@@ -430,10 +408,9 @@
 }
 
 /* =====================
-   fullscreen overlay
-   (direct child of .container, rendered at end of JSX)
+   FULLSCREEN OVERLAY
    ===================== */
-.container > div:last-child:not(.results):not(.chat-window) {
+.fullscreen-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.92);
@@ -444,7 +421,7 @@
   cursor: zoom-out;
 }
 
-.container > div:last-child:not(.results):not(.chat-window) img {
+.fullscreen-overlay img {
   max-width: 90%;
   max-height: 90%;
   border-radius: 8px;
@@ -461,6 +438,7 @@
 
   .results {
     width: 100%;
+    min-width: unset;
     height: 40%;
     border-right: none;
     border-bottom: 1px solid #2a3942;
