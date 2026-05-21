@@ -4,24 +4,39 @@ const cloudinary = require("../config/cloudinary")
 
 const storage = new CloudinaryStorage({
   cloudinary,
-  params: {
-    folder: "chat-app",
-    resource_type: "auto"   // supports image, video, audio
+
+  params: async (req, file) => {
+
+    let folder = "chat-app/files"
+
+    // PROFILE PIC
+    if (file.fieldname === "profilepic") {
+      folder = "chat-app/profilepics"
+    }
+
+    // CHAT FILES
+    if (file.fieldname === "file") {
+      folder = "chat-app/messages"
+    }
+
+    return {
+      folder,
+      resource_type: "image"
+    }
   }
 })
 
 const fileFilter = (req, file, cb) => {
+
   const allowedTypes = [
+
+    // IMAGES
     "image/png",
     "image/jpeg",
     "image/jpg",
     "image/webp",
-    "video/mp4",
-    "video/webm",
-    "video/ogg",
-    "video/quicktime",
-    "audio/mpeg",
-    "audio/wav",
+
+    // PDF
     "application/pdf"
   ]
 
@@ -32,6 +47,15 @@ const fileFilter = (req, file, cb) => {
   }
 }
 
-const upload = multer({ storage, fileFilter })
+const upload = multer({
+
+  storage,
+
+  fileFilter,
+
+  limits: {
+    fileSize: 10 * 1024 * 1024
+  }
+})
 
 module.exports = upload
