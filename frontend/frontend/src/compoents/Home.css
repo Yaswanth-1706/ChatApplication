@@ -1,16 +1,16 @@
 /* =====================
-   WHATSAPP-STYLE CSS
+   RESET & BASE
    ===================== */
-
-/* RESET */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
 }
 
-/* FULL PAGE */
+/* =====================
+   .container  (root flex wrapper)
+   ===================== */
 .container {
   display: flex;
   height: 100vh;
@@ -19,7 +19,7 @@
 }
 
 /* =====================
-   SIDEBAR
+   .results  (sidebar)
    ===================== */
 .results {
   width: 30%;
@@ -27,9 +27,10 @@
   border-right: 1px solid #2a3942;
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
 }
 
-/* SIDEBAR HEADER */
+/* ---- .header-row ---- */
 .header-row {
   height: 60px;
   background: #202c33;
@@ -37,94 +38,106 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 16px;
+  gap: 12px;
 }
 
-.header-row p {
-  font-size: 18px;
-  font-weight: 500;
-  color: #e9edef;
-}
-
+/* profile pic of logged-in user */
 .searchProfile {
   width: 40px;
   height: 40px;
   border-radius: 50%;
   object-fit: cover;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
-/* LOGOUT / HEADER BUTTON */
+/* username text */
+.header-row p {
+  flex: 1;
+  font-size: 16px;
+  font-weight: 500;
+  color: #e9edef;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* logout button */
 .header-row button {
   background: transparent;
   color: #aebac1;
-  border: none;
-  padding: 8px;
-  border-radius: 50%;
+  border: 1px solid #3b4a54;
+  padding: 6px 14px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.15s;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
 }
 
 .header-row button:hover {
   background: #2a3942;
+  color: #e9edef;
 }
 
-/* SEARCH BOX */
-.results input[type="text"],
-.results input:not([type]) {
+/* ---- search input (direct child of .results) ---- */
+.results > input {
   margin: 8px 12px;
-  padding: 9px 12px 9px 36px;
+  padding: 9px 14px;
   background: #2a3942;
   border: none;
   border-radius: 8px;
   outline: none;
   font-size: 14px;
   color: #d1d7db;
-  width: calc(100% - 24px);
+  flex-shrink: 0;
 }
 
-.results input::placeholder {
+.results > input::placeholder {
   color: #8696a0;
 }
 
-/* USER LIST CONTAINER */
-.results > div:last-child {
+/* ---- user list container (last div child of .results) ---- */
+.results > div {
   overflow-y: auto;
   flex: 1;
 }
 
-/* USER CARD */
-.results > div:last-child > div {
+/* scrollbar */
+.results > div::-webkit-scrollbar { width: 5px; }
+.results > div::-webkit-scrollbar-track { background: transparent; }
+.results > div::-webkit-scrollbar-thumb { background: #374045; border-radius: 3px; }
+
+/* ---- each user card (div > div) ---- */
+.results > div > div {
   display: flex;
   align-items: center;
-  gap: 13px;
+  gap: 12px;
   padding: 12px 16px;
   cursor: pointer;
   border-bottom: 1px solid #1e2a30;
   transition: background 0.15s;
-  background: transparent;
 }
 
-.results > div:last-child > div:hover {
+.results > div > div:hover {
   background: #202c33;
 }
 
-/* CONTACT AVATAR */
-.results > div:last-child img {
+/* contact avatar */
+.results > div > div img {
   width: 49px;
   height: 49px;
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
+  cursor: pointer;
 }
 
-/* CONTACT NAME */
+/* contact name */
 .results h3 {
   margin: 0;
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 400;
   color: #e9edef;
   white-space: nowrap;
@@ -132,40 +145,43 @@
   text-overflow: ellipsis;
 }
 
-/* LAST MESSAGE PREVIEW */
+/* online/offline status */
 .results p {
   margin: 2px 0 0;
+  font-size: 13px;
   color: #8696a0;
-  font-size: 14px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+}
+
+/* online dot when text is "Online" */
+.results p[data-status="online"],
+.results p:not(:empty) {
+  color: #8696a0;
 }
 
 /* =====================
-   CHAT WINDOW
+   .chat-window  (right panel)
    ===================== */
 .chat-window {
-  width: 70%;
+  flex: 1;
   display: flex;
   flex-direction: column;
-
-  /* WhatsApp dark background — swap URL for their tiled pattern if desired */
-  background-color: #0b141a;
+  background: #0b141a;
+  min-width: 0;
 }
 
-/* CHAT HEADER */
+/* ---- chat header ---- */
 .chat-window header {
   height: 60px;
   background: #202c33;
-  color: #e9edef;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   padding: 0 16px;
   border-bottom: 1px solid #2a3942;
+  flex-shrink: 0;
 }
 
+/* selected contact avatar */
 .chat-window header img {
   width: 40px;
   height: 40px;
@@ -175,181 +191,215 @@
   flex-shrink: 0;
 }
 
+/* selected contact name */
 .chat-window header h2 {
   flex: 1;
   font-size: 16px;
   font-weight: 500;
+  color: #e9edef;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* DELETE / ACTION BUTTON IN HEADER */
+/* delete chat button */
 .chat-window header button {
   background: transparent;
   color: #aebac1;
-  border: none;
-  padding: 8px;
-  border-radius: 50%;
+  border: 1px solid #3b4a54;
+  padding: 6px 14px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 20px;
-  transition: background 0.15s;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
 }
 
 .chat-window header button:hover {
-  background: #2a3942;
+  background: #3b4a54;
+  color: #e9edef;
 }
 
-/* =====================
-   MESSAGE AREA
-   ===================== */
+/* ---- .messages-area ---- */
 .messages-area {
   flex: 1;
   overflow-y: auto;
   padding: 16px 8%;
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
 }
 
-/* MESSAGE BUBBLE */
+.messages-area::-webkit-scrollbar { width: 5px; }
+.messages-area::-webkit-scrollbar-track { background: transparent; }
+.messages-area::-webkit-scrollbar-thumb { background: #374045; border-radius: 3px; }
+
+/* each message wrapper div */
 .messages-area > div {
   max-width: 65%;
   padding: 7px 10px 8px;
   border-radius: 7.5px;
   position: relative;
   word-wrap: break-word;
-  font-size: 14.2px;
-  line-height: 1.4;
 }
 
-/* SENT (outgoing) — dark teal */
+/* SENT bubble */
 .sent {
   align-self: flex-end;
   background: #005c4b;
-  color: #e9edef;
   border-top-right-radius: 0;
 }
 
-/* RECEIVED (incoming) — dark gray */
+/* RECEIVED bubble */
 .received {
   align-self: flex-start;
   background: #202c33;
-  color: #e9edef;
   border-top-left-radius: 0;
 }
 
-/* DELETE BUTTON INSIDE BUBBLE */
-.messages-area button {
+/* 🗑 single-delete button inside bubble */
+.messages-area > div > button {
   border: none;
   background: transparent;
   cursor: pointer;
   position: absolute;
   top: 4px;
   right: 4px;
-  color: rgba(233, 237, 239, 0.5);
   font-size: 13px;
-  padding: 2px;
+  padding: 2px 4px;
   border-radius: 4px;
-  transition: color 0.15s;
+  opacity: 0;
+  transition: opacity 0.15s;
 }
 
-.messages-area button:hover {
-  color: #e9edef;
+.messages-area > div:hover > button {
+  opacity: 1;
 }
 
-/* MESSAGE TEXT */
-.messages-area p {
+/* message text */
+.messages-area > div > p {
   margin: 0;
   font-size: 14.2px;
   color: #e9edef;
+  line-height: 1.45;
+  padding-right: 16px;
 }
 
-/* TIMESTAMP (add a .msg-time span inside each bubble) */
-.msg-time {
-  display: block;
-  font-size: 11px;
-  color: rgba(233, 237, 239, 0.5);
-  text-align: right;
-  margin-top: 3px;
-}
-
-.sent .msg-time {
-  color: rgba(233, 237, 239, 0.55);
-}
-
-/* IMAGE IN BUBBLE */
-.messages-area img {
-  width: 250px;
-  border-radius: 7px;
+/* image in bubble */
+.messages-area > div > img {
+  width: 240px;
+  border-radius: 6px;
   margin-top: 6px;
   cursor: pointer;
   display: block;
 }
 
-/* VIDEO IN BUBBLE */
-.messages-area video {
+/* video in bubble */
+.messages-area > div > video {
   width: 260px;
-  border-radius: 7px;
+  border-radius: 6px;
   margin-top: 6px;
   display: block;
 }
 
-/* AUDIO IN BUBBLE */
-.messages-area audio {
+/* audio in bubble */
+.messages-area > div > audio {
   margin-top: 6px;
   width: 250px;
 }
 
-/* PDF LINK IN BUBBLE */
-.messages-area a {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
+/* PDF link */
+.messages-area > div > a {
+  display: inline-block;
   margin-top: 6px;
   color: #53bdeb;
-  font-weight: 500;
   font-size: 14px;
+  font-weight: 500;
   text-decoration: none;
 }
 
-.messages-area a:hover {
+.messages-area > div > a:hover {
   text-decoration: underline;
 }
 
-/* =====================
-   INPUT AREA
-   ===================== */
+/* ---- input area (last div child of .chat-window) ---- */
 .chat-window > div:last-child {
   background: #202c33;
   padding: 10px 16px;
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
 }
 
-/* TEXT INPUT */
+/* file preview container inside input area */
+.chat-window > div:last-child > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin-bottom: 4px;
+}
+
+/* preview thumbnail */
+.chat-window > div:last-child > div > img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+/* clear preview "X" button */
+.chat-window > div:last-child > div > button {
+  background: #3b4a54;
+  color: #e9edef;
+  border: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+.chat-window > div:last-child > div > button:hover {
+  background: #525f67;
+}
+
+/* text input */
 .chat-window > div:last-child input[type="text"],
 .chat-window > div:last-child input:not([type="file"]) {
   flex: 1;
-  padding: 9px 12px;
+  padding: 10px 14px;
   background: #2a3942;
-  border-radius: 8px;
   border: none;
+  border-radius: 8px;
   outline: none;
   font-size: 15px;
   color: #e9edef;
+  min-width: 0;
 }
 
-.chat-window > div:last-child input::placeholder {
+.chat-window > div:last-child input[type="text"]::placeholder,
+.chat-window > div:last-child input:not([type="file"])::placeholder {
   color: #8696a0;
 }
 
-/* FILE INPUT */
+/* file input */
 .chat-window > div:last-child input[type="file"] {
   color: #8696a0;
   font-size: 13px;
+  max-width: 160px;
 }
 
-/* SEND BUTTON */
-.chat-window > div:last-child button {
+/* send button */
+.chat-window > div:last-child > button {
   width: 42px;
   height: 42px;
   background: #00a884;
@@ -357,7 +407,8 @@
   border: none;
   border-radius: 50%;
   cursor: pointer;
-  font-size: 18px;
+  font-size: 16px;
+  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -365,48 +416,24 @@
   transition: background 0.15s;
 }
 
-.chat-window > div:last-child button:hover {
+.chat-window > div:last-child > button:hover {
   background: #02c79a;
 }
 
-/* ATTACHMENT / EMOJI ICON BUTTONS */
-.chat-window > div:last-child .icon-btn {
-  background: transparent;
-  border: none;
-  color: #aebac1;
-  font-size: 22px;
-  cursor: pointer;
-  padding: 6px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.15s;
-}
-
-.chat-window > div:last-child .icon-btn:hover {
-  background: #2a3942;
-}
-
-/* FILE PREVIEW */
-.chat-window > div:last-child img {
-  width: 80px;
-  border-radius: 6px;
-}
-
-/* EMPTY STATE */
-.chat-window h2 {
+/* ---- empty state h2 ---- */
+.chat-window > h2 {
   text-align: center;
   margin-top: 50px;
   color: #8696a0;
-  font-weight: 400;
   font-size: 16px;
+  font-weight: 400;
 }
 
 /* =====================
-   FULLSCREEN IMAGE
+   fullscreen overlay
+   (direct child of .container, rendered at end of JSX)
    ===================== */
-.fullscreen-overlay {
+.container > div:last-child:not(.results):not(.chat-window) {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.92);
@@ -414,65 +441,14 @@
   justify-content: center;
   align-items: center;
   z-index: 999;
+  cursor: zoom-out;
 }
 
-.fullscreen-overlay img {
+.container > div:last-child:not(.results):not(.chat-window) img {
   max-width: 90%;
   max-height: 90%;
   border-radius: 8px;
-}
-
-/* =====================
-   SCROLLBAR STYLING
-   ===================== */
-.messages-area::-webkit-scrollbar,
-.results > div:last-child::-webkit-scrollbar {
-  width: 6px;
-}
-
-.messages-area::-webkit-scrollbar-track,
-.results > div:last-child::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.messages-area::-webkit-scrollbar-thumb,
-.results > div:last-child::-webkit-scrollbar-thumb {
-  background: #374045;
-  border-radius: 3px;
-}
-
-/* =====================
-   DAY DIVIDER
-   (add <div class="day-divider">Today</div> between message groups)
-   ===================== */
-.day-divider {
-  align-self: center;
-  background: #182229;
-  color: #8696a0;
-  font-size: 12.5px;
-  padding: 5px 12px;
-  border-radius: 8px;
-  margin: 8px 0;
-  pointer-events: none;
-}
-
-/* =====================
-   UNREAD BADGE
-   (add <span class="unread-badge">3</span> in contact card)
-   ===================== */
-.unread-badge {
-  background: #00a884;
-  color: #111b21;
-  border-radius: 50%;
-  min-width: 20px;
-  height: 20px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  font-weight: 600;
-  padding: 0 4px;
-  flex-shrink: 0;
+  object-fit: contain;
 }
 
 /* =====================
@@ -486,6 +462,8 @@
   .results {
     width: 100%;
     height: 40%;
+    border-right: none;
+    border-bottom: 1px solid #2a3942;
   }
 
   .chat-window {
@@ -493,7 +471,15 @@
     height: 60%;
   }
 
+  .messages-area {
+    padding: 12px 4%;
+  }
+
   .messages-area > div {
     max-width: 85%;
+  }
+
+  .chat-window > div:last-child input[type="file"] {
+    display: none;
   }
 }
