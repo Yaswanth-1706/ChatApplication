@@ -1,6 +1,6 @@
 /* ================================================
    HOME.CSS — WhatsApp Light (White & Green) Theme
-   Matches Home.jsx structure exactly
+   Perfectly synchronized with Home.jsx Class Names
    ================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
@@ -44,13 +44,7 @@
   --transition:       0.15s ease;
 }
 
-/* ── LAYOUT ──────────────────────────────────────── */
-
-html, body {
-  height: 100%;
-  width: 100%;
-  overflow: hidden;
-}
+/* ── LAYOUT CONTAINER ───────────────────────────── */
 
 .container {
   display: flex;
@@ -63,29 +57,28 @@ html, body {
 }
 
 /* ═══════════════════════════════════════════════════
-   SIDEBAR  (.results)
+   SIDEBAR COMPONENTS (.results)
    ═══════════════════════════════════════════════════ */
 
 .results {
   display: flex;
   flex-direction: column;
-  width: 30%;
-  min-width: 320px;
-  max-width: 450px;
+  width: 360px;
+  min-width: 280px;
+  max-width: 420px;
   background: var(--bg-sidebar);
   border-right: 1px solid var(--border);
   overflow: hidden;
   flex-shrink: 0;
 }
 
-/* ── Sidebar header row ── */
+/* ── Top Header Row ── */
 .header-row {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 0 16px;
+  padding: 10px 16px;
   background: var(--bg-sidebar-hdr);
-  height: 60px;
   min-height: 60px;
 }
 
@@ -99,11 +92,13 @@ html, body {
   cursor: pointer;
   transition: border-color var(--transition);
 }
-.searchProfile:hover { border-color: rgba(255,255,255,0.9); }
+.searchProfile:hover { 
+  border-color: rgba(255,255,255,0.9); 
+}
 
-.welcome-name {
+.profile-name {
   flex: 1;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--text-white);
   white-space: nowrap;
@@ -111,38 +106,31 @@ html, body {
   text-overflow: ellipsis;
 }
 
-/* Logout button */
-.logout {
+.logout-button {
   background: transparent;
   border: none;
-  color: rgba(255,255,255,0.82);
+  color: rgba(255,255,255,0.85);
   font-size: 13px;
   font-weight: 500;
   font-family: var(--font);
   cursor: pointer;
   padding: 6px 12px;
   border-radius: var(--radius-pill);
-  white-space: nowrap;
   transition: color var(--transition), background var(--transition);
 }
-.logout:hover {
+.logout-button:hover {
   color: #fff;
   background: rgba(255,255,255,0.18);
 }
 
-/* ── Search box wrapper ── */
-.search-wrapper {
-  padding: 8px 12px;
-  background: #fff;
-  border-bottom: 1px solid var(--border);
-}
-
-.searchBox {
-  width: 100%;
-  padding: 9px 16px 9px 42px;
+/* ── Search Input Field ── */
+.search-box {
+  width: calc(100% - 24px);
+  margin: 10px 12px;
+  padding: 9px 16px 9px 38px;
   background: var(--bg-search);
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-pill);
   color: var(--text-primary);
   font-size: 14px;
   font-family: var(--font);
@@ -150,65 +138,65 @@ html, body {
   transition: background var(--transition), box-shadow var(--transition);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='15' fill='%23667781' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: 14px center;
+  background-position: 13px center;
 }
-.searchBox::placeholder { color: var(--text-secondary); }
-.searchBox:focus {
+.search-box::placeholder { color: var(--text-secondary); }
+.search-box:focus {
   background-color: #fff;
   box-shadow: 0 0 0 2px rgba(0,128,105,0.22);
 }
 
-/* ── User list ── */
+/* ── Users Scroller Wrapper ── */
 .user-list {
   flex: 1;
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #ddd transparent;
 }
+.user-list::-webkit-scrollbar { width: 4px; }
+.user-list::-webkit-scrollbar-thumb { background: #ddd; border-radius: 4px; }
 
-/* ── User card ── */
-.card {
+/* ── Individual Contact Profile Cards ── */
+.user-card {
   display: flex;
   align-items: center;
   gap: 13px;
-  padding: 12px 16px;
+  padding: 11px 16px;
   cursor: pointer;
   border-bottom: 1px solid var(--border);
   transition: background var(--transition);
 }
-.card:hover  { background: var(--bg-card-hover); }
-.card.active { background: var(--bg-card-active); }
+.user-card:hover { background: var(--bg-card-hover); }
 
-.card img {
+.user-avatar {
   width: 45px;
   height: 45px;
   border-radius: 50%;
   object-fit: cover;
-  background: #ccc;
+  flex-shrink: 0;
+  background: #e1e1e1;
 }
 
-.card-details {
+.user-meta {
   flex: 1;
   min-width: 0;
 }
-
-.card-details h3 {
+.user-meta h3 {
   font-size: 15.5px;
   font-weight: 500;
   color: var(--text-primary);
-  margin-bottom: 3px;
+  margin-bottom: 2px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.card-details p { 
-  font-size: 13px; 
+.user-meta p {
+  font-size: 13px;
   color: var(--text-secondary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 /* ═══════════════════════════════════════════════════
-   CHAT WINDOW
+   ACTIVE CHAT CONTAINER WINDOW
    ═══════════════════════════════════════════════════ */
 
 .chat-window {
@@ -220,7 +208,7 @@ html, body {
   overflow: hidden;
 }
 
-/* Subtle tiled wallpaper */
+/* Chat Canvas Blueprint Tiled Wallpaper background */
 .chat-window::before {
   content: '';
   position: absolute;
@@ -232,18 +220,18 @@ html, body {
   z-index: 0;
 }
 
-/* ── Chat header ── */
+/* ── Top Contact Chat Header ── */
 .chat-header {
   display: flex;
   align-items: center;
-  gap: 13px;
+  gap: 14px;
   padding: 0 16px;
   background: var(--bg-chat-header);
   height: 60px;
   min-height: 60px;
   z-index: 10;
   flex-shrink: 0;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
 }
 
 .chat-header img {
@@ -251,31 +239,21 @@ html, body {
   height: 40px;
   border-radius: 50%;
   object-fit: cover;
-  border: 1.5px solid rgba(255,255,255,0.4);
-  flex-shrink: 0;
+  border: 1.5px solid rgba(255,255,255,0.3);
+  cursor: pointer;
 }
 
-/* div wrapping h2 + p inside header */
-.chat-header > div {
-  flex: 1;
-  min-width: 0;
-}
 .chat-header h2 {
+  flex: 1;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 600;
   color: #fff;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.chat-header p {
-  font-size: 12.5px;
-  color: rgba(255,255,255,0.85);
-  margin-top: 2px;
-}
 
-/* ── DELETE CHAT BUTTON (header) ── */
-.delete-chat-btn {
+.delete-chat-button {
   background: rgba(255, 255, 255, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.25);
   color: #ffffff;
@@ -285,121 +263,126 @@ html, body {
   cursor: pointer;
   padding: 6px 14px;
   border-radius: var(--radius-pill);
-  white-space: nowrap;
-  flex-shrink: 0;
   transition: all var(--transition);
 }
-
-.delete-chat-btn:hover {
+.delete-chat-button:hover {
   background: var(--danger);
   border-color: var(--danger);
-  color: #fff;
 }
 
-/* ── Messages area ── */
+/* ── Core Message Streams Canvas ── */
 .messages-area {
   flex: 1;
   overflow-y: auto;
-  padding: 20px 5%;
+  padding: 20px 6%;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   position: relative;
   z-index: 1;
 }
 
-/* Full Width Centered Image Handling */
-.chat-main-media {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex: 1;
-  max-height: 70vh;
-  margin: auto 0;
-}
-
-.chat-main-media img {
-  max-width: 90%;
-  max-height: 100%;
-  object-fit: contain;
-  border-radius: 4px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
-
 /* ═══════════════════════════════════════════════════
-   MESSAGE BUBBLE
+   MESSAGE BUBBLES SCHEMES
    ═══════════════════════════════════════════════════ */
 
 .message-bubble {
   position: relative;
   max-width: 65%;
-  padding: 8px 12px;
+  padding: 8px 14px;
   border-radius: var(--radius-bubble);
   font-size: 14.5px;
   line-height: 1.45;
   word-break: break-word;
   box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-/* Sent (right side) */
+/* Host Sent Stream (Aligned Right side) */
 .message-bubble.sent {
   background: var(--bg-sent);
   color: var(--text-primary);
   align-self: flex-end;
+  border-bottom-right-radius: 2px;
 }
 
-/* Received (left side) */
+/* Client Received Stream (Aligned Left side) */
 .message-bubble.received {
   background: var(--bg-received);
   color: var(--text-primary);
   align-self: flex-start;
+  border-bottom-left-radius: 2px;
+}
+
+.message-bubble p {
+  margin: 0;
+}
+
+/* Inline Garbage Message Dropper Icon */
+.delete-message-button {
+  position: absolute;
+  top: 4px;
+  right: -28px; /* Shifts trash icon smoothly outside bubble canvas footprint */
+  background: transparent;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+.message-bubble:hover .delete-message-button {
+  opacity: 1;
+}
+
+/* Shared Media Processing Layout nodes inside Message Stream bubbles */
+.message-media {
+  max-width: 280px;
+  max-height: 240px;
+  border-radius: 6px;
+  object-fit: cover;
+  cursor: zoom-in;
+  display: block;
+}
+
+.message-audio {
+  max-width: 240px;
+  margin-top: 4px;
+}
+
+.message-link {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 13.5px;
+  padding: 6px 12px;
+  background: rgba(0, 128, 105, 0.08);
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
 }
 
 /* ═══════════════════════════════════════════════════
-   INPUT AREA
+   DYNAMIC COMPONENT SUB-INPUT ACTIONS BAR
    ═══════════════════════════════════════════════════ */
 
 .input-area {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 16px;
+  padding: 12px 16px;
   background: var(--bg-input);
   border-top: 1px solid var(--border);
   z-index: 10;
-  flex-shrink: 0;
+  position: relative;
 }
 
-/* Custom File Wrapper Custom Design */
-.custom-file-upload {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  cursor: pointer;
-  background: transparent;
-  transition: background var(--transition);
-}
-.custom-file-upload:hover {
-  background: rgba(0, 0, 0, 0.05);
-}
-.custom-file-upload svg, .custom-file-upload::before {
-  content: "📎";
-  font-size: 20px;
-  color: var(--text-secondary);
-}
-
-/* Completely hides the raw ugly file inputs */
-.input-area input[type="file"] {
-  display: none !important;
-}
-
-/* Input Messaging Bar Field */
-.input-area input[type="text"] {
+/* Chat text field wrapper block */
+.message-input {
   flex: 1;
-  padding: 10px 18px;
+  padding: 11px 18px;
   background: var(--bg-input-field);
   border: none;
   border-radius: 8px;
@@ -408,39 +391,84 @@ html, body {
   font-family: var(--font);
   outline: none;
 }
-.input-area input[type="text"]::placeholder { color: var(--text-secondary); }
+.message-input::placeholder { color: var(--text-secondary); }
 
-/* Unified Send Buttons Layout Styling */
-.input-area button, .send-btn {
+/* CRITICAL: Hides your screenshot's raw browser native "Choose File" ugly component text */
+.file-input {
+  width: 35px;
+  height: 35px;
+  cursor: pointer;
+  border-radius: 50%;
+  color: transparent;
+}
+.file-input::-webkit-file-upload-button {
+  visibility: hidden;
+}
+.file-input::before {
+  content: '📎';
+  color: var(--text-secondary);
+  display: inline-block;
+  font-size: 20px;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+/* Interactive Message Submission Node Action button */
+.send-button {
   background: var(--accent);
   border: none;
-  color: #ffffff !important;
-  font-family: var(--font);
+  color: #fff;
   font-size: 14.5px;
-  font-weight: 500;
-  padding: 10px 20px;
+  font-weight: 600;
+  font-family: var(--font);
+  padding: 10px 22px;
   border-radius: 8px;
   cursor: pointer;
-  white-space: nowrap;
   transition: background var(--transition);
 }
-.input-area button:hover, .send-btn:hover {
+.send-button:hover {
   background: var(--accent-hover);
 }
 
-/* ── COMPONENT FILE PREVIEW ROW ── */
-.file-preview {
+/* ── Outgoing Attachment Preflight Row Status ── */
+.preview-row {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  width: 100%;
+  background: #ffffff;
+  padding: 12px 16px;
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 16px;
-  background: #ffffff;
   border-top: 1px solid var(--border);
-  position: relative;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+}
+
+.preview-image {
+  width: 55px;
+  height: 55px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+}
+
+.clear-preview-button {
+  background: var(--danger);
+  border: none;
+  color: white;
+  width: 22px;
+  height: 22px;
+  font-size: 11px;
+  font-weight: bold;
+  border-radius: 50%;
+  cursor: pointer;
 }
 
 /* ═══════════════════════════════════════════════════
-   EMPTY STATE & OVERLAYS
+   EMPTY VIEWPORTS & GRAPHICAL FULLSCREEN OVERLAYS
    ═══════════════════════════════════════════════════ */
 
 .empty-state {
@@ -449,25 +477,38 @@ html, body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 12px;
   color: var(--text-secondary);
-  font-size: 14px;
-  z-index: 1;
-  text-align: center;
+  font-size: 16px;
+  font-weight: 400;
 }
 .empty-state::before {
   content: '💬';
   font-size: 50px;
-  margin-bottom: 4px;
+  margin-bottom: 10px;
 }
 
-/* ═══════════════════════════════════════════════════
-   RESPONSIVE LAYOUTS
-   ═══════════════════════════════════════════════════ */
+.fullscreen-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  cursor: zoom-out;
+  backdrop-filter: blur(4px);
+}
 
-@media (max-width: 768px) {
-  .results {
-    width: 35%;
-    min-width: 280px;
-  }
+.fullscreen-overlay img {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 4px;
+  box-shadow: 0 4px 30px rgba(0,0,0,0.5);
+}
+
+/* ── Mobile Layout Support Adaptations ── */
+@media (max-width: 720px) {
+  .results { width: 300px; }
+  .message-bubble { max-width: 80%; }
 }
