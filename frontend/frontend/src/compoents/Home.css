@@ -1,42 +1,85 @@
-* {
+/* ================================================
+   HOME.CSS — WhatsApp Light (White & Green) Theme
+   Matches Home.jsx structure exactly
+   ================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
 }
 
-/* FULL PAGE */
+:root {
+  --bg-app:           #f0f2f5;
+  --bg-sidebar:       #ffffff;
+  --bg-sidebar-hdr:   #008069;
+  --bg-chat:          #efeae2;
+  --bg-chat-header:   #008069;
+  --bg-input:         #f0f2f5;
+  --bg-input-field:   #ffffff;
+  --bg-sent:          #d9fdd3;
+  --bg-received:      #ffffff;
+  --bg-card-hover:    #f5f6f6;
+  --bg-card-active:   #e9edef;
+  --bg-search:        #f0f2f5;
+
+  --accent:           #008069;
+  --accent-hover:     #006d59;
+  --danger:           #e53935;
+  --danger-hover:     #c62828;
+
+  --text-primary:     #111b21;
+  --text-secondary:   #667781;
+  --text-white:       #ffffff;
+
+  --border:           #e9edef;
+  --shadow:           0 1px 2px rgba(0,0,0,0.13);
+
+  --radius-bubble:    7.5px;
+  --radius-pill:      24px;
+
+  --font:             'Inter', sans-serif;
+  --transition:       0.15s ease;
+}
+
+/* ── LAYOUT ──────────────────────────────────────── */
+
 .container {
   display: flex;
   height: 100vh;
+  width: 100vw;
   overflow: hidden;
-  background: #0b141a;
+  background: var(--bg-app);
+  font-family: var(--font);
+  color: var(--text-primary);
 }
 
-/* =====================
-   SIDEBAR
-   ===================== */
+/* ═══════════════════════════════════════════════════
+   SIDEBAR  (.results)
+   ═══════════════════════════════════════════════════ */
+
 .results {
-  width: 30%;
-  min-width: 280px;
-  background: #111b21;
-  border-right: 1px solid #2a3942;
   display: flex;
   flex-direction: column;
+  width: 360px;
+  min-width: 260px;
+  max-width: 420px;
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border);
+  overflow: hidden;
   flex-shrink: 0;
 }
 
-/* SIDEBAR HEADER ROW */
+/* ── Sidebar header row ── */
 .header-row {
-  height: 60px;
-  background: #202c33;
   display: flex;
-  flex-direction: row;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 16px;
-  gap: 10px;
-  flex-shrink: 0;
+  gap: 12px;
+  padding: 10px 16px;
+  background: var(--bg-sidebar-hdr);
+  min-height: 60px;
 }
 
 .searchProfile {
@@ -44,457 +87,629 @@
   height: 40px;
   border-radius: 50%;
   object-fit: cover;
-  cursor: pointer;
   flex-shrink: 0;
+  border: 2px solid rgba(255,255,255,0.35);
+  cursor: pointer;
+  transition: border-color var(--transition);
 }
+.searchProfile:hover { border-color: rgba(255,255,255,0.9); }
 
-.header-row p {
+.welcome-name {
   flex: 1;
-  font-size: 15px;
-  font-weight: 500;
-  color: #e9edef;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.header-row button {
-  background: transparent;
-  color: #aebac1;
-  border: 1px solid #3b4a54;
-  padding: 6px 14px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 500;
-  white-space: nowrap;
-  flex-shrink: 0;
-  transition: background 0.15s, color 0.15s;
-}
-
-.header-row button:hover {
-  background: #2a3942;
-  color: #e9edef;
-}
-
-/* SEARCH INPUT */
-.results > input {
-  margin: 8px 12px;
-  padding: 9px 14px;
-  background: #2a3942;
-  border: none;
-  border-radius: 8px;
-  outline: none;
-  font-size: 14px;
-  color: #e9edef;
-  flex-shrink: 0;
-}
-
-.results > input::placeholder {
-  color: #8696a0;
-}
-
-/* USER LIST SCROLL CONTAINER */
-.results > div {
-  overflow-y: auto;
-  flex: 1;
-}
-
-.results > div::-webkit-scrollbar { width: 5px; }
-.results > div::-webkit-scrollbar-track { background: transparent; }
-.results > div::-webkit-scrollbar-thumb { background: #374045; border-radius: 3px; }
-
-/* EACH USER CARD */
-.results > div > div {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  cursor: pointer;
-  border-bottom: 1px solid #1e2a30;
-  transition: background 0.15s;
-}
-
-.results > div > div:hover {
-  background: #202c33;
-}
-
-.results > div > div img {
-  width: 49px;
-  height: 49px;
-  border-radius: 50%;
-  object-fit: cover;
-  flex-shrink: 0;
-  cursor: pointer;
-}
-
-.results h3 {
-  margin: 0;
   font-size: 16px;
-  font-weight: 400;
-  color: #e9edef;
+  font-weight: 600;
+  color: var(--text-white);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.results p {
-  margin: 2px 0 0;
-  font-size: 13px;
-  color: #8696a0;
+/* Logout button */
+.logout {
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.82);
+  font-size: 12px;
+  font-weight: 500;
+  font-family: var(--font);
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+  transition: color var(--transition), background var(--transition);
+}
+.logout:hover {
+  color: #fff;
+  background: rgba(255,255,255,0.18);
 }
 
-/* =====================
+/* ── Search box ── */
+.searchBox {
+  width: calc(100% - 24px);
+  margin: 10px 12px;
+  padding: 9px 16px 9px 38px;
+  background: var(--bg-search);
+  border: none;
+  border-radius: var(--radius-pill);
+  color: var(--text-primary);
+  font-size: 13.5px;
+  font-family: var(--font);
+  outline: none;
+  transition: background var(--transition), box-shadow var(--transition);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='15' fill='%23667781' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 13px center;
+}
+.searchBox::placeholder { color: var(--text-secondary); }
+.searchBox:focus {
+  background-color: #fff;
+  box-shadow: 0 0 0 2px rgba(0,128,105,0.22);
+}
+
+/* ── User list ── */
+.user-list {
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #ddd transparent;
+}
+.user-list::-webkit-scrollbar { width: 3px; }
+.user-list::-webkit-scrollbar-thumb { background: #ddd; border-radius: 4px; }
+
+/* ── User card ── */
+.card {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 11px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border);
+  transition: background var(--transition);
+}
+.card:hover  { background: var(--bg-card-hover); }
+.card.active { background: var(--bg-card-active); }
+
+.card h3 {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+.card p { font-size: 13px; color: var(--text-secondary); }
+
+/* ═══════════════════════════════════════════════════
    CHAT WINDOW
-   ===================== */
+   ═══════════════════════════════════════════════════ */
+
 .chat-window {
   flex: 1;
   display: flex;
   flex-direction: column;
-  background: #0b141a;
-  min-width: 0;
+  background: var(--bg-chat);
+  position: relative;
+  overflow: hidden;
 }
 
-/* CHAT HEADER */
-.chat-window header {
-  height: 60px;
-  background: #202c33;
+/* Subtle tiled wallpaper */
+.chat-window::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5 L55 20 L55 40 L30 55 L5 40 L5 20 Z' fill='none' stroke='%23b2aca4' stroke-width='0.4'/%3E%3C/svg%3E");
+  background-size: 60px 60px;
+  opacity: 0.3;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Chat header ── */
+.chat-header {
   display: flex;
-  flex-direction: row;
   align-items: center;
-  gap: 14px;
-  padding: 0 16px;
-  border-bottom: 1px solid #2a3942;
+  gap: 13px;
+  padding: 8px 16px;
+  background: var(--bg-chat-header);
+  min-height: 60px;
+  z-index: 10;
   flex-shrink: 0;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
 }
 
-.chat-window header img {
+.chat-header img {
   width: 40px;
   height: 40px;
   border-radius: 50%;
   object-fit: cover;
-  cursor: pointer;
+  border: 2px solid rgba(255,255,255,0.3);
   flex-shrink: 0;
 }
 
-.chat-window header h2 {
+/* div wrapping h2 + p inside header */
+.chat-header > div {
   flex: 1;
+  min-width: 0;
+}
+.chat-header h2 {
   font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.chat-header p {
+  font-size: 13px;
+  color: rgba(255,255,255,0.82);
+  margin-top: 1px;
+}
+
+/* ── DELETE CHAT BUTTON (header) ─────────────────────
+   In Home.jsx: <button className="delete-chat-btn" onClick={deleteChat}>
+   Sits at the far right of the chat header
+   ─────────────────────────────────────────────────── */
+.delete-chat-btn {
+  background: rgba(229, 57, 53, 0.18);
+  border: 1.5px solid rgba(229, 57, 53, 0.55);
+  color: #ff6b6b;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background var(--transition), border-color var(--transition), color var(--transition), transform var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.delete-chat-btn::before {
+  content: '🗑';
+  font-size: 14px;
+  filter: sepia(1) saturate(5) hue-rotate(310deg); /* forces red tint */
+}
+.delete-chat-btn:hover {
+  background: var(--danger);
+  border-color: var(--danger-hover);
+  color: #fff;
+  transform: scale(1.04);
+}
+
+/* ── Messages area ── */
+.messages-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px 7%;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  position: relative;
+  z-index: 1;
+  scrollbar-width: thin;
+  scrollbar-color: #ccc transparent;
+}
+.messages-area::-webkit-scrollbar { width: 3px; }
+.messages-area::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+
+/* ═══════════════════════════════════════════════════
+   MESSAGE BUBBLE
+   ═══════════════════════════════════════════════════ */
+
+.message-bubble {
+  position: relative;        /* anchor for .delete-message-btn */
+  max-width: 62%;
+  padding: 6px 38px 7px 10px; /* right padding = room for 🗑 button */
+  border-radius: var(--radius-bubble);
+  font-size: 14.5px;
+  line-height: 1.5;
+  word-break: break-word;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  box-shadow: var(--shadow);
+  animation: bubbleIn 0.16s ease;
+}
+
+@keyframes bubbleIn {
+  from { opacity: 0; transform: translateY(6px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)   scale(1);    }
+}
+
+/* Sent (right side) */
+.message-bubble.sent {
+  background: var(--bg-sent);
+  color: var(--text-primary);
+  align-self: flex-end;
+  border-bottom-right-radius: 2px;
+  margin-right: 6px;
+}
+
+/* Received (left side) */
+.message-bubble.received {
+  background: var(--bg-received);
+  color: var(--text-primary);
+  align-self: flex-start;
+  border-bottom-left-radius: 2px;
+  margin-left: 6px;
+}
+
+/* Bubble tail — sent */
+.message-bubble.sent::after {
+  content: '';
+  position: absolute;
+  bottom: 0; right: -7px;
+  width: 0; height: 0;
+  border-style: solid;
+  border-width: 7px 0 0 7px;
+  border-color: transparent transparent transparent var(--bg-sent);
+}
+
+/* Bubble tail — received */
+.message-bubble.received::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: -7px;
+  width: 0; height: 0;
+  border-style: solid;
+  border-width: 7px 7px 0 0;
+  border-color: transparent var(--bg-received) transparent transparent;
+}
+
+/* Text inside bubble */
+.message-bubble p {
+  margin: 0;
+  /* no extra padding-right needed — bubble already has padding-right: 38px */
+}
+
+/* ── DELETE SINGLE MESSAGE BUTTON (🗑) ───────────────
+   In Home.jsx: <button className="delete-message-btn" onClick={() => singleDelete(msg._id)}>
+   Absolutely positioned top-right of each bubble.
+   Hidden by default, fades in on bubble hover.
+   ─────────────────────────────────────────────────── */
+.delete-message-btn {
+  position: absolute;
+  top: 5px;
+  right: 6px;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 15px;
+  line-height: 1;
+  color: #e53935;                   /* red trash icon */
+  opacity: 0;                       /* hidden by default */
+  transition: opacity 0.18s ease, background var(--transition), transform var(--transition);
+  z-index: 5;
+  filter: drop-shadow(0 0 2px rgba(229,57,53,0.3));
+}
+
+/* show clearly on bubble hover */
+.message-bubble:hover .delete-message-btn {
+  opacity: 1;
+}
+
+/* scale + glow when button itself is hovered */
+.delete-message-btn:hover {
+  opacity: 1 !important;
+  background: rgba(229, 57, 53, 0.15);
+  transform: scale(1.15);
+  filter: drop-shadow(0 0 4px rgba(229,57,53,0.5));
+}
+
+.message-bubble.sent .delete-message-btn:hover    { background: rgba(229,57,53,0.18); }
+.message-bubble.received .delete-message-btn:hover { background: rgba(229,57,53,0.12); }
+
+/* ── Media inside bubbles ── */
+.chat-image {
+  max-width: 260px;
+  max-height: 240px;
+  width: 100%;
+  border-radius: 6px;
+  object-fit: cover;
+  cursor: zoom-in;
+  display: block;
+  transition: filter var(--transition);
+}
+.chat-image:hover { filter: brightness(0.9); }
+
+.chat-video {
+  max-width: 260px;
+  width: 100%;
+  border-radius: 6px;
+  display: block;
+}
+
+audio { width: 220px; }
+
+.message-bubble a {
+  color: var(--accent);
+  text-decoration: none;
   font-weight: 500;
-  color: #e9edef;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  background: rgba(0,128,105,0.09);
+  border-radius: 6px;
+  font-size: 14px;
+  transition: background var(--transition);
+}
+.message-bubble a:hover { background: rgba(0,128,105,0.18); }
+
+/* ═══════════════════════════════════════════════════
+   INPUT AREA
+   ═══════════════════════════════════════════════════ */
+
+.input-area {
+  display: flex;
+  flex-direction: column;        /* stack preview above the row */
+  gap: 8px;
+  padding: 10px 16px;
+  background: var(--bg-input);
+  border-top: 1px solid var(--border);
+  z-index: 10;
+  flex-shrink: 0;
+}
+
+/* Inner div row: input + 📎 + Send */
+.input-area > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.input-area input[type="text"] {
+  flex: 1;
+  padding: 10px 16px;
+  background: var(--bg-input-field);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  color: var(--text-primary);
+  font-size: 14.5px;
+  font-family: var(--font);
+  outline: none;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+.input-area input[type="text"]::placeholder { color: var(--text-secondary); }
+.input-area input[type="text"]:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(0,128,105,0.15);
+}
+
+/* Image preview inside input-area (inline style in JSX, we enhance via class below) */
+.input-area img[alt="preview"] {
+  border: 2px solid var(--border);
+  box-shadow: var(--shadow);
+  align-self: flex-start;
+}
+
+/* PDF preview chip — shown when file?.type === "application/pdf" */
+.pdf-preview-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 14px;
+  background: #ffffff;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  max-width: 260px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-shadow: var(--shadow);
+  align-self: flex-start;
+}
+
+/* ── FILE PREVIEW (above input bar) ─────────────────
+   Shown when user picks a file before sending.
+   JSX: <div className="file-preview"> ... </div>
+   ─────────────────────────────────────────────────── */
+.file-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: #ffffff;
+  border-top: 1px solid var(--border);
+  z-index: 10;
+  flex-shrink: 0;
+  position: relative;
+  animation: slideUp 0.18s ease;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Image / video thumbnail */
+.preview-thumb {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid var(--border);
+  flex-shrink: 0;
+  display: block;
+}
+
+/* Audio preview */
+.preview-audio {
+  flex: 1;
+  height: 36px;
+}
+
+/* PDF label */
+.preview-pdf {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-primary);
+  background: #f0f2f5;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 220px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.chat-window header button {
-  background: transparent;
-  color: #aebac1;
-  border: 1px solid #3b4a54;
-  padding: 6px 14px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 500;
-  white-space: nowrap;
-  flex-shrink: 0;
-  transition: background 0.15s, color 0.15s;
-}
-
-.chat-window header button:hover {
-  background: #3b4a54;
-  color: #e9edef;
-}
-
-/* =====================
-   MESSAGES AREA
-   ===================== */
-.messages-area {
-  flex: 1;
-  overflow-y: auto;
-  padding: 16px 8%;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.messages-area::-webkit-scrollbar { width: 5px; }
-.messages-area::-webkit-scrollbar-track { background: transparent; }
-.messages-area::-webkit-scrollbar-thumb { background: #374045; border-radius: 3px; }
-
-.messages-area > div {
-  max-width: 65%;
-  padding: 7px 10px 8px;
-  border-radius: 7.5px;
-  position: relative;
-  word-wrap: break-word;
-}
-
-.sent {
-  align-self: flex-end;
-  background: #005c4b;
-  border-top-right-radius: 0;
-}
-
-.received {
-  align-self: flex-start;
-  background: #202c33;
-  border-top-left-radius: 0;
-}
-
-.messages-area > div > button {
-  border: none;
-  background: transparent;
-  cursor: pointer;
+/* ✕ Remove button — clearly red, top-right of preview bar */
+.preview-remove-btn {
   position: absolute;
-  top: 4px;
-  right: 4px;
-  font-size: 13px;
-  padding: 2px 4px;
-  border-radius: 4px;
-  opacity: 0;
-  transition: opacity 0.15s;
-}
-
-.messages-area > div:hover > button {
-  opacity: 1;
-}
-
-.messages-area > div > p {
-  margin: 0;
-  font-size: 14.2px;
-  color: #e9edef;
-  line-height: 1.45;
-  padding-right: 14px;
-}
-
-.messages-area > div > img {
-  width: 240px;
-  border-radius: 6px;
-  margin-top: 6px;
-  cursor: pointer;
-  display: block;
-}
-
-.messages-area > div > video {
-  width: 260px;
-  border-radius: 6px;
-  margin-top: 6px;
-  display: block;
-}
-
-.messages-area > div > audio {
-  margin-top: 6px;
-  width: 250px;
-}
-
-.messages-area > div > a {
-  display: inline-block;
-  margin-top: 6px;
-  color: #53bdeb;
-  font-size: 14px;
-  font-weight: 500;
-  text-decoration: none;
-}
-
-.messages-area > div > a:hover {
-  text-decoration: underline;
-}
-
-/* =====================
-   INPUT AREA
-   ===================== */
-
-/* Outer wrapper — stacks preview row on top, then input row below */
-.chat-window > div:last-child {
-  background: #202c33;
-  padding: 8px 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  flex-shrink: 0;
-  border-top: 1px solid #2a3942;
-}
-
-/* FILE PREVIEW ROW — shown only when a file is selected */
-.chat-window > div:last-child > div {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: #2a3942;
-  padding: 8px 10px;
-  border-radius: 10px;
-}
-
-/* preview thumbnail */
-.chat-window > div:last-child > div > img {
-  width: 56px;
-  height: 56px;
-  object-fit: cover;
-  border-radius: 8px;
-  flex-shrink: 0;
-}
-
-/* "X" clear button */
-.chat-window > div:last-child > div > button {
-  background: #3b4a54;
-  color: #e9edef;
-  border: none;
+  top: 8px;
+  right: 12px;
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  cursor: pointer;
-  font-size: 14px;
+  background: #e53935;
+  border: none;
+  color: #ffffff;
+  font-size: 13px;
   font-weight: 700;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
-  transition: background 0.15s;
+  line-height: 1;
+  box-shadow: 0 2px 6px rgba(229,57,53,0.4);
+  transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+  z-index: 11;
+}
+.preview-remove-btn:hover {
+  background: #c62828;
+  transform: scale(1.12);
+  box-shadow: 0 3px 10px rgba(229,57,53,0.55);
+}
+.preview-remove-btn:active {
+  transform: scale(0.95);
 }
 
-.chat-window > div:last-child > div > button:hover {
-  background: #ff4d4d;
-  color: #fff;
-}
-
-/* BOTTOM INPUT ROW */
-.chat-window > div:last-child > input[type="text"],
-.chat-window > div:last-child > input:not([type="file"]) {
-  flex: 1;
-  padding: 11px 16px;
-  background: #2a3942;
-  border: none;
-  border-radius: 24px;
-  outline: none;
-  font-size: 15px;
-  color: #e9edef;
-  min-width: 0;
-  order: 2;
-}
-
-.chat-window > div:last-child > input[type="text"]::placeholder,
-.chat-window > div:last-child > input:not([type="file"])::placeholder {
-  color: #8696a0;
-}
-
-/* Wrap text + file + send in a row */
-.chat-window > div:last-child {
-  flex-direction: column;
-}
-
-/* Row for text, file, send */
-.input-row {
+/* Attachment label */
+.file-label {
   display: flex;
   align-items: center;
-  gap: 10px;
-  width: 100%;
-}
-
-/* FILE INPUT — styled as a compact pill button */
-.chat-window > div:last-child input[type="file"] {
-  color: transparent;
-  font-size: 0;
-  width: 36px;
-  height: 36px;
-  flex-shrink: 0;
-  cursor: pointer;
-  background: #2a3942 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='%238696a0' viewBox='0 0 24 24'%3E%3Cpath d='M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66L9.41 17.41a2 2 0 01-2.83-2.83l8.49-8.48'/%3E%3C/svg%3E") center/20px no-repeat;
-  border: none;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  outline: none;
+  cursor: pointer;
+  font-size: 19px;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+  transition: background var(--transition), color var(--transition);
+}
+.file-label:hover {
+  background: #e2e5e9;
+  color: var(--accent);
 }
 
-.chat-window > div:last-child input[type="file"]::-webkit-file-upload-button {
-  display: none;
-}
-
-/* SEND BUTTON */
-.chat-window > div:last-child > button {
+/* Send button — inside the inner flex div */
+.input-area > div > button {
   width: 42px;
   height: 42px;
-  background: #00a884;
-  color: #111b21;
-  border: none;
   border-radius: 50%;
-  cursor: pointer;
+  background: var(--accent);
+  border: none;
+  color: #fff;
   font-size: 16px;
-  font-weight: 700;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition: background 0.15s, transform 0.1s;
+  transition: background var(--transition), transform var(--transition);
 }
-
-.chat-window > div:last-child > button:hover {
-  background: #02c79a;
-  transform: scale(1.05);
+.input-area > div > button:hover {
+  background: var(--accent-hover);
+  transform: scale(1.06);
 }
+.input-area > div > button:active { transform: scale(0.94); }
 
-/* =====================
+/* ═══════════════════════════════════════════════════
    EMPTY STATE
-   ===================== */
-.chat-window > h2 {
+   ═══════════════════════════════════════════════════ */
+
+.empty-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  z-index: 1;
+  position: relative;
   text-align: center;
-  margin-top: 50px;
-  color: #8696a0;
-  font-size: 16px;
-  font-weight: 400;
+  padding: 24px;
+}
+.empty-state::before {
+  content: '💬';
+  font-size: 60px;
+  margin-bottom: 6px;
+  filter: grayscale(0.2);
 }
 
-/* =====================
-   FULLSCREEN OVERLAY
-   ===================== */
+/* ═══════════════════════════════════════════════════
+   FULLSCREEN IMAGE OVERLAY
+   ═══════════════════════════════════════════════════ */
+
 .fullscreen-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.92);
+  background: rgba(0,0,0,0.9);
   display: flex;
-  justify-content: center;
   align-items: center;
-  z-index: 999;
+  justify-content: center;
+  z-index: 1000;
   cursor: zoom-out;
+  backdrop-filter: blur(6px);
+  animation: fadeIn 0.18s ease;
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
-.fullscreen-overlay img {
-  max-width: 90%;
-  max-height: 90%;
-  border-radius: 8px;
+.fullscreen-image {
+  max-width: 90vw;
+  max-height: 90vh;
   object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 10px 50px rgba(0,0,0,0.6);
+  animation: scaleIn 0.18s ease;
+}
+@keyframes scaleIn {
+  from { transform: scale(0.93); }
+  to   { transform: scale(1); }
 }
 
-/* =====================
-   MOBILE
-   ===================== */
-@media (max-width: 768px) {
-  .container {
-    flex-direction: column;
-  }
+/* ═══════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════ */
 
+@media (max-width: 700px) {
   .results {
-    width: 100%;
-    min-width: unset;
-    height: 40%;
-    border-right: none;
-    border-bottom: 1px solid #2a3942;
+    width: 100vw;
+    max-width: 100vw;
+    position: absolute;
+    z-index: 100;
+    height: 100vh;
   }
-
-  .chat-window {
-    width: 100%;
-    height: 60%;
-  }
-
-  .messages-area {
-    padding: 12px 4%;
-  }
-
-  .messages-area > div {
-    max-width: 85%;
-  }
-
-  .chat-window > div:last-child input[type="file"] {
-    display: none;
-  }
+  .chat-window { width: 100vw; }
+  .message-bubble { max-width: 80%; }
+  .messages-area { padding: 10px 4%; }
 }
