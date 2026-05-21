@@ -46,6 +46,12 @@
 
 /* ── LAYOUT ──────────────────────────────────────── */
 
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
 .container {
   display: flex;
   height: 100vh;
@@ -63,9 +69,9 @@
 .results {
   display: flex;
   flex-direction: column;
-  width: 360px;
-  min-width: 260px;
-  max-width: 420px;
+  width: 30%;
+  min-width: 320px;
+  max-width: 450px;
   background: var(--bg-sidebar);
   border-right: 1px solid var(--border);
   overflow: hidden;
@@ -77,8 +83,9 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 16px;
+  padding: 0 16px;
   background: var(--bg-sidebar-hdr);
+  height: 60px;
   min-height: 60px;
 }
 
@@ -109,11 +116,11 @@
   background: transparent;
   border: none;
   color: rgba(255,255,255,0.82);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
   font-family: var(--font);
   cursor: pointer;
-  padding: 5px 10px;
+  padding: 6px 12px;
   border-radius: var(--radius-pill);
   white-space: nowrap;
   transition: color var(--transition), background var(--transition);
@@ -123,22 +130,27 @@
   background: rgba(255,255,255,0.18);
 }
 
-/* ── Search box ── */
+/* ── Search box wrapper ── */
+.search-wrapper {
+  padding: 8px 12px;
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+}
+
 .searchBox {
-  width: calc(100% - 24px);
-  margin: 10px 12px;
-  padding: 9px 16px 9px 38px;
+  width: 100%;
+  padding: 9px 16px 9px 42px;
   background: var(--bg-search);
   border: none;
-  border-radius: var(--radius-pill);
+  border-radius: 8px;
   color: var(--text-primary);
-  font-size: 13.5px;
+  font-size: 14px;
   font-family: var(--font);
   outline: none;
   transition: background var(--transition), box-shadow var(--transition);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='15' fill='%23667781' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: 13px center;
+  background-position: 14px center;
 }
 .searchBox::placeholder { color: var(--text-secondary); }
 .searchBox:focus {
@@ -150,18 +162,14 @@
 .user-list {
   flex: 1;
   overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: #ddd transparent;
 }
-.user-list::-webkit-scrollbar { width: 3px; }
-.user-list::-webkit-scrollbar-thumb { background: #ddd; border-radius: 4px; }
 
 /* ── User card ── */
 .card {
   display: flex;
   align-items: center;
   gap: 13px;
-  padding: 11px 16px;
+  padding: 12px 16px;
   cursor: pointer;
   border-bottom: 1px solid var(--border);
   transition: background var(--transition);
@@ -169,13 +177,35 @@
 .card:hover  { background: var(--bg-card-hover); }
 .card.active { background: var(--bg-card-active); }
 
-.card h3 {
-  font-size: 16px;
+.card img {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #ccc;
+}
+
+.card-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.card-details h3 {
+  font-size: 15.5px;
   font-weight: 500;
   color: var(--text-primary);
-  margin-bottom: 2px;
+  margin-bottom: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.card p { font-size: 13px; color: var(--text-secondary); }
+.card-details p { 
+  font-size: 13px; 
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 /* ═══════════════════════════════════════════════════
    CHAT WINDOW
@@ -197,7 +227,7 @@
   inset: 0;
   background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5 L55 20 L55 40 L30 55 L5 40 L5 20 Z' fill='none' stroke='%23b2aca4' stroke-width='0.4'/%3E%3C/svg%3E");
   background-size: 60px 60px;
-  opacity: 0.3;
+  opacity: 0.25;
   pointer-events: none;
   z-index: 0;
 }
@@ -207,12 +237,13 @@
   display: flex;
   align-items: center;
   gap: 13px;
-  padding: 8px 16px;
+  padding: 0 16px;
   background: var(--bg-chat-header);
+  height: 60px;
   min-height: 60px;
   z-index: 10;
   flex-shrink: 0;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
 .chat-header img {
@@ -220,7 +251,7 @@
   height: 40px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid rgba(255,255,255,0.3);
+  border: 1.5px solid rgba(255,255,255,0.4);
   flex-shrink: 0;
 }
 
@@ -231,89 +262,83 @@
 }
 .chat-header h2 {
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 500;
   color: #fff;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .chat-header p {
-  font-size: 13px;
-  color: rgba(255,255,255,0.82);
-  margin-top: 1px;
+  font-size: 12.5px;
+  color: rgba(255,255,255,0.85);
+  margin-top: 2px;
 }
 
-/* ── DELETE CHAT BUTTON (header) ─────────────────────
-   In Home.jsx: <button className="delete-chat-btn" onClick={deleteChat}>
-   Sits at the far right of the chat header
-   ─────────────────────────────────────────────────── */
+/* ── DELETE CHAT BUTTON (header) ── */
 .delete-chat-btn {
-  background: rgba(229, 57, 53, 0.18);
-  border: 1.5px solid rgba(229, 57, 53, 0.55);
-  color: #ff6b6b;
-  font-size: 12px;
-  font-weight: 600;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  font-size: 12.5px;
+  font-weight: 500;
   font-family: var(--font);
   cursor: pointer;
   padding: 6px 14px;
   border-radius: var(--radius-pill);
   white-space: nowrap;
   flex-shrink: 0;
-  transition: background var(--transition), border-color var(--transition), color var(--transition), transform var(--transition);
-  display: flex;
-  align-items: center;
-  gap: 5px;
+  transition: all var(--transition);
 }
-.delete-chat-btn::before {
-  content: '🗑';
-  font-size: 14px;
-  filter: sepia(1) saturate(5) hue-rotate(310deg); /* forces red tint */
-}
+
 .delete-chat-btn:hover {
   background: var(--danger);
-  border-color: var(--danger-hover);
+  border-color: var(--danger);
   color: #fff;
-  transform: scale(1.04);
 }
 
 /* ── Messages area ── */
 .messages-area {
   flex: 1;
   overflow-y: auto;
-  padding: 14px 7%;
+  padding: 20px 5%;
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 8px;
   position: relative;
   z-index: 1;
-  scrollbar-width: thin;
-  scrollbar-color: #ccc transparent;
 }
-.messages-area::-webkit-scrollbar { width: 3px; }
-.messages-area::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+
+/* Full Width Centered Image Handling */
+.chat-main-media {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  max-height: 70vh;
+  margin: auto 0;
+}
+
+.chat-main-media img {
+  max-width: 90%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
 
 /* ═══════════════════════════════════════════════════
    MESSAGE BUBBLE
    ═══════════════════════════════════════════════════ */
 
 .message-bubble {
-  position: relative;        /* anchor for .delete-message-btn */
-  max-width: 62%;
-  padding: 6px 38px 7px 10px; /* right padding = room for 🗑 button */
+  position: relative;
+  max-width: 65%;
+  padding: 8px 12px;
   border-radius: var(--radius-bubble);
   font-size: 14.5px;
-  line-height: 1.5;
+  line-height: 1.45;
   word-break: break-word;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
   box-shadow: var(--shadow);
-  animation: bubbleIn 0.16s ease;
-}
-
-@keyframes bubbleIn {
-  from { opacity: 0; transform: translateY(6px) scale(0.97); }
-  to   { opacity: 1; transform: translateY(0)   scale(1);    }
 }
 
 /* Sent (right side) */
@@ -321,8 +346,6 @@
   background: var(--bg-sent);
   color: var(--text-primary);
   align-self: flex-end;
-  border-bottom-right-radius: 2px;
-  margin-right: 6px;
 }
 
 /* Received (left side) */
@@ -330,117 +353,7 @@
   background: var(--bg-received);
   color: var(--text-primary);
   align-self: flex-start;
-  border-bottom-left-radius: 2px;
-  margin-left: 6px;
 }
-
-/* Bubble tail — sent */
-.message-bubble.sent::after {
-  content: '';
-  position: absolute;
-  bottom: 0; right: -7px;
-  width: 0; height: 0;
-  border-style: solid;
-  border-width: 7px 0 0 7px;
-  border-color: transparent transparent transparent var(--bg-sent);
-}
-
-/* Bubble tail — received */
-.message-bubble.received::before {
-  content: '';
-  position: absolute;
-  bottom: 0; left: -7px;
-  width: 0; height: 0;
-  border-style: solid;
-  border-width: 7px 7px 0 0;
-  border-color: transparent var(--bg-received) transparent transparent;
-}
-
-/* Text inside bubble */
-.message-bubble p {
-  margin: 0;
-  /* no extra padding-right needed — bubble already has padding-right: 38px */
-}
-
-/* ── DELETE SINGLE MESSAGE BUTTON (🗑) ───────────────
-   In Home.jsx: <button className="delete-message-btn" onClick={() => singleDelete(msg._id)}>
-   Absolutely positioned top-right of each bubble.
-   Hidden by default, fades in on bubble hover.
-   ─────────────────────────────────────────────────── */
-.delete-message-btn {
-  position: absolute;
-  top: 5px;
-  right: 6px;
-  width: 26px;
-  height: 26px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  border: none;
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 15px;
-  line-height: 1;
-  color: #e53935;                   /* red trash icon */
-  opacity: 0;                       /* hidden by default */
-  transition: opacity 0.18s ease, background var(--transition), transform var(--transition);
-  z-index: 5;
-  filter: drop-shadow(0 0 2px rgba(229,57,53,0.3));
-}
-
-/* show clearly on bubble hover */
-.message-bubble:hover .delete-message-btn {
-  opacity: 1;
-}
-
-/* scale + glow when button itself is hovered */
-.delete-message-btn:hover {
-  opacity: 1 !important;
-  background: rgba(229, 57, 53, 0.15);
-  transform: scale(1.15);
-  filter: drop-shadow(0 0 4px rgba(229,57,53,0.5));
-}
-
-.message-bubble.sent .delete-message-btn:hover    { background: rgba(229,57,53,0.18); }
-.message-bubble.received .delete-message-btn:hover { background: rgba(229,57,53,0.12); }
-
-/* ── Media inside bubbles ── */
-.chat-image {
-  max-width: 260px;
-  max-height: 240px;
-  width: 100%;
-  border-radius: 6px;
-  object-fit: cover;
-  cursor: zoom-in;
-  display: block;
-  transition: filter var(--transition);
-}
-.chat-image:hover { filter: brightness(0.9); }
-
-.chat-video {
-  max-width: 260px;
-  width: 100%;
-  border-radius: 6px;
-  display: block;
-}
-
-audio { width: 220px; }
-
-.message-bubble a {
-  color: var(--accent);
-  text-decoration: none;
-  font-weight: 500;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 10px;
-  background: rgba(0,128,105,0.09);
-  border-radius: 6px;
-  font-size: 14px;
-  transition: background var(--transition);
-}
-.message-bubble a:hover { background: rgba(0,128,105,0.18); }
 
 /* ═══════════════════════════════════════════════════
    INPUT AREA
@@ -448,8 +361,8 @@ audio { width: 220px; }
 
 .input-area {
   display: flex;
-  flex-direction: column;        /* stack preview above the row */
-  gap: 8px;
+  align-items: center;
+  gap: 12px;
   padding: 10px 16px;
   background: var(--bg-input);
   border-top: 1px solid var(--border);
@@ -457,148 +370,8 @@ audio { width: 220px; }
   flex-shrink: 0;
 }
 
-/* Inner div row: input + 📎 + Send */
-.input-area > div {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.input-area input[type="text"] {
-  flex: 1;
-  padding: 10px 16px;
-  background: var(--bg-input-field);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-pill);
-  color: var(--text-primary);
-  font-size: 14.5px;
-  font-family: var(--font);
-  outline: none;
-  transition: border-color var(--transition), box-shadow var(--transition);
-}
-.input-area input[type="text"]::placeholder { color: var(--text-secondary); }
-.input-area input[type="text"]:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 2px rgba(0,128,105,0.15);
-}
-
-/* Image preview inside input-area (inline style in JSX, we enhance via class below) */
-.input-area img[alt="preview"] {
-  border: 2px solid var(--border);
-  box-shadow: var(--shadow);
-  align-self: flex-start;
-}
-
-/* PDF preview chip — shown when file?.type === "application/pdf" */
-.pdf-preview-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 8px 14px;
-  background: #ffffff;
-  border: 1.5px solid var(--border);
-  border-radius: 10px;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-primary);
-  max-width: 260px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  box-shadow: var(--shadow);
-  align-self: flex-start;
-}
-
-/* ── FILE PREVIEW (above input bar) ─────────────────
-   Shown when user picks a file before sending.
-   JSX: <div className="file-preview"> ... </div>
-   ─────────────────────────────────────────────────── */
-.file-preview {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 16px;
-  background: #ffffff;
-  border-top: 1px solid var(--border);
-  z-index: 10;
-  flex-shrink: 0;
-  position: relative;
-  animation: slideUp 0.18s ease;
-}
-
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* Image / video thumbnail */
-.preview-thumb {
-  width: 64px;
-  height: 64px;
-  object-fit: cover;
-  border-radius: 8px;
-  border: 2px solid var(--border);
-  flex-shrink: 0;
-  display: block;
-}
-
-/* Audio preview */
-.preview-audio {
-  flex: 1;
-  height: 36px;
-}
-
-/* PDF label */
-.preview-pdf {
-  font-size: 13.5px;
-  font-weight: 500;
-  color: var(--text-primary);
-  background: #f0f2f5;
-  padding: 8px 14px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  max-width: 220px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* ✕ Remove button — clearly red, top-right of preview bar */
-.preview-remove-btn {
-  position: absolute;
-  top: 8px;
-  right: 12px;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: #e53935;
-  border: none;
-  color: #ffffff;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-  box-shadow: 0 2px 6px rgba(229,57,53,0.4);
-  transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
-  z-index: 11;
-}
-.preview-remove-btn:hover {
-  background: #c62828;
-  transform: scale(1.12);
-  box-shadow: 0 3px 10px rgba(229,57,53,0.55);
-}
-.preview-remove-btn:active {
-  transform: scale(0.95);
-}
-
-/* Attachment label */
-.file-label {
+/* Custom File Wrapper Custom Design */
+.custom-file-upload {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -606,40 +379,68 @@ audio { width: 220px; }
   height: 40px;
   border-radius: 50%;
   cursor: pointer;
-  font-size: 19px;
-  color: var(--text-secondary);
-  flex-shrink: 0;
-  transition: background var(--transition), color var(--transition);
+  background: transparent;
+  transition: background var(--transition);
 }
-.file-label:hover {
-  background: #e2e5e9;
-  color: var(--accent);
+.custom-file-upload:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+.custom-file-upload svg, .custom-file-upload::before {
+  content: "📎";
+  font-size: 20px;
+  color: var(--text-secondary);
 }
 
-/* Send button — inside the inner flex div */
-.input-area > div > button {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
+/* Completely hides the raw ugly file inputs */
+.input-area input[type="file"] {
+  display: none !important;
+}
+
+/* Input Messaging Bar Field */
+.input-area input[type="text"] {
+  flex: 1;
+  padding: 10px 18px;
+  background: var(--bg-input-field);
+  border: none;
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 14.5px;
+  font-family: var(--font);
+  outline: none;
+}
+.input-area input[type="text"]::placeholder { color: var(--text-secondary); }
+
+/* Unified Send Buttons Layout Styling */
+.input-area button, .send-btn {
   background: var(--accent);
   border: none;
-  color: #fff;
-  font-size: 16px;
+  color: #ffffff !important;
+  font-family: var(--font);
+  font-size: 14.5px;
+  font-weight: 500;
+  padding: 10px 20px;
+  border-radius: 8px;
   cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--transition);
+}
+.input-area button:hover, .send-btn:hover {
+  background: var(--accent-hover);
+}
+
+/* ── COMPONENT FILE PREVIEW ROW ── */
+.file-preview {
   display: flex;
   align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  transition: background var(--transition), transform var(--transition);
+  gap: 12px;
+  padding: 10px 16px;
+  background: #ffffff;
+  border-top: 1px solid var(--border);
+  position: relative;
 }
-.input-area > div > button:hover {
-  background: var(--accent-hover);
-  transform: scale(1.06);
-}
-.input-area > div > button:active { transform: scale(0.94); }
 
 /* ═══════════════════════════════════════════════════
-   EMPTY STATE
+   EMPTY STATE & OVERLAYS
    ═══════════════════════════════════════════════════ */
 
 .empty-state {
@@ -652,64 +453,21 @@ audio { width: 220px; }
   color: var(--text-secondary);
   font-size: 14px;
   z-index: 1;
-  position: relative;
   text-align: center;
-  padding: 24px;
 }
 .empty-state::before {
   content: '💬';
-  font-size: 60px;
-  margin-bottom: 6px;
-  filter: grayscale(0.2);
+  font-size: 50px;
+  margin-bottom: 4px;
 }
 
 /* ═══════════════════════════════════════════════════
-   FULLSCREEN IMAGE OVERLAY
+   RESPONSIVE LAYOUTS
    ═══════════════════════════════════════════════════ */
 
-.fullscreen-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.9);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  cursor: zoom-out;
-  backdrop-filter: blur(6px);
-  animation: fadeIn 0.18s ease;
-}
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
-.fullscreen-image {
-  max-width: 90vw;
-  max-height: 90vh;
-  object-fit: contain;
-  border-radius: 8px;
-  box-shadow: 0 10px 50px rgba(0,0,0,0.6);
-  animation: scaleIn 0.18s ease;
-}
-@keyframes scaleIn {
-  from { transform: scale(0.93); }
-  to   { transform: scale(1); }
-}
-
-/* ═══════════════════════════════════════════════════
-   RESPONSIVE
-   ═══════════════════════════════════════════════════ */
-
-@media (max-width: 700px) {
+@media (max-width: 768px) {
   .results {
-    width: 100vw;
-    max-width: 100vw;
-    position: absolute;
-    z-index: 100;
-    height: 100vh;
+    width: 35%;
+    min-width: 280px;
   }
-  .chat-window { width: 100vw; }
-  .message-bubble { max-width: 80%; }
-  .messages-area { padding: 10px 4%; }
 }
