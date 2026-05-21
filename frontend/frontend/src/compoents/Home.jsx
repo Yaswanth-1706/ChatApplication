@@ -56,8 +56,7 @@ const Home = () => {
   // FETCH USERS
   const fetchUsers = async () => {
     try {
-      const res = await axios.get(
-        `https://chatapplication-backend-v90l.onrender.com/user/search?search=${searchTerm || "a"}`,
+      const res = await axios.get(  `https://chatapplication-backend-v90l.onrender.com/user/search?search=${searchTerm || "a"}`,
         { headers: { Authorization: `Bearer ${token}` } }
       )
       setUserList(res.data.filter((u) => String(u._id) !== String(currentUserId)))

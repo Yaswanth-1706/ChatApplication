@@ -6,6 +6,5 @@ const router=express.Router()
 router.post("/send/:id",jwtMiddleware.verifyToken,imagemiddleware.single("file"),controller.sendMessage)
 router.get("/:id",jwtMiddleware.verifyToken,controller.getMessages)
 router.delete("/delete/:id",jwtMiddleware.verifyToken,controller.deleteChat)
-router.delete(
-  "/singleDelete/:messageId",jwtMiddleware.verifyToken,controller.singleDeleteMessage)
+router.delete( "/singleDelete/:messageId",jwtMiddleware.verifyToken,controller.singleDeleteMessage)
 module.exports=router
