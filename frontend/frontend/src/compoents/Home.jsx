@@ -180,24 +180,28 @@ const Home = () => {
             className="searchProfile"
             onClick={goToMyProfile}
           />
-          <p>{location.state.name}</p>
-          <button onClick={logout}>Logout</button>
+          <p className="profile-name">{location.state.name}</p>
+          <button className="logout-button" onClick={logout}>Logout</button>
         </div>
 
         <input
+          className="search-box"
           placeholder="Search User"
           onChange={(e) => setSearchTerm(e.target.value)}
         />
 
-        <div>
+        <div className="user-list">
           {userList.map((user) => (
-            <div key={user._id} onClick={() => setSelectedChat(user)}>
+            <div className="user-card" key={user._id} onClick={() => setSelectedChat(user)}>
               <img
+                className="user-avatar"
                 src={user.profilepic}
                 onClick={(e) => goToUserProfile(user, e)}
               />
-              <h3>{user.name}</h3>
-              <p>{onlineUsers.includes(user._id) ? "Online" : "Offline"}</p>
+              <div className="user-meta">
+                <h3>{user.name}</h3>
+                <p>{onlineUsers.includes(user._id) ? "Online" : "Offline"}</p>
+              </div>
             </div>
           ))}
         </div>
@@ -208,27 +212,31 @@ const Home = () => {
 
         {selectedChat ? (
           <>
-            <header>
+            <header className="chat-header">
               <img
                 src={selectedChat.profilepic}
                 onClick={(e) => goToUserProfile(selectedChat, e)}
               />
               <h2>{selectedChat.name}</h2>
-              <button onClick={deleteChat}>Delete Chat</button>
+              <button className="delete-chat-button" onClick={deleteChat}>Delete Chat</button>
             </header>
 
             {/* MESSAGES */}
             <div className="messages-area">
               {chatMessages.map((msg) => (
-                <div key={msg._id}>
+                <div
+                  key={msg._id}
+                  className={`message-bubble ${String(msg.senderId) === String(currentUserId) ? "sent" : "received"}`}
+                >
 
-                  <button onClick={() => singleDelete(msg._id)}>🗑</button>
+                  <button className="delete-message-button" onClick={() => singleDelete(msg._id)}>🗑</button>
 
                   {msg.message && <p>{msg.message}</p>}
 
                   {/* IMAGE */}
                   {msg.file && msg.fileType?.startsWith("image") && (
                     <img
+                      className="message-media"
                       src={msg.file}
                       onClick={() => setFullscreenImage(msg.file)}
                     />
@@ -236,19 +244,19 @@ const Home = () => {
 
                   {/* VIDEO */}
                   {msg.file && msg.fileType?.startsWith("video") && (
-                    <video controls>
+                    <video className="message-media" controls>
                       <source src={msg.file} type={msg.fileType} />
                     </video>
                   )}
 
                   {/* AUDIO */}
                   {msg.file && msg.fileType?.startsWith("audio") && (
-                    <audio controls src={msg.file} />
+                    <audio className="message-audio" controls src={msg.file} />
                   )}
 
                   {/* PDF */}
                   {msg.file && msg.fileType === "application/pdf" && (
-                    <a href={msg.file} target="_blank">
+                    <a className="message-link" href={msg.file} target="_blank" rel="noreferrer">
                       Open PDF
                     </a>
                   )}
@@ -259,21 +267,23 @@ const Home = () => {
             </div>
 
             {/* INPUT */}
-            <div>
+            <div className="input-area">
               {preview && (
-                <div>
-                  <button onClick={clearFileSelection}>X</button>
-                  <img src={preview} />
+                <div className="preview-row">
+                  <button className="clear-preview-button" onClick={clearFileSelection}>X</button>
+                  <img className="preview-image" src={preview} />
                 </div>
               )}
 
               <input
+                className="message-input"
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && sendMessage()}
               />
 
               <input
+                className="file-input"
                 type="file"
                 ref={fileInputRef}
                 onChange={(e) => {
@@ -283,19 +293,19 @@ const Home = () => {
                 }}
               />
 
-              <button onClick={sendMessage}>Send</button>
+              <button className="send-button" onClick={sendMessage}>Send</button>
             </div>
           </>
         ) : (
-          <h2>Select chat</h2>
+          <h2 className="empty-state">Select chat</h2>
         )}
 
       </div>
 
       {/* FULLSCREEN */}
       {fullscreenImage && (
-        <div onClick={() => setFullscreenImage(null)}>
-          <img src={fullscreenImage} />
+        <div className="fullscreen-overlay" onClick={() => setFullscreenImage(null)}>
+          <img src={fullscreenImage} alt="Fullscreen preview" />
         </div>
       )}
 
