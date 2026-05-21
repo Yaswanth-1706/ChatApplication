@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom"
 import "./Home.css"
 import axios from "axios"
 import { io } from "socket.io-client"
-import "./Input-area.css"
+//import "./Input-area.css"
 
 const Home = () => {
   const navigate = useNavigate()
