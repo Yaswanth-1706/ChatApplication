@@ -14,7 +14,7 @@ const Editprofile = () => {
         );
     }
 
-    const { img, name, email, gender } = location.state;
+    const { profilepic, name, email, gender } = location.state;
 
     return (
         <div className='profile-container'>
@@ -29,7 +29,7 @@ const Editprofile = () => {
 
                 <img
                     className='profile-image'
-                    src={`https://chatapplication-backend-v90l.onrender.com${img}`}
+                    src={`https://chatapplication-backend-v90l.onrender.com${profilepic}`}
                     alt={name}
                 />
 
