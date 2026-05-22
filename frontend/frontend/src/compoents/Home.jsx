@@ -3,11 +3,11 @@ import { useLocation, useNavigate } from "react-router-dom"
 import "./Home.css"
 import axios from "axios"
 import { io } from "socket.io-client"
-// import "./Input-area.css"
 
 const BASE_URL = "https://chatapplication-backend-v90l.onrender.com"
 
 const Home = () => {
+
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -23,6 +23,11 @@ const Home = () => {
   const [fullscreenImage, setFullscreenImage] = useState(null)
   const [currentUser, setCurrentUser] = useState(location.state || null)
 
+  // MOBILE VIEW
+  const [isMobile, setIsMobile] = useState(
+    window.innerWidth <= 720
+  )
+
   const messagesEndRef = useRef(null)
   const socket = useRef(null)
   const fileInputRef = useRef(null)
@@ -30,21 +35,36 @@ const Home = () => {
   const currentUserId = localStorage.getItem("userId")
   const token = localStorage.getItem("token")
 
+  // ================= MOBILE RESIZE =================
+  useEffect(() => {
+
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 720)
+    }
+
+    window.addEventListener("resize", handleResize)
+
+    return () => {
+      window.removeEventListener("resize", handleResize)
+    }
+
+  }, [])
+
   // ================= PROFILE PIC FIX =================
   const getProfilePic = (pic) => {
+
     if (!pic) return null
 
-    // CLOUDINARY URL
     if (pic.startsWith("http")) {
       return pic
     }
 
-    // LOCAL /uploads
     return `${BASE_URL}${pic}`
   }
 
   // ================= FALLBACK AVATAR =================
   const getAvatarFallback = (name) => {
+
     const initials = (name || "?")
       .split(" ")
       .map((w) => w[0])
@@ -67,8 +87,11 @@ const Home = () => {
 
   // ================= FETCH CURRENT USER =================
   useEffect(() => {
+
     const fetchMyProfile = async () => {
+
       try {
+
         const res = await axios.get(
           `${BASE_URL}/user/getUsers`,
           {
@@ -79,6 +102,7 @@ const Home = () => {
         )
 
         setCurrentUser(res.data)
+
       } catch (err) {
         console.log(err)
       }
@@ -87,17 +111,21 @@ const Home = () => {
     if (token) {
       fetchMyProfile()
     }
+
   }, [token])
 
   // ================= AUTO SCROLL =================
   useEffect(() => {
+
     messagesEndRef.current?.scrollIntoView({
       behavior: "smooth"
     })
+
   }, [chatMessages])
 
   // ================= SOCKET =================
   useEffect(() => {
+
     if (!currentUserId) return
 
     socket.current = io(BASE_URL, {
@@ -111,6 +139,7 @@ const Home = () => {
     })
 
     socket.current.on("newMessage", (msg) => {
+
       if (
         selectedChat &&
         (
@@ -118,6 +147,7 @@ const Home = () => {
           String(msg.receiverId) === String(selectedChat._id)
         )
       ) {
+
         setChatMessages((prev) => [...prev, msg])
       }
     })
@@ -125,11 +155,14 @@ const Home = () => {
     return () => {
       socket.current?.disconnect()
     }
+
   }, [currentUserId, selectedChat])
 
   // ================= FETCH USERS =================
   const fetchUsers = async () => {
+
     try {
+
       const res = await axios.get(
         `${BASE_URL}/user/search?search=${searchTerm || "a"}`,
         {
@@ -144,6 +177,7 @@ const Home = () => {
       )
 
       setUserList(filtered)
+
     } catch (err) {
       console.log(err)
     }
@@ -151,9 +185,11 @@ const Home = () => {
 
   // ================= FETCH CHAT =================
   const fetchChat = async () => {
+
     if (!selectedChat) return
 
     try {
+
       const res = await axios.get(
         `${BASE_URL}/message/${selectedChat._id}`,
         {
@@ -164,6 +200,7 @@ const Home = () => {
       )
 
       setChatMessages(res.data)
+
     } catch (err) {
       console.log(err)
     }
@@ -179,6 +216,7 @@ const Home = () => {
 
   // ================= CLEAR FILE =================
   const clearFileSelection = () => {
+
     setFile(null)
     setPreview(null)
 
@@ -189,11 +227,13 @@ const Home = () => {
 
   // ================= SEND MESSAGE =================
   const sendMessage = async () => {
+
     if ((!newMessage.trim() && !file) || !selectedChat) {
       return
     }
 
     try {
+
       const formData = new FormData()
 
       formData.append("message", newMessage)
@@ -213,6 +253,7 @@ const Home = () => {
       )
 
       if (res.data.success) {
+
         setChatMessages((prev) => [
           ...prev,
           res.data.newMessage
@@ -221,6 +262,7 @@ const Home = () => {
         setNewMessage("")
         clearFileSelection()
       }
+
     } catch (err) {
       console.log(err)
     }
@@ -228,6 +270,7 @@ const Home = () => {
 
   // ================= DELETE CHAT =================
   const deleteChat = async () => {
+
     if (!selectedChat) return
 
     const confirmDelete = window.confirm(
@@ -237,6 +280,7 @@ const Home = () => {
     if (!confirmDelete) return
 
     try {
+
       await axios.delete(
         `${BASE_URL}/message/delete/${selectedChat._id}`,
         {
@@ -248,6 +292,7 @@ const Home = () => {
 
       setSelectedChat(null)
       setChatMessages([])
+
     } catch (err) {
       console.log(err)
     }
@@ -255,7 +300,9 @@ const Home = () => {
 
   // ================= DELETE SINGLE MESSAGE =================
   const singleDelete = async (messageId) => {
+
     try {
+
       await axios.delete(
         `${BASE_URL}/message/singleDelete/${messageId}`,
         {
@@ -268,6 +315,7 @@ const Home = () => {
       setChatMessages((prev) =>
         prev.filter((msg) => msg._id !== messageId)
       )
+
     } catch (err) {
       console.log(err)
     }
@@ -275,12 +323,14 @@ const Home = () => {
 
   // ================= NAVIGATION =================
   const goToMyProfile = () => {
+
     navigate("/editProfile", {
       state: currentUser
     })
   }
 
   const goToUserProfile = (user, e) => {
+
     e.stopPropagation()
 
     navigate("/viewProfile", {
@@ -290,9 +340,15 @@ const Home = () => {
 
   // ================= LOGOUT =================
   const logout = () => {
+
     socket.current?.disconnect()
     localStorage.clear()
     navigate("/")
+  }
+
+  // ================= MOBILE BACK =================
+  const goBackToUsers = () => {
+    setSelectedChat(null)
   }
 
   if (!currentUser) {
@@ -301,10 +357,17 @@ const Home = () => {
 
   // ================= UI =================
   return (
+
     <div className="container">
 
       {/* ================= SIDEBAR ================= */}
-      <div className="results">
+      <div
+        className={`results ${
+          isMobile && selectedChat
+            ? "hide-mobile"
+            : ""
+        }`}
+      >
 
         {/* HEADER */}
         <div className="header-row">
@@ -333,6 +396,7 @@ const Home = () => {
           >
             Logout
           </button>
+
         </div>
 
         {/* SEARCH */}
@@ -374,6 +438,7 @@ const Home = () => {
               />
 
               <div className="user-meta">
+
                 <h3>{user.name}</h3>
 
                 <p>
@@ -381,6 +446,7 @@ const Home = () => {
                     ? "Online"
                     : "Offline"}
                 </p>
+
               </div>
 
             </div>
@@ -392,13 +458,29 @@ const Home = () => {
       </div>
 
       {/* ================= CHAT WINDOW ================= */}
-      <div className="chat-window">
+      <div
+        className={`chat-window ${
+          isMobile && !selectedChat
+            ? "hide-mobile"
+            : ""
+        }`}
+      >
 
         {selectedChat ? (
           <>
 
             {/* CHAT HEADER */}
             <div className="chat-header">
+
+              {/* MOBILE BACK BUTTON */}
+              {isMobile && (
+                <button
+                  className="mobile-back-button"
+                  onClick={goBackToUsers}
+                >
+                  ←
+                </button>
+              )}
 
               <img
                 className="chat-header-avatar"
@@ -415,6 +497,7 @@ const Home = () => {
               />
 
               <div className="chat-user-info">
+
                 <h2>{selectedChat.name}</h2>
 
                 <p>
@@ -422,6 +505,7 @@ const Home = () => {
                     ? "Online"
                     : "Offline"}
                 </p>
+
               </div>
 
               <button
@@ -531,6 +615,7 @@ const Home = () => {
                 />
 
                 <label className="file-label">
+
                   📎
 
                   <input
@@ -539,11 +624,14 @@ const Home = () => {
                     ref={fileInputRef}
                     hidden
                     onChange={(e) => {
+
                       const selectedFile =
                         e.target.files[0]
 
                       if (selectedFile) {
+
                         setFile(selectedFile)
+
                         setPreview(
                           URL.createObjectURL(selectedFile)
                         )
@@ -579,11 +667,13 @@ const Home = () => {
           className="fullscreen-overlay"
           onClick={() => setFullscreenImage(null)}
         >
+
           <img
             className="fullscreen-image"
             src={fullscreenImage}
             alt="fullscreen"
           />
+
         </div>
       )}
 
