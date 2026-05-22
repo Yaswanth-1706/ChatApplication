@@ -29,7 +29,7 @@ const Editprofile = () => {
 
                 <img
                     className='profile-image'
-                    src={img}
+                    src={`https://chatapplication-backend-v90l.onrender.com/${img}`}
                     alt={name}
                 />
 
