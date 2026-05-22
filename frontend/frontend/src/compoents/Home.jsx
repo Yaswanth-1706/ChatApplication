@@ -4,11 +4,13 @@ import "./Home.css"
 import axios from "axios"
 import { io } from "socket.io-client"
 
+const BASE_URL = "https://chatapplication-backend-v90l.onrender.com"
+
 const Home = () => {
   const navigate = useNavigate()
   const location = useLocation()
 
-  // STATES
+  // ================= STATES =================
   const [searchTerm, setSearchTerm] = useState("")
   const [userList, setUserList] = useState([])
   const [selectedChat, setSelectedChat] = useState(null)
@@ -27,112 +29,194 @@ const Home = () => {
   const currentUserId = localStorage.getItem("userId")
   const token = localStorage.getItem("token")
 
-  // ✅ ONE helper for ALL profile pics — handles every format
-  const BASE_URL = "https://chatapplication-backend-v90l.onrender.com"
+  // ================= PROFILE PIC FIX =================
   const getProfilePic = (pic) => {
     if (!pic) return null
-    if (pic.startsWith("http")) return pic       // already full URL
-    return `${BASE_URL}${pic}`                   // /uploads/... or /public/...
+
+    // CLOUDINARY URL
+    if (pic.startsWith("http")) {
+      return pic
+    }
+
+    // LOCAL /uploads
+    return `${BASE_URL}${pic}`
   }
 
-  // Inline SVG fallback — never breaks, no network needed
+  // ================= FALLBACK AVATAR =================
   const getAvatarFallback = (name) => {
     const initials = (name || "?")
-      .split(" ").map((w) => w[0]).join("").toUpperCase().slice(0, 2)
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
-      <rect width="128" height="128" rx="64" fill="#128C7E"/>
-      <text x="64" y="72" text-anchor="middle" font-size="48" font-family="Arial" fill="#fff">${initials}</text>
-    </svg>`
+      .split(" ")
+      .map((w) => w[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2)
+
+    const svg = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120">
+        <rect width="100%" height="100%" fill="#128C7E"/>
+        <text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle"
+          font-size="42" fill="white" font-family="Arial">
+          ${initials}
+        </text>
+      </svg>
+    `
+
     return `data:image/svg+xml;base64,${btoa(svg)}`
   }
 
-  // Fetch fresh profile on mount using correct route
+  // ================= FETCH CURRENT USER =================
   useEffect(() => {
     const fetchMyProfile = async () => {
       try {
         const res = await axios.get(
           `${BASE_URL}/user/getUsers`,
-          { headers: { Authorization: `Bearer ${token}` } }
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
         )
-        // ✅ handle both {message: user} and direct user object
-        const userData = res.data?.message || res.data
-        if (userData && userData._id) setCurrentUser(userData)
+
+        setCurrentUser(res.data)
       } catch (err) {
-        console.log("Could not refresh profile, using cached data", err)
-        setCurrentUser(location.state)
+        console.log(err)
       }
     }
-    if (token) fetchMyProfile()
+
+    if (token) {
+      fetchMyProfile()
+    }
   }, [token])
 
-  // AUTO SCROLL
+  // ================= AUTO SCROLL =================
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+    messagesEndRef.current?.scrollIntoView({
+      behavior: "smooth"
+    })
   }, [chatMessages])
 
-  // SOCKET
+  // ================= SOCKET =================
   useEffect(() => {
     if (!currentUserId) return
-    socket.current = io(BASE_URL, { query: { userId: currentUserId } })
-    socket.current.on("getOnlineUsers", setOnlineUsers)
-    socket.current.on("newMessage", (msg) => {
-      setSelectedChat((prev) => {
-        if (prev && String(msg.senderId) === String(prev._id)) {
-          setChatMessages((old) => [...old, msg])
-        }
-        return prev
-      })
-    })
-    return () => socket.current?.disconnect()
-  }, [currentUserId])
 
-  // FETCH USERS
+    socket.current = io(BASE_URL, {
+      query: {
+        userId: currentUserId
+      }
+    })
+
+    socket.current.on("getOnlineUsers", (users) => {
+      setOnlineUsers(users)
+    })
+
+    socket.current.on("newMessage", (msg) => {
+      if (
+        selectedChat &&
+        (
+          String(msg.senderId) === String(selectedChat._id) ||
+          String(msg.receiverId) === String(selectedChat._id)
+        )
+      ) {
+        setChatMessages((prev) => [...prev, msg])
+      }
+    })
+
+    return () => {
+      socket.current?.disconnect()
+    }
+  }, [currentUserId, selectedChat])
+
+  // ================= FETCH USERS =================
   const fetchUsers = async () => {
     try {
       const res = await axios.get(
         `${BASE_URL}/user/search?search=${searchTerm || "a"}`,
-        { headers: { Authorization: `Bearer ${token}` } }
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
       )
-      setUserList(res.data.filter((u) => String(u._id) !== String(currentUserId)))
+
+      const filtered = res.data.filter(
+        (u) => String(u._id) !== String(currentUserId)
+      )
+
+      setUserList(filtered)
     } catch (err) {
       console.log(err)
     }
   }
 
-  // FETCH CHAT
+  // ================= FETCH CHAT =================
   const fetchChat = async () => {
     if (!selectedChat) return
+
     try {
       const res = await axios.get(
         `${BASE_URL}/message/${selectedChat._id}`,
-        { headers: { Authorization: `Bearer ${token}` } }
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
       )
+
       setChatMessages(res.data)
     } catch (err) {
       console.log(err)
     }
   }
 
+  useEffect(() => {
+    fetchUsers()
+  }, [searchTerm])
+
+  useEffect(() => {
+    fetchChat()
+  }, [selectedChat])
+
+  // ================= CLEAR FILE =================
   const clearFileSelection = () => {
     setFile(null)
     setPreview(null)
-    if (fileInputRef.current) fileInputRef.current.value = ""
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""
+    }
   }
 
-  // SEND MESSAGE
+  // ================= SEND MESSAGE =================
   const sendMessage = async () => {
-    if ((!newMessage.trim() && !file) || !selectedChat) return
+    if ((!newMessage.trim() && !file) || !selectedChat) {
+      return
+    }
+
     try {
       const formData = new FormData()
+
       formData.append("message", newMessage)
-      if (file) formData.append("file", file)
+
+      if (file) {
+        formData.append("file", file)
+      }
+
       const res = await axios.post(
         `${BASE_URL}/message/send/${selectedChat._id}`,
         formData,
-        { headers: { Authorization: `Bearer ${token}` } }
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
       )
+
       if (res.data.success) {
-        setChatMessages((prev) => [...prev, res.data.newMessage])
+        setChatMessages((prev) => [
+          ...prev,
+          res.data.newMessage
+        ])
+
         setNewMessage("")
         clearFileSelection()
       }
@@ -141,63 +225,94 @@ const Home = () => {
     }
   }
 
-  // DELETE CHAT
+  // ================= DELETE CHAT =================
   const deleteChat = async () => {
     if (!selectedChat) return
-    if (!window.confirm("Delete whole chat?")) return
+
+    const confirmDelete = window.confirm(
+      "Delete entire chat?"
+    )
+
+    if (!confirmDelete) return
+
     try {
       await axios.delete(
         `${BASE_URL}/message/delete/${selectedChat._id}`,
-        { headers: { Authorization: `Bearer ${token}` } }
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
       )
-      setChatMessages([])
+
       setSelectedChat(null)
+      setChatMessages([])
     } catch (err) {
       console.log(err)
     }
   }
 
-  // SINGLE DELETE
+  // ================= DELETE SINGLE MESSAGE =================
   const singleDelete = async (messageId) => {
     try {
       await axios.delete(
         `${BASE_URL}/message/singleDelete/${messageId}`,
-        { headers: { Authorization: `Bearer ${token}` } }
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
       )
-      setChatMessages((prev) => prev.filter((msg) => msg._id !== messageId))
+
+      setChatMessages((prev) =>
+        prev.filter((msg) => msg._id !== messageId)
+      )
     } catch (err) {
       console.log(err)
     }
   }
 
-  // NAVIGATION
-  const goToMyProfile = () => navigate("/editProfile", { state: currentUser })
-  const goToUserProfile = (user, e) => {
-    e?.stopPropagation()
-    navigate("/viewProfile", { state: user })
+  // ================= NAVIGATION =================
+  const goToMyProfile = () => {
+    navigate("/editProfile", {
+      state: currentUser
+    })
   }
 
-  useEffect(() => { fetchUsers() }, [searchTerm])
-  useEffect(() => { fetchChat() }, [selectedChat])
+  const goToUserProfile = (user, e) => {
+    e.stopPropagation()
 
+    navigate("/viewProfile", {
+      state: user
+    })
+  }
+
+  // ================= LOGOUT =================
   const logout = () => {
     socket.current?.disconnect()
     localStorage.clear()
     navigate("/")
   }
 
-  if (!location.state) return <h1>No User Data Found</h1>
+  if (!currentUser) {
+    return <h1>No User Data Found</h1>
+  }
 
+  // ================= UI =================
   return (
     <div className="container">
 
-      {/* SIDEBAR */}
+      {/* ================= SIDEBAR ================= */}
       <div className="results">
 
+        {/* HEADER */}
         <div className="header-row">
-          {/* ✅ FIXED: now uses getProfilePic() like every other image */}
+
           <img
-            src={getProfilePic(currentUser?.profilepic) || getAvatarFallback(currentUser?.name)}
+            src={
+              getProfilePic(currentUser?.profilepic) ||
+              getAvatarFallback(currentUser?.name)
+            }
             className="searchProfile"
             alt={currentUser?.name}
             onError={(e) => {
@@ -206,22 +321,49 @@ const Home = () => {
             }}
             onClick={goToMyProfile}
           />
-          <p className="profile-name">{currentUser?.name}</p>
-          <button className="logout-button" onClick={logout}>Logout</button>
+
+          <p className="profile-name">
+            {currentUser?.name}
+          </p>
+
+          <button
+            className="logout-button"
+            onClick={logout}
+          >
+            Logout
+          </button>
         </div>
 
+        {/* SEARCH */}
         <input
           className="search-box"
+          type="text"
           placeholder="Search User"
+          value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
 
+        {/* USERS */}
         <div className="user-list">
+
           {userList.map((user) => (
-            <div className="user-card" key={user._id} onClick={() => setSelectedChat(user)}>
+
+            <div
+              className={`user-card ${
+                selectedChat?._id === user._id
+                  ? "active-user"
+                  : ""
+              }`}
+              key={user._id}
+              onClick={() => setSelectedChat(user)}
+            >
+
               <img
                 className="user-avatar"
-                src={getProfilePic(user.profilepic) || getAvatarFallback(user.name)}
+                src={
+                  getProfilePic(user.profilepic) ||
+                  getAvatarFallback(user.name)
+                }
                 alt={user.name}
                 onError={(e) => {
                   e.target.onerror = null
@@ -229,23 +371,40 @@ const Home = () => {
                 }}
                 onClick={(e) => goToUserProfile(user, e)}
               />
+
               <div className="user-meta">
                 <h3>{user.name}</h3>
-                <p>{onlineUsers.includes(user._id) ? "Online" : "Offline"}</p>
+
+                <p>
+                  {onlineUsers.includes(user._id)
+                    ? "Online"
+                    : "Offline"}
+                </p>
               </div>
+
             </div>
+
           ))}
+
         </div>
+
       </div>
 
-      {/* CHAT */}
+      {/* ================= CHAT WINDOW ================= */}
       <div className="chat-window">
+
         {selectedChat ? (
           <>
-            <header className="chat-header">
+
+            {/* CHAT HEADER */}
+            <div className="chat-header">
+
               <img
                 className="chat-header-avatar"
-                src={getProfilePic(selectedChat.profilepic) || getAvatarFallback(selectedChat.name)}
+                src={
+                  getProfilePic(selectedChat.profilepic) ||
+                  getAvatarFallback(selectedChat.name)
+                }
                 alt={selectedChat.name}
                 onError={(e) => {
                   e.target.onerror = null
@@ -253,76 +412,177 @@ const Home = () => {
                 }}
                 onClick={(e) => goToUserProfile(selectedChat, e)}
               />
-              <h2>{selectedChat.name}</h2>
-              <button className="delete-chat-button" onClick={deleteChat}>Delete Chat</button>
-            </header>
+
+              <div className="chat-user-info">
+                <h2>{selectedChat.name}</h2>
+
+                <p>
+                  {onlineUsers.includes(selectedChat._id)
+                    ? "Online"
+                    : "Offline"}
+                </p>
+              </div>
+
+              <button
+                className="delete-chat-button"
+                onClick={deleteChat}
+              >
+                Delete
+              </button>
+
+            </div>
 
             {/* MESSAGES */}
             <div className="messages-area">
+
               {chatMessages.map((msg) => (
+
                 <div
                   key={msg._id}
-                  className={`message-bubble ${String(msg.senderId) === String(currentUserId) ? "sent" : "received"}`}
+                  className={`message-bubble ${
+                    String(msg.senderId) === String(currentUserId)
+                      ? "sent"
+                      : "received"
+                  }`}
                 >
-                  <button className="delete-message-button" onClick={() => singleDelete(msg._id)}>🗑</button>
-                  {msg.message && <p>{msg.message}</p>}
 
-                  {msg.file && msg.fileType?.startsWith("image") && (
-                    <img className="message-media" src={msg.file} alt="attachment"
-                      onClick={() => setFullscreenImage(msg.file)} />
+                  <button
+                    className="delete-message-button"
+                    onClick={() => singleDelete(msg._id)}
+                  >
+                    🗑
+                  </button>
+
+                  {msg.message && (
+                    <p>{msg.message}</p>
                   )}
-                  {msg.file && msg.fileType?.startsWith("video") && (
-                    <video className="message-media" controls>
-                      <source src={msg.file} type={msg.fileType} />
-                    </video>
-                  )}
-                  {msg.file && msg.fileType?.startsWith("audio") && (
-                    <audio className="message-audio" controls src={msg.file} />
-                  )}
-                  {msg.file && msg.fileType === "application/pdf" && (
-                    <a className="message-link" href={msg.file} target="_blank" rel="noreferrer">Open PDF</a>
-                  )}
+
+                  {/* IMAGE */}
+                  {msg.file &&
+                    msg.fileType?.startsWith("image") && (
+                      <img
+                        className="message-media"
+                        src={msg.file}
+                        alt="attachment"
+                        onClick={() =>
+                          setFullscreenImage(msg.file)
+                        }
+                      />
+                    )}
+
+                  {/* PDF */}
+                  {msg.file &&
+                    msg.fileType === "application/pdf" && (
+                      <a
+                        className="message-link"
+                        href={msg.file}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Open PDF
+                      </a>
+                    )}
+
                 </div>
+
               ))}
+
               <div ref={messagesEndRef} />
+
             </div>
 
-            {/* INPUT */}
+            {/* INPUT AREA */}
             <div className="input-area">
+
+              {/* PREVIEW */}
               {preview && (
                 <div className="preview-row">
-                  <button className="clear-preview-button" onClick={clearFileSelection}>X</button>
-                  <img className="preview-image" src={preview} alt="preview" />
+
+                  <button
+                    className="clear-preview-button"
+                    onClick={clearFileSelection}
+                  >
+                    ✕
+                  </button>
+
+                  <img
+                    className="preview-image"
+                    src={preview}
+                    alt="preview"
+                  />
+
                 </div>
               )}
-              <input
-                className="message-input"
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-              />
-              <input
-                className="file-input"
-                type="file"
-                ref={fileInputRef}
-                onChange={(e) => {
-                  const f = e.target.files[0]
-                  setFile(f)
-                  setPreview(URL.createObjectURL(f))
-                }}
-              />
-              <button className="send-button" onClick={sendMessage}>Send</button>
+
+              <div className="input-wrapper">
+
+                <input
+                  className="message-input"
+                  type="text"
+                  placeholder="Type a message"
+                  value={newMessage}
+                  onChange={(e) =>
+                    setNewMessage(e.target.value)
+                  }
+                  onKeyDown={(e) =>
+                    e.key === "Enter" && sendMessage()
+                  }
+                />
+
+                <label className="file-label">
+                  📎
+
+                  <input
+                    className="file-input"
+                    type="file"
+                    ref={fileInputRef}
+                    hidden
+                    onChange={(e) => {
+                      const selectedFile =
+                        e.target.files[0]
+
+                      if (selectedFile) {
+                        setFile(selectedFile)
+                        setPreview(
+                          URL.createObjectURL(selectedFile)
+                        )
+                      }
+                    }}
+                  />
+
+                </label>
+
+                <button
+                  className="send-button"
+                  onClick={sendMessage}
+                >
+                  Send
+                </button>
+
+              </div>
+
             </div>
+
           </>
         ) : (
-          <h2 className="empty-state">Select chat</h2>
+          <div className="empty-state">
+            <h2>Select a chat</h2>
+          </div>
         )}
+
       </div>
 
-      {/* FULLSCREEN */}
+      {/* ================= FULLSCREEN IMAGE ================= */}
       {fullscreenImage && (
-        <div className="fullscreen-overlay" onClick={() => setFullscreenImage(null)}>
-          <img src={fullscreenImage} alt="Fullscreen preview" />
+        <div
+          className="fullscreen-overlay"
+          onClick={() => setFullscreenImage(null)}
+        >
+          <img
+            className="fullscreen-image"
+            src={fullscreenImage}
+            alt="fullscreen"
+          />
         </div>
       )}
 
