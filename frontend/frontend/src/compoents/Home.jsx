@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from "react-router-dom"
 import "./Home.css"
 import axios from "axios"
 import { io } from "socket.io-client"
-//import "./Input-area.css"
 
 const Home = () => {
   const navigate = useNavigate()
@@ -26,6 +25,10 @@ const Home = () => {
 
   const currentUserId = localStorage.getItem("userId")
   const token = localStorage.getItem("token")
+
+  // FALLBACK AVATAR HELPER
+  const getAvatarFallback = (name) =>
+    `https://ui-avatars.com/api/?name=${encodeURIComponent(name || "User")}&background=128C7E&color=fff&size=128`
 
   // AUTO SCROLL
   useEffect(() => {
@@ -57,7 +60,8 @@ const Home = () => {
   // FETCH USERS
   const fetchUsers = async () => {
     try {
-      const res = await axios.get(  `https://chatapplication-backend-v90l.onrender.com/user/search?search=${searchTerm || "a"}`,
+      const res = await axios.get(
+        `https://chatapplication-backend-v90l.onrender.com/user/search?search=${searchTerm || "a"}`,
         { headers: { Authorization: `Bearer ${token}` } }
       )
       setUserList(res.data.filter((u) => String(u._id) !== String(currentUserId)))
@@ -175,9 +179,15 @@ const Home = () => {
       <div className="results">
 
         <div className="header-row">
+          {/* ✅ FIX: added onError fallback for current user profile pic */}
           <img
-            src={location.state.profilepic}
+            src={location.state.profilepic || getAvatarFallback(location.state.name)}
             className="searchProfile"
+            alt={location.state.name}
+            onError={(e) => {
+              e.target.onerror = null
+              e.target.src = getAvatarFallback(location.state.name)
+            }}
             onClick={goToMyProfile}
           />
           <p className="profile-name">{location.state.name}</p>
@@ -193,9 +203,15 @@ const Home = () => {
         <div className="user-list">
           {userList.map((user) => (
             <div className="user-card" key={user._id} onClick={() => setSelectedChat(user)}>
+              {/* ✅ FIX: added onError fallback for user list avatars */}
               <img
                 className="user-avatar"
-                src={user.profilepic}
+                src={user.profilepic || getAvatarFallback(user.name)}
+                alt={user.name}
+                onError={(e) => {
+                  e.target.onerror = null
+                  e.target.src = getAvatarFallback(user.name)
+                }}
                 onClick={(e) => goToUserProfile(user, e)}
               />
               <div className="user-meta">
@@ -213,8 +229,15 @@ const Home = () => {
         {selectedChat ? (
           <>
             <header className="chat-header">
+              {/* ✅ FIX: added className, alt, and onError fallback for chat header avatar */}
               <img
-                src={selectedChat.profilepic}
+                className="chat-header-avatar"
+                src={selectedChat.profilepic || getAvatarFallback(selectedChat.name)}
+                alt={selectedChat.name}
+                onError={(e) => {
+                  e.target.onerror = null
+                  e.target.src = getAvatarFallback(selectedChat.name)
+                }}
                 onClick={(e) => goToUserProfile(selectedChat, e)}
               />
               <h2>{selectedChat.name}</h2>
@@ -238,6 +261,7 @@ const Home = () => {
                     <img
                       className="message-media"
                       src={msg.file}
+                      alt="attachment"
                       onClick={() => setFullscreenImage(msg.file)}
                     />
                   )}
@@ -271,7 +295,7 @@ const Home = () => {
               {preview && (
                 <div className="preview-row">
                   <button className="clear-preview-button" onClick={clearFileSelection}>X</button>
-                  <img className="preview-image" src={preview} />
+                  <img className="preview-image" src={preview} alt="preview" />
                 </div>
               )}
 
