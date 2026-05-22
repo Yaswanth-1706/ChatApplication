@@ -222,7 +222,7 @@ const Home = () => {
         <div className="header-row">
           {/* ✅ FIX: uses currentUser state (fetched fresh) instead of location.state */}
           <img
-            src={getProfilePic(currentUser?.profilepic) || getAvatarFallback(currentUser?.name)}
+            src={currentUser.profilepic?`https://chatapplication-backend-v90l.onrender.com${profilepic}`:null|| getAvatarFallback(currentUser?.name)}
             className="searchProfile"
             alt={currentUser?.name}
             onError={(e) => {
