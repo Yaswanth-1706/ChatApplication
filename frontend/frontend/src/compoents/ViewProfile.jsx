@@ -33,7 +33,7 @@ const ViewProfile = () => {
         {/* PROFILE IMAGE */}
         <img
           className="profile-image"
-          src={`https://chatapplication-backend-v90l.onrender.com/${profilepic}`}
+          src={`https://chatapplication-backend-v90l.onrender.com${profilepic}`}
           alt={name}
         />
 
