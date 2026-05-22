@@ -12,6 +12,7 @@ const Home = () => {
   const location = useLocation()
 
   // ================= STATES =================
+
   const [searchTerm, setSearchTerm] = useState("")
   const [userList, setUserList] = useState([])
   const [selectedChat, setSelectedChat] = useState(null)
@@ -23,10 +24,16 @@ const Home = () => {
   const [fullscreenImage, setFullscreenImage] = useState(null)
   const [currentUser, setCurrentUser] = useState(location.state || null)
 
-  // MOBILE VIEW
+  // ================= MOBILE VIEW =================
+
   const [isMobile, setIsMobile] = useState(
     window.innerWidth <= 720
   )
+
+  const [showChatMobile, setShowChatMobile] =
+    useState(false)
+
+  // ================= REFS =================
 
   const messagesEndRef = useRef(null)
   const socket = useRef(null)
@@ -35,11 +42,19 @@ const Home = () => {
   const currentUserId = localStorage.getItem("userId")
   const token = localStorage.getItem("token")
 
-  // ================= MOBILE RESIZE =================
+  // ================= WINDOW RESIZE =================
+
   useEffect(() => {
 
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 720)
+
+      const mobile = window.innerWidth <= 720
+
+      setIsMobile(mobile)
+
+      if (!mobile) {
+        setShowChatMobile(false)
+      }
     }
 
     window.addEventListener("resize", handleResize)
@@ -50,7 +65,8 @@ const Home = () => {
 
   }, [])
 
-  // ================= PROFILE PIC FIX =================
+  // ================= PROFILE PIC =================
+
   const getProfilePic = (pic) => {
 
     if (!pic) return null
@@ -63,6 +79,7 @@ const Home = () => {
   }
 
   // ================= FALLBACK AVATAR =================
+
   const getAvatarFallback = (name) => {
 
     const initials = (name || "?")
@@ -75,8 +92,15 @@ const Home = () => {
     const svg = `
       <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120">
         <rect width="100%" height="100%" fill="#128C7E"/>
-        <text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle"
-          font-size="42" fill="white" font-family="Arial">
+        <text
+          x="50%"
+          y="54%"
+          dominant-baseline="middle"
+          text-anchor="middle"
+          font-size="42"
+          fill="white"
+          font-family="Arial"
+        >
           ${initials}
         </text>
       </svg>
@@ -86,6 +110,7 @@ const Home = () => {
   }
 
   // ================= FETCH CURRENT USER =================
+
   useEffect(() => {
 
     const fetchMyProfile = async () => {
@@ -115,6 +140,7 @@ const Home = () => {
   }, [token])
 
   // ================= AUTO SCROLL =================
+
   useEffect(() => {
 
     messagesEndRef.current?.scrollIntoView({
@@ -124,6 +150,7 @@ const Home = () => {
   }, [chatMessages])
 
   // ================= SOCKET =================
+
   useEffect(() => {
 
     if (!currentUserId) return
@@ -159,6 +186,7 @@ const Home = () => {
   }, [currentUserId, selectedChat])
 
   // ================= FETCH USERS =================
+
   const fetchUsers = async () => {
 
     try {
@@ -184,6 +212,7 @@ const Home = () => {
   }
 
   // ================= FETCH CHAT =================
+
   const fetchChat = async () => {
 
     if (!selectedChat) return
@@ -214,7 +243,25 @@ const Home = () => {
     fetchChat()
   }, [selectedChat])
 
+  // ================= OPEN CHAT =================
+
+  const openChat = (user) => {
+
+    setSelectedChat(user)
+
+    if (isMobile) {
+      setShowChatMobile(true)
+    }
+  }
+
+  // ================= BACK TO USERS =================
+
+  const backToUsers = () => {
+    setShowChatMobile(false)
+  }
+
   // ================= CLEAR FILE =================
+
   const clearFileSelection = () => {
 
     setFile(null)
@@ -226,6 +273,7 @@ const Home = () => {
   }
 
   // ================= SEND MESSAGE =================
+
   const sendMessage = async () => {
 
     if ((!newMessage.trim() && !file) || !selectedChat) {
@@ -269,6 +317,7 @@ const Home = () => {
   }
 
   // ================= DELETE CHAT =================
+
   const deleteChat = async () => {
 
     if (!selectedChat) return
@@ -293,12 +342,17 @@ const Home = () => {
       setSelectedChat(null)
       setChatMessages([])
 
+      if (isMobile) {
+        setShowChatMobile(false)
+      }
+
     } catch (err) {
       console.log(err)
     }
   }
 
-  // ================= DELETE SINGLE MESSAGE =================
+  // ================= DELETE MESSAGE =================
+
   const singleDelete = async (messageId) => {
 
     try {
@@ -322,6 +376,7 @@ const Home = () => {
   }
 
   // ================= NAVIGATION =================
+
   const goToMyProfile = () => {
 
     navigate("/editProfile", {
@@ -339,16 +394,14 @@ const Home = () => {
   }
 
   // ================= LOGOUT =================
+
   const logout = () => {
 
     socket.current?.disconnect()
-    localStorage.clear()
-    navigate("/")
-  }
 
-  // ================= MOBILE BACK =================
-  const goBackToUsers = () => {
-    setSelectedChat(null)
+    localStorage.clear()
+
+    navigate("/")
   }
 
   if (!currentUser) {
@@ -356,20 +409,23 @@ const Home = () => {
   }
 
   // ================= UI =================
+
   return (
 
     <div className="container">
 
       {/* ================= SIDEBAR ================= */}
+
       <div
         className={`results ${
-          isMobile && selectedChat
-            ? "hide-mobile"
+          isMobile && showChatMobile
+            ? "mobile-hide"
             : ""
         }`}
       >
 
         {/* HEADER */}
+
         <div className="header-row">
 
           <img
@@ -386,7 +442,7 @@ const Home = () => {
             onClick={goToMyProfile}
           />
 
-          <p className="welcome-name">
+          <p className="profile-name">
             {currentUser?.name}
           </p>
 
@@ -400,15 +456,19 @@ const Home = () => {
         </div>
 
         {/* SEARCH */}
+
         <input
           className="search-box"
           type="text"
           placeholder="Search User"
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(e) =>
+            setSearchTerm(e.target.value)
+          }
         />
 
-        {/* USERS */}
+        {/* USER LIST */}
+
         <div className="user-list">
 
           {userList.map((user) => (
@@ -420,7 +480,7 @@ const Home = () => {
                   : ""
               }`}
               key={user._id}
-              onClick={() => setSelectedChat(user)}
+              onClick={() => openChat(user)}
             >
 
               <img
@@ -432,9 +492,12 @@ const Home = () => {
                 alt={user.name}
                 onError={(e) => {
                   e.target.onerror = null
-                  e.target.src = getAvatarFallback(user.name)
+                  e.target.src =
+                    getAvatarFallback(user.name)
                 }}
-                onClick={(e) => goToUserProfile(user, e)}
+                onClick={(e) =>
+                  goToUserProfile(user, e)
+                }
               />
 
               <div className="user-meta">
@@ -458,42 +521,62 @@ const Home = () => {
       </div>
 
       {/* ================= CHAT WINDOW ================= */}
+
       <div
         className={`chat-window ${
-          isMobile && !selectedChat
-            ? "hide-mobile"
+          isMobile
+            ? showChatMobile
+              ? "active"
+              : ""
             : ""
         }`}
       >
 
         {selectedChat ? (
+
           <>
 
             {/* CHAT HEADER */}
+
             <div className="chat-header">
 
               {/* MOBILE BACK BUTTON */}
+
               {isMobile && (
+
                 <button
                   className="mobile-back-button"
-                  onClick={goBackToUsers}
+                  onClick={backToUsers}
                 >
                   ←
                 </button>
+
               )}
 
               <img
                 className="chat-header-avatar"
                 src={
-                  getProfilePic(selectedChat.profilepic) ||
-                  getAvatarFallback(selectedChat.name)
+                  getProfilePic(
+                    selectedChat.profilepic
+                  ) ||
+                  getAvatarFallback(
+                    selectedChat.name
+                  )
                 }
                 alt={selectedChat.name}
                 onError={(e) => {
                   e.target.onerror = null
-                  e.target.src = getAvatarFallback(selectedChat.name)
+                  e.target.src =
+                    getAvatarFallback(
+                      selectedChat.name
+                    )
                 }}
-                onClick={(e) => goToUserProfile(selectedChat, e)}
+                onClick={(e) =>
+                  goToUserProfile(
+                    selectedChat,
+                    e
+                  )
+                }
               />
 
               <div className="chat-user-info">
@@ -501,7 +584,9 @@ const Home = () => {
                 <h2>{selectedChat.name}</h2>
 
                 <p>
-                  {onlineUsers.includes(selectedChat._id)
+                  {onlineUsers.includes(
+                    selectedChat._id
+                  )
                     ? "Online"
                     : "Offline"}
                 </p>
@@ -518,6 +603,7 @@ const Home = () => {
             </div>
 
             {/* MESSAGES */}
+
             <div className="messages-area">
 
               {chatMessages.map((msg) => (
@@ -525,7 +611,8 @@ const Home = () => {
                 <div
                   key={msg._id}
                   className={`message-bubble ${
-                    String(msg.senderId) === String(currentUserId)
+                    String(msg.senderId) ===
+                    String(currentUserId)
                       ? "sent"
                       : "received"
                   }`}
@@ -533,7 +620,9 @@ const Home = () => {
 
                   <button
                     className="delete-message-button"
-                    onClick={() => singleDelete(msg._id)}
+                    onClick={() =>
+                      singleDelete(msg._id)
+                    }
                   >
                     🗑
                   </button>
@@ -543,21 +632,31 @@ const Home = () => {
                   )}
 
                   {/* IMAGE */}
+
                   {msg.file &&
-                    msg.fileType?.startsWith("image") && (
+                    msg.fileType?.startsWith(
+                      "image"
+                    ) && (
+
                       <img
                         className="message-media"
                         src={msg.file}
                         alt="attachment"
                         onClick={() =>
-                          setFullscreenImage(msg.file)
+                          setFullscreenImage(
+                            msg.file
+                          )
                         }
                       />
+
                     )}
 
                   {/* PDF */}
+
                   {msg.file &&
-                    msg.fileType === "application/pdf" && (
+                    msg.fileType ===
+                      "application/pdf" && (
+
                       <a
                         className="message-link"
                         href={msg.file}
@@ -566,6 +665,7 @@ const Home = () => {
                       >
                         Open PDF
                       </a>
+
                     )}
 
                 </div>
@@ -577,10 +677,13 @@ const Home = () => {
             </div>
 
             {/* INPUT AREA */}
+
             <div className="input-area">
 
               {/* PREVIEW */}
+
               {preview && (
+
                 <div className="preview-row">
 
                   <button
@@ -597,6 +700,7 @@ const Home = () => {
                   />
 
                 </div>
+
               )}
 
               <div className="input-wrapper">
@@ -607,10 +711,13 @@ const Home = () => {
                   placeholder="Type a message"
                   value={newMessage}
                   onChange={(e) =>
-                    setNewMessage(e.target.value)
+                    setNewMessage(
+                      e.target.value
+                    )
                   }
                   onKeyDown={(e) =>
-                    e.key === "Enter" && sendMessage()
+                    e.key === "Enter" &&
+                    sendMessage()
                   }
                 />
 
@@ -633,7 +740,9 @@ const Home = () => {
                         setFile(selectedFile)
 
                         setPreview(
-                          URL.createObjectURL(selectedFile)
+                          URL.createObjectURL(
+                            selectedFile
+                          )
                         )
                       }
                     }}
@@ -653,19 +762,26 @@ const Home = () => {
             </div>
 
           </>
+
         ) : (
+
           <div className="empty-state">
             <h2>Select a chat</h2>
           </div>
+
         )}
 
       </div>
 
       {/* ================= FULLSCREEN IMAGE ================= */}
+
       {fullscreenImage && (
+
         <div
           className="fullscreen-overlay"
-          onClick={() => setFullscreenImage(null)}
+          onClick={() =>
+            setFullscreenImage(null)
+          }
         >
 
           <img
@@ -675,6 +791,7 @@ const Home = () => {
           />
 
         </div>
+
       )}
 
     </div>
