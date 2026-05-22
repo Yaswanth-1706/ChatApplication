@@ -92,6 +92,7 @@
   cursor: pointer;
   transition: border-color var(--transition);
 }
+
 .searchProfile:hover { 
   border-color: rgba(255,255,255,0.9); 
 }
@@ -118,12 +119,14 @@
   border-radius: var(--radius-pill);
   transition: color var(--transition), background var(--transition);
 }
+
 .logout-button:hover {
   color: #fff;
   background: rgba(255,255,255,0.18);
 }
 
 /* ── Search Input Field ── */
+
 .search-box {
   width: calc(100% - 24px);
   margin: 10px 12px;
@@ -136,27 +139,42 @@
   font-family: var(--font);
   outline: none;
   transition: background var(--transition), box-shadow var(--transition);
+
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='15' fill='%23667781' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E");
+
   background-repeat: no-repeat;
   background-position: 13px center;
 }
-.search-box::placeholder { color: var(--text-secondary); }
+
+.search-box::placeholder {
+  color: var(--text-secondary);
+}
+
 .search-box:focus {
   background-color: #fff;
   box-shadow: 0 0 0 2px rgba(0,128,105,0.22);
 }
 
 /* ── Users Scroller Wrapper ── */
+
 .user-list {
   flex: 1;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: #ddd transparent;
 }
-.user-list::-webkit-scrollbar { width: 4px; }
-.user-list::-webkit-scrollbar-thumb { background: #ddd; border-radius: 4px; }
+
+.user-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.user-list::-webkit-scrollbar-thumb {
+  background: #ddd;
+  border-radius: 4px;
+}
 
 /* ── Individual Contact Profile Cards ── */
+
 .user-card {
   display: flex;
   align-items: center;
@@ -166,7 +184,10 @@
   border-bottom: 1px solid var(--border);
   transition: background var(--transition);
 }
-.user-card:hover { background: var(--bg-card-hover); }
+
+.user-card:hover {
+  background: var(--bg-card-hover);
+}
 
 .user-avatar {
   width: 45px;
@@ -181,6 +202,7 @@
   flex: 1;
   min-width: 0;
 }
+
 .user-meta h3 {
   font-size: 15.5px;
   font-weight: 500;
@@ -190,6 +212,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
 .user-meta p {
   font-size: 13px;
   color: var(--text-secondary);
@@ -208,19 +231,23 @@
   overflow: hidden;
 }
 
-/* Chat Canvas Blueprint Tiled Wallpaper background */
+/* Chat background */
+
 .chat-window::before {
   content: '';
   position: absolute;
   inset: 0;
+
   background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5 L55 20 L55 40 L30 55 L5 40 L5 20 Z' fill='none' stroke='%23b2aca4' stroke-width='0.4'/%3E%3C/svg%3E");
+
   background-size: 60px 60px;
   opacity: 0.25;
   pointer-events: none;
   z-index: 0;
 }
 
-/* ── Top Contact Chat Header ── */
+/* ── Chat Header ── */
+
 .chat-header {
   display: flex;
   align-items: center;
@@ -265,12 +292,14 @@
   border-radius: var(--radius-pill);
   transition: all var(--transition);
 }
+
 .delete-chat-button:hover {
   background: var(--danger);
   border-color: var(--danger);
 }
 
-/* ── Core Message Streams Canvas ── */
+/* ── Messages ── */
+
 .messages-area {
   flex: 1;
   overflow-y: auto;
@@ -281,10 +310,6 @@
   position: relative;
   z-index: 1;
 }
-
-/* ═══════════════════════════════════════════════════
-   MESSAGE BUBBLES SCHEMES
-   ═══════════════════════════════════════════════════ */
 
 .message-bubble {
   position: relative;
@@ -300,7 +325,6 @@
   gap: 4px;
 }
 
-/* Host Sent Stream (Aligned Right side) */
 .message-bubble.sent {
   background: var(--bg-sent);
   color: var(--text-primary);
@@ -308,7 +332,6 @@
   border-bottom-right-radius: 2px;
 }
 
-/* Client Received Stream (Aligned Left side) */
 .message-bubble.received {
   background: var(--bg-received);
   color: var(--text-primary);
@@ -320,11 +343,10 @@
   margin: 0;
 }
 
-/* Inline Garbage Message Dropper Icon */
 .delete-message-button {
   position: absolute;
   top: 4px;
-  right: -28px; /* Shifts trash icon smoothly outside bubble canvas footprint */
+  right: -28px;
   background: transparent;
   border: none;
   font-size: 14px;
@@ -332,11 +354,11 @@
   opacity: 0;
   transition: opacity var(--transition);
 }
+
 .message-bubble:hover .delete-message-button {
   opacity: 1;
 }
 
-/* Shared Media Processing Layout nodes inside Message Stream bubbles */
 .message-media {
   max-width: 280px;
   max-height: 240px;
@@ -365,23 +387,160 @@
 }
 
 /* ═══════════════════════════════════════════════════
-   DYNAMIC COMPONENT SUB-INPUT ACTIONS BAR
+   UPDATED PREVIEW SECTION
    ═══════════════════════════════════════════════════ */
 
 .input-area {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 16px;
   background: var(--bg-input);
   border-top: 1px solid var(--border);
   z-index: 10;
-  position: relative;
+  flex-shrink: 0;
 }
 
-/* ═══════════════════════════════════════════════════ INPUT AREA ═══════════════════════════════════════════════════ */ .input-area { display: flex; flex-direction: column; /* stack preview above the row */ gap: 8px; padding: 10px 16px; background: var(--bg-input); border-top: 1px solid var(--border); z-index: 10; flex-shrink: 0; } /* Inner div row: input + 📎 + Send */ .input-area > div { display: flex; align-items: center; gap: 10px; } .input-area input[type="text"] { flex: 1; padding: 10px 16px; background: var(--bg-input-field); border: 1px solid var(--border); border-radius: var(--radius-pill); color: var(--text-primary); font-size: 14.5px; font-family: var(--font); outline: none; transition: border-color var(--transition), box-shadow var(--transition); } .input-area input[type="text"]::placeholder { color: var(--text-secondary); } .input-area input[type="text"]:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(0,128,105,0.15); } /* Image preview inside input-area (inline style in JSX, we enhance via class below) */ .input-area img[alt="preview"] { border: 2px solid var(--border); box-shadow: var(--shadow); align-self: flex-start; } /* PDF preview chip — shown when file?.type === "application/pdf" */ .pdf-preview-chip { display: inline-flex; align-items: center; gap: 7px; padding: 8px 14px; background: #ffffff; border: 1.5px solid var(--border); border-radius: 10px; font-size: 13px; font-weight: 500; color: var(--text-primary); max-width: 260px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; box-shadow: var(--shadow); align-self: flex-start; } /* ── FILE PREVIEW (above input bar) ───────────────── Shown when user picks a file before sending. JSX: <div className="file-preview"> ... </div> ─────────────────────────────────────────────────── */ .file-preview { display: flex; align-items: center; gap: 12px; padding: 10px 16px; background: #ffffff; border-top: 1px solid var(--border); z-index: 10; flex-shrink: 0; position: relative; animation: slideUp 0.18s ease; } @keyframes slideUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } } /* Image / video thumbnail */ .preview-thumb { width: 64px; height: 64px; object-fit: cover; border-radius: 8px; border: 2px solid var(--border); flex-shrink: 0; display: block; } /* Audio preview */ .preview-audio { flex: 1; height: 36px; } /* PDF label */ .preview-pdf { font-size: 13.5px; font-weight: 500; color: var(--text-primary); background: #f0f2f5; padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border); display: flex; align-items: center; gap: 6px; max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } /* ✕ Remove button — clearly red, top-right of preview bar */ .preview-remove-btn { position: absolute; top: 8px; right: 12px; width: 28px; height: 28px; border-radius: 50%; background: #e53935; border: none; color: #ffffff; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1; box-shadow: 0 2px 6px rgba(229,57,53,0.4); transition: background var(--transition), transform var(--transition), box-shadow var(--transition); z-index: 11; } .preview-remove-btn:hover { background: #c62828; transform: scale(1.12); box-shadow: 0 3px 10px rgba(229,57,53,0.55); } .preview-remove-btn:active { transform: scale(0.95); } /* Attachment label */ .file-label { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 19px; color: var(--text-secondary); flex-shrink: 0; transition: background var(--transition), color var(--transition); } .file-label:hover { background: #e2e5e9; color: var(--accent); } /* Send button — inside the inner flex div */ .input-area > div > button { width: 42px; height: 42px; border-radius: 50%; background: var(--accent); border: none; color: #fff; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background var(--transition), transform var(--transition); } .input-area > div > button:hover { background: var(--accent-hover); transform: scale(1.06); } .input-area > div > button:active { transform: scale(0.94); }
+/* preview container */
+
+.preview-row {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  padding: 6px;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  animation: slideUp 0.18s ease;
+}
+
+/* smaller image */
+
+.preview-image {
+  width: 90px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 10px;
+  display: block;
+}
+
+/* remove button */
+
+.clear-preview-button {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+
+  width: 24px;
+  height: 24px;
+
+  border: none;
+  border-radius: 50%;
+
+  background: #e53935;
+  color: #ffffff;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  box-shadow: 0 2px 8px rgba(229,57,53,0.4);
+
+  transition:
+    background var(--transition),
+    transform var(--transition);
+}
+
+.clear-preview-button:hover {
+  background: #c62828;
+  transform: scale(1.08);
+}
+
+.clear-preview-button:active {
+  transform: scale(0.95);
+}
+
+/* input row */
+
+.input-area > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.input-area input[type="text"] {
+  flex: 1;
+  padding: 10px 16px;
+  background: var(--bg-input-field);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  color: var(--text-primary);
+  font-size: 14.5px;
+  font-family: var(--font);
+  outline: none;
+}
+
+.input-area input[type="text"]:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(0,128,105,0.15);
+}
+
+/* send button */
+
+.input-area > div > button {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  transition:
+    background var(--transition),
+    transform var(--transition);
+}
+
+.input-area > div > button:hover {
+  background: var(--accent-hover);
+  transform: scale(1.06);
+}
+
+.input-area > div > button:active {
+  transform: scale(0.94);
+}
+
+/* animation */
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* ═══════════════════════════════════════════════════
-   EMPTY VIEWPORTS & GRAPHICAL FULLSCREEN OVERLAYS
+   EMPTY STATE
    ═══════════════════════════════════════════════════ */
 
 .empty-state {
@@ -394,6 +553,7 @@
   font-size: 16px;
   font-weight: 400;
 }
+
 .empty-state::before {
   content: '💬';
   font-size: 50px;
@@ -404,10 +564,13 @@
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.85);
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   z-index: 2000;
+
   cursor: zoom-out;
   backdrop-filter: blur(4px);
 }
@@ -420,8 +583,14 @@
   box-shadow: 0 4px 30px rgba(0,0,0,0.5);
 }
 
-/* ── Mobile Layout Support Adaptations ── */
+/* ── Mobile ── */
+
 @media (max-width: 720px) {
-  .results { width: 300px; }
-  .message-bubble { max-width: 80%; }
+  .results {
+    width: 300px;
+  }
+
+  .message-bubble {
+    max-width: 80%;
+  }
 }
