@@ -102,7 +102,7 @@ const Editprofile = () => {
 
                 {/* EDIT BUTTON */}
                 <button
-                    className='detail-item button'
+                    className='detail-item-button'
                     onClick={() =>
                         navigate("/updateProfile", {
                             state: location.state

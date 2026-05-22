@@ -157,7 +157,7 @@ body { font-family: var(--font); -webkit-font-smoothing: antialiased; }
   padding: 16px 18px;
 }
 
-.detail-item {
+.detail-item-button {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -167,7 +167,7 @@ body { font-family: var(--font); -webkit-font-smoothing: antialiased; }
   flex-wrap: wrap;
 }
 
-.detail-item span {
+.detail-item-button span {
   font-size: 0.78rem;
   font-weight: 700;
   color: var(--text-secondary);
@@ -176,7 +176,7 @@ body { font-family: var(--font); -webkit-font-smoothing: antialiased; }
 }
 
 /* ── EDIT PROFILE BUTTON ── */
-.detail-item button {
+.detail-item-button {
   font-family: var(--font);
   font-size: 0.82rem;
   font-weight: 700;
@@ -191,13 +191,13 @@ body { font-family: var(--font); -webkit-font-smoothing: antialiased; }
   transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
 }
 
-.detail-item button:hover {
-  background: var(--wa-green);
+.detail-item-button:hover {
+  background-color: var(--wa-green);
   transform: translateY(-1px);
   box-shadow: 0 4px 14px rgba(37,211,102,0.35);
 }
 
-.detail-item button:active {
+.detail-item-button:active {
   transform: translateY(0);
 }
 
