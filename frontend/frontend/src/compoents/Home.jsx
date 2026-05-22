@@ -322,7 +322,7 @@ const Home = () => {
             onClick={goToMyProfile}
           />
 
-          <p className="profile-name">
+          <p className="welcome-name">
             {currentUser?.name}
           </p>
 
