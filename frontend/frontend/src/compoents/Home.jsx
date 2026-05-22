@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react"
+\import React, { useState, useEffect, useRef } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import "./Home.css"
 import axios from "axios"
@@ -18,6 +18,8 @@ const Home = () => {
   const [preview, setPreview] = useState(null)
   const [onlineUsers, setOnlineUsers] = useState([])
   const [fullscreenImage, setFullscreenImage] = useState(null)
+  // ✅ FIX: local state for current user so profile pic updates immediately
+  const [currentUser, setCurrentUser] = useState(location.state || null)
 
   const messagesEndRef = useRef(null)
   const socket = useRef(null)
@@ -26,9 +28,48 @@ const Home = () => {
   const currentUserId = localStorage.getItem("userId")
   const token = localStorage.getItem("token")
 
-  // FALLBACK AVATAR HELPER
-  const getAvatarFallback = (name) =>
-    `https://ui-avatars.com/api/?name=${encodeURIComponent(name || "User")}&background=128C7E&color=fff&size=128`
+  // ✅ FIX: converts relative profilepic paths to full URLs
+  const BASE_URL = "https://chatapplication-backend-v90l.onrender.com"
+  const getProfilePic = (pic) => {
+    if (!pic) return null
+    if (pic.startsWith("http")) return pic      // already a full URL
+    return `${BASE_URL}${pic}`                  // e.g. /public/male.png → full URL
+  }
+
+  // FALLBACK AVATAR HELPER — uses inline SVG so it NEVER breaks (no network needed)
+  const getAvatarFallback = (name) => {
+    const initials = (name || "?")
+      .split(" ")
+      .map((w) => w[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2)
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+      <rect width="128" height="128" rx="64" fill="#128C7E"/>
+      <text x="64" y="72" text-anchor="middle" font-size="48" font-family="Arial" fill="#fff">${initials}</text>
+    </svg>`
+    return `data:image/svg+xml;base64,${btoa(svg)}`
+  }
+
+  // ✅ FIX: Fetch fresh profile from backend every time Home mounts or user returns
+  useEffect(() => {
+    const fetchMyProfile = async () => {
+      try {
+        const res = await axios.get(
+          `https://chatapplication-backend-v90l.onrender.com/user/${currentUserId}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        )
+        if (res.data) {
+          setCurrentUser(res.data)
+        }
+      } catch (err) {
+        // If API fails, fall back to location.state
+        console.log("Could not refresh profile, using cached data", err)
+        setCurrentUser(location.state)
+      }
+    }
+    if (currentUserId) fetchMyProfile()
+  }, [currentUserId])
 
   // AUTO SCROLL
   useEffect(() => {
@@ -148,7 +189,7 @@ const Home = () => {
   // NAVIGATION
   const goToMyProfile = () => {
     navigate("/editProfile", {
-      state: location.state
+      state: currentUser
     })
   }
 
@@ -179,18 +220,18 @@ const Home = () => {
       <div className="results">
 
         <div className="header-row">
-          {/* ✅ FIX: added onError fallback for current user profile pic */}
+          {/* ✅ FIX: uses currentUser state (fetched fresh) instead of location.state */}
           <img
-            src={location.state.profilepic || getAvatarFallback(location.state.name)}
+            src={getProfilePic(currentUser?.profilepic) || getAvatarFallback(currentUser?.name)}
             className="searchProfile"
-            alt={location.state.name}
+            alt={currentUser?.name}
             onError={(e) => {
               e.target.onerror = null
-              e.target.src = getAvatarFallback(location.state.name)
+              e.target.src = getAvatarFallback(currentUser?.name)
             }}
             onClick={goToMyProfile}
           />
-          <p className="profile-name">{location.state.name}</p>
+          <p className="profile-name">{currentUser?.name}</p>
           <button className="logout-button" onClick={logout}>Logout</button>
         </div>
 
@@ -203,10 +244,10 @@ const Home = () => {
         <div className="user-list">
           {userList.map((user) => (
             <div className="user-card" key={user._id} onClick={() => setSelectedChat(user)}>
-              {/* ✅ FIX: added onError fallback for user list avatars */}
+              {/* ✅ FIX: onError fallback for user list avatars */}
               <img
                 className="user-avatar"
-                src={user.profilepic || getAvatarFallback(user.name)}
+                src={getProfilePic(user.profilepic) || getAvatarFallback(user.name)}
                 alt={user.name}
                 onError={(e) => {
                   e.target.onerror = null
@@ -229,10 +270,10 @@ const Home = () => {
         {selectedChat ? (
           <>
             <header className="chat-header">
-              {/* ✅ FIX: added className, alt, and onError fallback for chat header avatar */}
+              {/* ✅ FIX: chat header avatar with className + onError fallback */}
               <img
                 className="chat-header-avatar"
-                src={selectedChat.profilepic || getAvatarFallback(selectedChat.name)}
+                src={getProfilePic(selectedChat.profilepic) || getAvatarFallback(selectedChat.name)}
                 alt={selectedChat.name}
                 onError={(e) => {
                   e.target.onerror = null
@@ -251,7 +292,6 @@ const Home = () => {
                   key={msg._id}
                   className={`message-bubble ${String(msg.senderId) === String(currentUserId) ? "sent" : "received"}`}
                 >
-
                   <button className="delete-message-button" onClick={() => singleDelete(msg._id)}>🗑</button>
 
                   {msg.message && <p>{msg.message}</p>}
@@ -284,7 +324,6 @@ const Home = () => {
                       Open PDF
                     </a>
                   )}
-
                 </div>
               ))}
               <div ref={messagesEndRef} />
@@ -323,7 +362,6 @@ const Home = () => {
         ) : (
           <h2 className="empty-state">Select chat</h2>
         )}
-
       </div>
 
       {/* FULLSCREEN */}
