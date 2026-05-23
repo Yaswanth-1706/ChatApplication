@@ -802,11 +802,10 @@ const Home = () => {
                       "application/pdf" && (
 
                       <a
-                        className="message-link"
-                        href={msg.file}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
+                       href={`${msg.file}#view=FitH`}
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       >
                         Open PDF
                       </a>
 
