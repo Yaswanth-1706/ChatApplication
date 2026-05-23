@@ -415,7 +415,7 @@ const Home = () => {
                   {/* ✅ PDF — fixed: removed #view=FitH which was breaking the link */}
                   {msg.file && msg.fileType === "application/pdf" && (
                     <a
-                      href={msg.file}
+                      href={`https://docs.google.com/viewer?url=${encodeURIComponent(msg.file)}&embedded=false`}
                       target="_blank"
                       rel="noopener noreferrer"
                       style={{
