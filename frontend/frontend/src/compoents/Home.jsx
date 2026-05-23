@@ -4,7 +4,8 @@ import "./Home.css"
 import axios from "axios"
 import { io } from "socket.io-client"
 
-const BASE_URL = "https://chatapplication-backend-v90l.onrender.com"
+const BASE_URL =
+  "https://chatapplication-backend-v90l.onrender.com"
 
 const Home = () => {
 
@@ -15,14 +16,20 @@ const Home = () => {
 
   const [searchTerm, setSearchTerm] = useState("")
   const [userList, setUserList] = useState([])
-  const [selectedChat, setSelectedChat] = useState(null)
-  const [chatMessages, setChatMessages] = useState([])
-  const [newMessage, setNewMessage] = useState("")
+  const [selectedChat, setSelectedChat] =
+    useState(null)
+  const [chatMessages, setChatMessages] =
+    useState([])
+  const [newMessage, setNewMessage] =
+    useState("")
   const [file, setFile] = useState(null)
   const [preview, setPreview] = useState(null)
-  const [onlineUsers, setOnlineUsers] = useState([])
-  const [fullscreenImage, setFullscreenImage] = useState(null)
-  const [currentUser, setCurrentUser] = useState(location.state || null)
+  const [onlineUsers, setOnlineUsers] =
+    useState([])
+  const [fullscreenImage, setFullscreenImage] =
+    useState(null)
+  const [currentUser, setCurrentUser] =
+    useState(location.state || null)
 
   // ================= MOBILE VIEW =================
 
@@ -39,7 +46,9 @@ const Home = () => {
   const socket = useRef(null)
   const fileInputRef = useRef(null)
 
-  const currentUserId = localStorage.getItem("userId")
+  const currentUserId =
+    localStorage.getItem("userId")
+
   const token = localStorage.getItem("token")
 
   // ================= WINDOW RESIZE =================
@@ -57,10 +66,16 @@ const Home = () => {
       }
     }
 
-    window.addEventListener("resize", handleResize)
+    window.addEventListener(
+      "resize",
+      handleResize
+    )
 
     return () => {
-      window.removeEventListener("resize", handleResize)
+      window.removeEventListener(
+        "resize",
+        handleResize
+      )
     }
 
   }, [])
@@ -161,23 +176,34 @@ const Home = () => {
       }
     })
 
-    socket.current.on("getOnlineUsers", (users) => {
-      setOnlineUsers(users)
-    })
-
-    socket.current.on("newMessage", (msg) => {
-
-      if (
-        selectedChat &&
-        (
-          String(msg.senderId) === String(selectedChat._id) ||
-          String(msg.receiverId) === String(selectedChat._id)
-        )
-      ) {
-
-        setChatMessages((prev) => [...prev, msg])
+    socket.current.on(
+      "getOnlineUsers",
+      (users) => {
+        setOnlineUsers(users)
       }
-    })
+    )
+
+    socket.current.on(
+      "newMessage",
+      (msg) => {
+
+        if (
+          selectedChat &&
+          (
+            String(msg.senderId) ===
+              String(selectedChat._id) ||
+            String(msg.receiverId) ===
+              String(selectedChat._id)
+          )
+        ) {
+
+          setChatMessages((prev) => [
+            ...prev,
+            msg
+          ])
+        }
+      }
+    )
 
     return () => {
       socket.current?.disconnect()
@@ -192,7 +218,9 @@ const Home = () => {
     try {
 
       const res = await axios.get(
-        `${BASE_URL}/user/search?search=${searchTerm || "a"}`,
+        `${BASE_URL}/user/search?search=${
+          searchTerm || "a"
+        }`,
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -201,7 +229,9 @@ const Home = () => {
       )
 
       const filtered = res.data.filter(
-        (u) => String(u._id) !== String(currentUserId)
+        (u) =>
+          String(u._id) !==
+          String(currentUserId)
       )
 
       setUserList(filtered)
@@ -276,7 +306,10 @@ const Home = () => {
 
   const sendMessage = async () => {
 
-    if ((!newMessage.trim() && !file) || !selectedChat) {
+    if (
+      (!newMessage.trim() && !file) ||
+      !selectedChat
+    ) {
       return
     }
 
@@ -284,7 +317,10 @@ const Home = () => {
 
       const formData = new FormData()
 
-      formData.append("message", newMessage)
+      formData.append(
+        "message",
+        newMessage
+      )
 
       if (file) {
         formData.append("file", file)
@@ -308,6 +344,7 @@ const Home = () => {
         ])
 
         setNewMessage("")
+
         clearFileSelection()
       }
 
@@ -322,9 +359,10 @@ const Home = () => {
 
     if (!selectedChat) return
 
-    const confirmDelete = window.confirm(
-      "Delete entire chat?"
-    )
+    const confirmDelete =
+      window.confirm(
+        "Delete entire chat?"
+      )
 
     if (!confirmDelete) return
 
@@ -351,13 +389,20 @@ const Home = () => {
     }
   }
 
-  // ================= DELETE MESSAGE =================
+  // ================= DELETE SINGLE MESSAGE =================
 
-  const singleDelete = async (messageId) => {
+  const singleDelete = async (
+    messageId
+  ) => {
 
     try {
 
-      await axios.delete(
+      console.log(
+        "Deleting message:",
+        messageId
+      )
+
+      const res = await axios.delete(
         `${BASE_URL}/message/singleDelete/${messageId}`,
         {
           headers: {
@@ -366,12 +411,20 @@ const Home = () => {
         }
       )
 
+      console.log(res.data)
+
       setChatMessages((prev) =>
-        prev.filter((msg) => msg._id !== messageId)
+        prev.filter(
+          (msg) =>
+            msg._id !== messageId
+        )
       )
 
     } catch (err) {
-      console.log(err)
+
+      console.log(
+        err.response?.data || err
+      )
     }
   }
 
@@ -384,7 +437,10 @@ const Home = () => {
     })
   }
 
-  const goToUserProfile = (user, e) => {
+  const goToUserProfile = (
+    user,
+    e
+  ) => {
 
     e.stopPropagation()
 
@@ -418,7 +474,8 @@ const Home = () => {
 
       <div
         className={`results ${
-          isMobile && showChatMobile
+          isMobile &&
+          showChatMobile
             ? "mobile-hide"
             : ""
         }`}
@@ -430,14 +487,21 @@ const Home = () => {
 
           <img
             src={
-              getProfilePic(currentUser?.profilepic) ||
-              getAvatarFallback(currentUser?.name)
+              getProfilePic(
+                currentUser?.profilepic
+              ) ||
+              getAvatarFallback(
+                currentUser?.name
+              )
             }
             className="searchProfile"
             alt={currentUser?.name}
             onError={(e) => {
               e.target.onerror = null
-              e.target.src = getAvatarFallback(currentUser?.name)
+              e.target.src =
+                getAvatarFallback(
+                  currentUser?.name
+                )
             }}
             onClick={goToMyProfile}
           />
@@ -463,7 +527,9 @@ const Home = () => {
           placeholder="Search User"
           value={searchTerm}
           onChange={(e) =>
-            setSearchTerm(e.target.value)
+            setSearchTerm(
+              e.target.value
+            )
           }
         />
 
@@ -475,28 +541,40 @@ const Home = () => {
 
             <div
               className={`user-card ${
-                selectedChat?._id === user._id
+                selectedChat?._id ===
+                user._id
                   ? "active-user"
                   : ""
               }`}
               key={user._id}
-              onClick={() => openChat(user)}
+              onClick={() =>
+                openChat(user)
+              }
             >
 
               <img
                 className="user-avatar"
                 src={
-                  getProfilePic(user.profilepic) ||
-                  getAvatarFallback(user.name)
+                  getProfilePic(
+                    user.profilepic
+                  ) ||
+                  getAvatarFallback(
+                    user.name
+                  )
                 }
                 alt={user.name}
                 onError={(e) => {
                   e.target.onerror = null
                   e.target.src =
-                    getAvatarFallback(user.name)
+                    getAvatarFallback(
+                      user.name
+                    )
                 }}
                 onClick={(e) =>
-                  goToUserProfile(user, e)
+                  goToUserProfile(
+                    user,
+                    e
+                  )
                 }
               />
 
@@ -505,7 +583,9 @@ const Home = () => {
                 <h3>{user.name}</h3>
 
                 <p>
-                  {onlineUsers.includes(user._id)
+                  {onlineUsers.includes(
+                    user._id
+                  )
                     ? "Online"
                     : "Offline"}
                 </p>
@@ -539,8 +619,6 @@ const Home = () => {
             {/* CHAT HEADER */}
 
             <div className="chat-header">
-
-              {/* MOBILE BACK BUTTON */}
 
               {isMobile && (
 
@@ -581,7 +659,9 @@ const Home = () => {
 
               <div className="chat-user-info">
 
-                <h2>{selectedChat.name}</h2>
+                <h2>
+                  {selectedChat.name}
+                </h2>
 
                 <p>
                   {onlineUsers.includes(
@@ -611,21 +691,36 @@ const Home = () => {
                 <div
                   key={msg._id}
                   className={`message-bubble ${
-                    String(msg.senderId) ===
+                    String(
+                      msg.senderId
+                    ) ===
                     String(currentUserId)
                       ? "sent"
                       : "received"
                   }`}
                 >
 
-                  <button
-                    className="delete-message-button"
-                    onClick={() =>
-                      singleDelete(msg._id)
-                    }
-                  >
-                    🗑
-                  </button>
+                  {/* DELETE BUTTON ONLY FOR SENDER */}
+
+                  {String(
+                    msg.senderId
+                  ) ===
+                    String(
+                      currentUserId
+                    ) && (
+
+                    <button
+                      className="delete-message-button"
+                      onClick={() =>
+                        singleDelete(
+                          msg._id
+                        )
+                      }
+                    >
+                      🗑
+                    </button>
+
+                  )}
 
                   {msg.message && (
                     <p>{msg.message}</p>
@@ -672,7 +767,9 @@ const Home = () => {
 
               ))}
 
-              <div ref={messagesEndRef} />
+              <div
+                ref={messagesEndRef}
+              />
 
             </div>
 
@@ -688,7 +785,9 @@ const Home = () => {
 
                   <button
                     className="clear-preview-button"
-                    onClick={clearFileSelection}
+                    onClick={
+                      clearFileSelection
+                    }
                   >
                     ✕
                   </button>
@@ -735,9 +834,13 @@ const Home = () => {
                       const selectedFile =
                         e.target.files[0]
 
-                      if (selectedFile) {
+                      if (
+                        selectedFile
+                      ) {
 
-                        setFile(selectedFile)
+                        setFile(
+                          selectedFile
+                        )
 
                         setPreview(
                           URL.createObjectURL(
@@ -766,7 +869,11 @@ const Home = () => {
         ) : (
 
           <div className="empty-state">
-            <h2>Select a chat</h2>
+
+            <h2>
+              Select a chat
+            </h2>
+
           </div>
 
         )}
