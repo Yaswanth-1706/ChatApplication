@@ -723,12 +723,14 @@ const Home = () => {
                     🗑
                   </button>
 
-                  {/* TEXT */}
-
-                  {msg.message && (
-                    <p>{msg.message}</p>
-                  )}
-
+                 {msg.file && msg.fileType?.startsWith("image") && (
+              <img
+              className="message-media"
+              src={msg.file}
+              alt="image"
+              onClick={() => setFullscreenImage(msg.file)}
+              />
+              )}
                   {/* IMAGE */}
 
                   {

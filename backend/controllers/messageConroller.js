@@ -27,14 +27,18 @@ exports.sendMessage = async (req, res) => {
     }
 
     // CLOUDINARY FILE HANDLING
-    let fileUrl = ""
-    let fileType = ""
+   let fileUrl = ""
+   let fileType = ""
 
-    if (req.file) {
-      fileUrl = req.file.path   // Cloudinary URL
-      fileType = req.file.mimetype
-    }
+  if (req.file) {
+  fileUrl = req.file.secure_url   // 🔥 MUST USE THIS
+  fileType = req.file.mimetype
 
+  // FIX PDF opening issue
+  if (fileType === "application/pdf") {
+    fileUrl = fileUrl.replace("/upload/", "/upload/fl_attachment/")
+  }
+  }
     // VALIDATION
     if (!message && !fileUrl) {
       return res.status(400).json({
