@@ -134,33 +134,39 @@ exports.deleteChat = async (req, res) => {
 }
 
 // ================= SINGLE MESSAGE DELETE =================
-exports.singleDeleteMessage = async (req, res) => {
-  try {
-    const { messageId } = req.params
-    const senderId = req.userId
+exports.singleDelete = async (req, res) => {
 
-    const message = await Message.findById(messageId)
+  try {
+
+    const { messageId } = req.params
+
+    const message =
+      await Message.findById(messageId)
 
     if (!message) {
-      return res.status(404).json({ message: "Message not found" })
+
+      return res.status(404).json({
+        success: false,
+        message: "Message not found"
+      })
     }
 
-    if (String(message.senderId) !== String(senderId)) {
-      return res.status(401).json({ message: "Unauthorized" })
-    }
-
-    await Chat.findByIdAndUpdate(message.chatId, {
-      $pull: { messages: messageId }
-    })
-
-    await Message.findByIdAndDelete(messageId)
+    await Message.findByIdAndDelete(
+      messageId
+    )
 
     res.status(200).json({
       success: true,
-      message: "Single message deleted"
+      message: "Message deleted"
     })
 
   } catch (err) {
-    res.status(500).json({ message: err.message })
+
+    console.log(err)
+
+    res.status(500).json({
+      success: false,
+      message: "Server Error"
+    })
   }
 }

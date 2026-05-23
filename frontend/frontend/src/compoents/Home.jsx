@@ -702,25 +702,14 @@ const Home = () => {
 
                   {/* DELETE BUTTON ONLY FOR SENDER */}
 
-                  {String(
-                    msg.senderId
-                  ) ===
-                    String(
-                      currentUserId
-                    ) && (
-
-                    <button
-                      className="delete-message-button"
-                      onClick={() =>
-                        singleDelete(
-                          msg._id
-                        )
-                      }
-                    >
-                      🗑
-                    </button>
-
-                  )}
+                 <button
+                 className="delete-message-button"
+                onClick={() =>
+                 singleDelete(msg._id)
+                 }
+                 >
+                 🗑
+                 </button>
 
                   {msg.message && (
                     <p>{msg.message}</p>

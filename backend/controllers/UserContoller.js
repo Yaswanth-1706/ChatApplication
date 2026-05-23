@@ -44,7 +44,7 @@ exports.userLogin=async(req,res)=>{
         const decodedPassword=await bcrypt.compare(password,User.password)
         if(!decodedPassword)
         {
-            return res.status(400).json({message:"credentials required"})
+            return res.status(400).json({message:"Incorrect password"})
         }
         const token=jwt.sign({userId:User._id,userPass:User.password},process.env.jwt_secret,{expiresIn:"1d"})
         return res.status(200).json({message:"login successful token generated",User,token})
