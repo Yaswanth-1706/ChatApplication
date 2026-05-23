@@ -373,20 +373,46 @@
   opacity: 1;
 }
 
+/* UPDATED FOR IMAGE VIDEO AUDIO */
+
 .message-media {
   max-width: 250px;
   max-height: 250px;
+
+  width: 100%;
 
   border-radius: 8px;
   margin-top: 6px;
 
   object-fit: cover;
+
+  background: black;
 }
 
+/* AUDIO PLAYER */
+
+audio {
+  width: 100%;
+  margin-top: 8px;
+}
+
+/* PDF */
+
 .message-link {
+  display: inline-block;
+
+  margin-top: 8px;
+
   color: var(--accent);
+
   text-decoration: none;
+
   font-size: 14px;
+  font-weight: 500;
+}
+
+.message-link:hover {
+  text-decoration: underline;
 }
 
 /* =========================================
@@ -476,6 +502,8 @@
   border: 1px solid var(--border);
 }
 
+/* UPDATED FOR VIDEO */
+
 .preview-image {
   width: 90px;
   height: 90px;
@@ -483,6 +511,16 @@
   border-radius: 10px;
 
   object-fit: cover;
+
+  background: black;
+}
+
+/* PDF PREVIEW */
+
+.pdf-preview {
+  padding: 10px 14px;
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .clear-preview-button {
@@ -559,8 +597,6 @@
     overflow: hidden;
   }
 
-  /* ================= SIDEBAR ================= */
-
   .results {
     position: absolute;
     inset: 0;
@@ -578,13 +614,9 @@
     border-right: none;
   }
 
-  /* HIDE USER LIST WHEN CHAT OPENS */
-
   .results.hide-sidebar {
     display: none;
   }
-
-  /* ================= CHAT WINDOW ================= */
 
   .chat-window {
     position: absolute;
@@ -604,8 +636,6 @@
     display: flex;
   }
 
-  /* ================= MOBILE HEADER ================= */
-
   .header-row {
     padding: 10px 12px;
   }
@@ -618,8 +648,6 @@
     font-size: 12px;
     padding: 5px 10px;
   }
-
-  /* ================= USER CARD ================= */
 
   .user-card {
     padding: 14px 12px;
@@ -634,8 +662,6 @@
     font-size: 15px;
   }
 
-  /* ================= CHAT HEADER ================= */
-
   .chat-header {
     padding: 0 10px;
     gap: 10px;
@@ -649,8 +675,6 @@
   .chat-user-info h2 {
     font-size: 15px;
   }
-
-  /* BACK BUTTON */
 
   .mobile-back-button {
     width: 34px;
@@ -672,8 +696,6 @@
     flex-shrink: 0;
   }
 
-  /* ================= MESSAGES ================= */
-
   .messages-area {
     padding: 14px 10px;
   }
@@ -687,8 +709,6 @@
     max-width: 220px;
     max-height: 220px;
   }
-
-  /* ================= INPUT AREA ================= */
 
   .input-area {
     padding: 8px 10px;
@@ -708,14 +728,10 @@
     font-size: 20px;
   }
 
-  /* ================= PREVIEW ================= */
-
   .preview-image {
     width: 70px;
     height: 70px;
   }
-
-  /* ================= EMPTY STATE ================= */
 
   .empty-state {
     display: none;

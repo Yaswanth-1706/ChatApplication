@@ -18,16 +18,23 @@ const Home = () => {
   const [userList, setUserList] = useState([])
   const [selectedChat, setSelectedChat] =
     useState(null)
+
   const [chatMessages, setChatMessages] =
     useState([])
+
   const [newMessage, setNewMessage] =
     useState("")
+
   const [file, setFile] = useState(null)
+
   const [preview, setPreview] = useState(null)
+
   const [onlineUsers, setOnlineUsers] =
     useState([])
+
   const [fullscreenImage, setFullscreenImage] =
     useState(null)
+
   const [currentUser, setCurrentUser] =
     useState(location.state || null)
 
@@ -43,13 +50,16 @@ const Home = () => {
   // ================= REFS =================
 
   const messagesEndRef = useRef(null)
+
   const socket = useRef(null)
+
   const fileInputRef = useRef(null)
 
   const currentUserId =
     localStorage.getItem("userId")
 
-  const token = localStorage.getItem("token")
+  const token =
+    localStorage.getItem("token")
 
   // ================= WINDOW RESIZE =================
 
@@ -57,7 +67,8 @@ const Home = () => {
 
     const handleResize = () => {
 
-      const mobile = window.innerWidth <= 720
+      const mobile =
+        window.innerWidth <= 720
 
       setIsMobile(mobile)
 
@@ -72,6 +83,7 @@ const Home = () => {
     )
 
     return () => {
+
       window.removeEventListener(
         "resize",
         handleResize
@@ -192,7 +204,8 @@ const Home = () => {
           (
             String(msg.senderId) ===
               String(selectedChat._id) ||
-            String(msg.receiverId) ===
+
+            String(msg.reciverId) ===
               String(selectedChat._id)
           )
         ) {
@@ -295,6 +308,7 @@ const Home = () => {
   const clearFileSelection = () => {
 
     setFile(null)
+
     setPreview(null)
 
     if (fileInputRef.current) {
@@ -378,6 +392,7 @@ const Home = () => {
       )
 
       setSelectedChat(null)
+
       setChatMessages([])
 
       if (isMobile) {
@@ -389,7 +404,7 @@ const Home = () => {
     }
   }
 
-  // ================= DELETE SINGLE MESSAGE =================
+  // ================= DELETE MESSAGE =================
 
   const singleDelete = async (
     messageId
@@ -397,12 +412,7 @@ const Home = () => {
 
     try {
 
-      console.log(
-        "Deleting message:",
-        messageId
-      )
-
-      const res = await axios.delete(
+      await axios.delete(
         `${BASE_URL}/message/singleDelete/${messageId}`,
         {
           headers: {
@@ -410,8 +420,6 @@ const Home = () => {
           }
         }
       )
-
-      console.log(res.data)
 
       setChatMessages((prev) =>
         prev.filter(
@@ -497,7 +505,9 @@ const Home = () => {
             className="searchProfile"
             alt={currentUser?.name}
             onError={(e) => {
+
               e.target.onerror = null
+
               e.target.src =
                 getAvatarFallback(
                   currentUser?.name
@@ -564,7 +574,9 @@ const Home = () => {
                 }
                 alt={user.name}
                 onError={(e) => {
+
                   e.target.onerror = null
+
                   e.target.src =
                     getAvatarFallback(
                       user.name
@@ -643,7 +655,9 @@ const Home = () => {
                 }
                 alt={selectedChat.name}
                 onError={(e) => {
+
                   e.target.onerror = null
+
                   e.target.src =
                     getAvatarFallback(
                       selectedChat.name
@@ -682,7 +696,7 @@ const Home = () => {
 
             </div>
 
-            {/* MESSAGES */}
+            {/* ================= MESSAGES ================= */}
 
             <div className="messages-area">
 
@@ -691,25 +705,25 @@ const Home = () => {
                 <div
                   key={msg._id}
                   className={`message-bubble ${
-                    String(
-                      msg.senderId
-                    ) ===
+                    String(msg.senderId) ===
                     String(currentUserId)
                       ? "sent"
                       : "received"
                   }`}
                 >
 
-                  {/* DELETE BUTTON ONLY FOR SENDER */}
+                  {/* DELETE */}
 
-                 <button
-                 className="delete-message-button"
-                onClick={() =>
-                 singleDelete(msg._id)
-                 }
-                 >
-                 🗑
-                 </button>
+                  <button
+                    className="delete-message-button"
+                    onClick={() =>
+                      singleDelete(msg._id)
+                    }
+                  >
+                    🗑
+                  </button>
+
+                  {/* TEXT */}
 
                   {msg.message && (
                     <p>{msg.message}</p>
@@ -717,7 +731,8 @@ const Home = () => {
 
                   {/* IMAGE */}
 
-                  {msg.file &&
+                  {
+                    msg.file &&
                     msg.fileType?.startsWith(
                       "image"
                     ) && (
@@ -733,11 +748,56 @@ const Home = () => {
                         }
                       />
 
-                    )}
+                    )
+                  }
+
+                  {/* VIDEO */}
+
+                  {
+                    msg.file &&
+                    msg.fileType?.startsWith(
+                      "video"
+                    ) && (
+
+                      <video
+                        className="message-media"
+                        controls
+                      >
+
+                        <source
+                          src={msg.file}
+                          type={msg.fileType}
+                        />
+
+                      </video>
+
+                    )
+                  }
+
+                  {/* AUDIO */}
+
+                  {
+                    msg.file &&
+                    msg.fileType?.startsWith(
+                      "audio"
+                    ) && (
+
+                      <audio controls>
+
+                        <source
+                          src={msg.file}
+                          type={msg.fileType}
+                        />
+
+                      </audio>
+
+                    )
+                  }
 
                   {/* PDF */}
 
-                  {msg.file &&
+                  {
+                    msg.file &&
                     msg.fileType ===
                       "application/pdf" && (
 
@@ -750,19 +810,18 @@ const Home = () => {
                         Open PDF
                       </a>
 
-                    )}
+                    )
+                  }
 
                 </div>
 
               ))}
 
-              <div
-                ref={messagesEndRef}
-              />
+              <div ref={messagesEndRef} />
 
             </div>
 
-            {/* INPUT AREA */}
+            {/* ================= INPUT AREA ================= */}
 
             <div className="input-area">
 
@@ -781,11 +840,69 @@ const Home = () => {
                     ✕
                   </button>
 
-                  <img
-                    className="preview-image"
-                    src={preview}
-                    alt="preview"
-                  />
+                  {/* IMAGE PREVIEW */}
+
+                  {
+                    file?.type?.startsWith(
+                      "image"
+                    ) && (
+
+                      <img
+                        className="preview-image"
+                        src={preview}
+                        alt="preview"
+                      />
+
+                    )
+                  }
+
+                  {/* VIDEO PREVIEW */}
+
+                  {
+                    file?.type?.startsWith(
+                      "video"
+                    ) && (
+
+                      <video
+                        className="preview-image"
+                        controls
+                        src={preview}
+                      />
+
+                    )
+                  }
+
+                  {/* AUDIO PREVIEW */}
+
+                  {
+                    file?.type?.startsWith(
+                      "audio"
+                    ) && (
+
+                      <audio controls>
+
+                        <source
+                          src={preview}
+                          type={file.type}
+                        />
+
+                      </audio>
+
+                    )
+                  }
+
+                  {/* PDF PREVIEW */}
+
+                  {
+                    file?.type ===
+                      "application/pdf" && (
+
+                      <div className="pdf-preview">
+                        PDF Selected
+                      </div>
+
+                    )
+                  }
 
                 </div>
 
@@ -809,6 +926,8 @@ const Home = () => {
                   }
                 />
 
+                {/* FILE INPUT */}
+
                 <label className="file-label">
 
                   📎
@@ -818,6 +937,14 @@ const Home = () => {
                     type="file"
                     ref={fileInputRef}
                     hidden
+
+                    accept="
+                      image/*,
+                      video/*,
+                      audio/*,
+                      application/pdf
+                    "
+
                     onChange={(e) => {
 
                       const selectedFile =
