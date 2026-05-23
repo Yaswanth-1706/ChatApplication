@@ -40,7 +40,6 @@ router.delete(
 // This bypasses CORS that blocks direct Cloudinary raw URLs
 router.get(
   "/pdf-proxy",
-  jwtMiddleware.verifyToken,
   async (req, res) => {
     try {
       const { url } = req.query
