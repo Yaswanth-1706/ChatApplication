@@ -3,6 +3,7 @@ const Message = require("../models/Message")
 const { io, getReciverSocketId } = require("../Socket/socket")
 
 // ================= SEND MESSAGE =================
+
 exports.sendMessage = async (req, res) => {
   try {
     const { message } = req.body
@@ -26,23 +27,20 @@ exports.sendMessage = async (req, res) => {
       })
     }
 
-    // CLOUDINARY FILE HANDLING
-   let fileUrl = ""
-   let fileType = ""
+    // ✅ FIXED: use req.file.path (not req.file.secure_url)
+    // multer-storage-cloudinary stores the URL in .path, not .secure_url
+    let fileUrl = ""
+    let fileType = ""
 
-  if (req.file) {
-  fileUrl = req.file.secure_url   // 🔥 MUST USE THIS
-  fileType = req.file.mimetype
+    if (req.file) {
+      fileUrl = req.file.path      // ✅ correct field
+      fileType = req.file.mimetype // e.g. "application/pdf", "video/mp4"
+    }
 
-  // FIX PDF opening issue
-  if (fileType === "application/pdf") {
-    fileUrl = fileUrl.replace("/upload/", "/upload/fl_attachment/")
-  }
-  }
     // VALIDATION
     if (!message && !fileUrl) {
       return res.status(400).json({
-        message: "message or file required"
+        message: "Message or file required"
       })
     }
 
@@ -83,6 +81,7 @@ exports.sendMessage = async (req, res) => {
 }
 
 // ================= GET MESSAGES =================
+
 exports.getMessages = async (req, res) => {
   try {
     const { id: reciverId } = req.params
@@ -106,6 +105,7 @@ exports.getMessages = async (req, res) => {
 }
 
 // ================= DELETE CHAT =================
+
 exports.deleteChat = async (req, res) => {
   try {
     const { id: reciverId } = req.params
@@ -140,27 +140,19 @@ exports.deleteChat = async (req, res) => {
 // ================= SINGLE MESSAGE DELETE =================
 
 exports.singleDelete = async (req, res) => {
-
   try {
-
     const { messageId } = req.params
 
-    const message =
-      await Message.findById(messageId)
+    const message = await Message.findById(messageId)
 
     if (!message) {
-
       return res.status(404).json({
         success: false,
         message: "Message not found"
       })
     }
 
-    // DELETE MESSAGE
-
-    await Message.findByIdAndDelete(
-      messageId
-    )
+    await Message.findByIdAndDelete(messageId)
 
     res.status(200).json({
       success: true,
@@ -168,9 +160,7 @@ exports.singleDelete = async (req, res) => {
     })
 
   } catch (err) {
-
     console.log(err)
-
     res.status(500).json({
       success: false,
       message: "Server Error"
