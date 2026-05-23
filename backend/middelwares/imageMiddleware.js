@@ -20,28 +20,31 @@ const storage = new CloudinaryStorage({
 
     if (file.mimetype.startsWith("image")) {
       resource_type = "image"
-    } 
-    else if (file.mimetype.startsWith("video")) {
+    } else if (file.mimetype.startsWith("video")) {
       resource_type = "video"
-    } 
-    else if (file.mimetype.startsWith("audio")) {
-      resource_type = "video" // cloudinary rule
-    } 
-    else {
+    } else if (file.mimetype.startsWith("audio")) {
+      resource_type = "video" // cloudinary rule: audio uses "video" resource_type
+    } else {
       resource_type = "raw" // PDF, docs, etc
     }
+
+    // ✅ FIX: Keep file extension for raw files (PDFs won't open without it)
+    const ext = file.originalname.split(".").pop().toLowerCase()
+    const baseName = file.originalname
+      .split(".")[0]
+      .replace(/\s+/g, "-")
+      .replace(/[^a-zA-Z0-9_-]/g, "") // remove special chars
+
+    const public_id =
+      resource_type === "raw"
+        ? `${Date.now()}-${baseName}.${ext}` // ✅ e.g. 1234567890-resume.pdf
+        : `${Date.now()}-${baseName}`         // images/videos don't need extension
 
     return {
       folder,
       resource_type,
-
-      // IMPORTANT: clean file names (fix PDF issues)
-      public_id: `${Date.now()}-${file.originalname
-        .split(".")[0]
-        .replace(/\s+/g, "-")}`,
-
-      // IMPORTANT for large videos
-      chunk_size: 6000000
+      public_id,
+      chunk_size: 6000000 // 6MB chunks for large videos
     }
   }
 })
@@ -52,6 +55,7 @@ const fileFilter = (req, file, cb) => {
     "image/jpeg",
     "image/jpg",
     "image/webp",
+    "image/gif",
 
     "video/mp4",
     "video/webm",
@@ -70,7 +74,7 @@ const fileFilter = (req, file, cb) => {
   if (allowedTypes.includes(file.mimetype)) {
     cb(null, true)
   } else {
-    cb(new Error("Unsupported file type"), false)
+    cb(new Error(`Unsupported file type: ${file.mimetype}`), false)
   }
 }
 
