@@ -412,11 +412,11 @@ const Home = () => {
                     </audio>
                   )}
 
-                  {/* ✅ PDF — fixed: removed #view=FitH which was breaking the link */}
+                  {/* ✅ PDF — force download, always works, no CORS issues */}
                   {msg.file && msg.fileType === "application/pdf" && (
                     <a
-                      href={`https://docs.google.com/viewer?url=${encodeURIComponent(msg.file)}&embedded=false`}
-                      target="_blank"
+                      href={msg.file}
+                      download="document.pdf"
                       rel="noopener noreferrer"
                       style={{
                         display: "inline-flex",
@@ -432,7 +432,7 @@ const Home = () => {
                         fontSize: "14px"
                       }}
                     >
-                      📄 Open PDF
+                      📄 Download PDF
                     </a>
                   )}
 
