@@ -14,30 +14,9 @@ router.post(
   controller.sendMessage
 )
 
-// ================= GET MESSAGES =================
-router.get(
-  "/:id",
-  jwtMiddleware.verifyToken,
-  controller.getMessages
-)
-
-// ================= DELETE CHAT =================
-router.delete(
-  "/delete/:id",
-  jwtMiddleware.verifyToken,
-  controller.deleteChat
-)
-
-// ================= SINGLE MESSAGE DELETE =================
-router.delete(
-  "/singleDelete/:messageId",
-  jwtMiddleware.verifyToken,
-  controller.singleDelete
-)
-
 // ================= PDF PROXY =================
-// Fetches PDF from Cloudinary server-side and streams it to browser
-// This bypasses CORS that blocks direct Cloudinary raw URLs
+// No JWT here — browser opens in new tab and cannot send auth headers
+// Security is handled by only allowing cloudinary.com URLs
 router.get(
   "/pdf-proxy",
   async (req, res) => {
@@ -71,6 +50,27 @@ router.get(
       res.status(500).json({ message: "Failed to load PDF" })
     }
   }
+)
+
+// ================= GET MESSAGES =================
+router.get(
+  "/:id",
+  jwtMiddleware.verifyToken,
+  controller.getMessages
+)
+
+// ================= DELETE CHAT =================
+router.delete(
+  "/delete/:id",
+  jwtMiddleware.verifyToken,
+  controller.deleteChat
+)
+
+// ================= SINGLE MESSAGE DELETE =================
+router.delete(
+  "/singleDelete/:messageId",
+  jwtMiddleware.verifyToken,
+  controller.singleDelete
 )
 
 module.exports = router
