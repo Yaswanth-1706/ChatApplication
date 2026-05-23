@@ -7,8 +7,6 @@ const {
 const cloudinary =
   require("../config/cloudinary")
 
-// ================= STORAGE =================
-
 const storage =
   new CloudinaryStorage({
 
@@ -22,8 +20,6 @@ const storage =
       let folder =
         "chat-app/files"
 
-      // ================= PROFILE PIC =================
-
       if (
         file.fieldname ===
         "profilepic"
@@ -32,8 +28,6 @@ const storage =
         folder =
           "chat-app/profilepics"
       }
-
-      // ================= CHAT FILES =================
 
       if (
         file.fieldname ===
@@ -44,12 +38,8 @@ const storage =
           "chat-app/messages"
       }
 
-      // ================= RESOURCE TYPE =================
-
       let resourceType =
         "auto"
-
-      // IMAGES
 
       if (
         file.mimetype.startsWith(
@@ -61,8 +51,6 @@ const storage =
           "image"
       }
 
-      // VIDEOS
-
       else if (
         file.mimetype.startsWith(
           "video"
@@ -72,8 +60,6 @@ const storage =
         resourceType =
           "video"
       }
-
-      // AUDIOS
 
       else if (
         file.mimetype.startsWith(
@@ -81,14 +67,9 @@ const storage =
         )
       ) {
 
-        // Cloudinary stores audio
-        // using video type
-
         resourceType =
           "video"
       }
-
-      // PDF + OTHER FILES
 
       else {
 
@@ -103,8 +84,6 @@ const storage =
         resource_type:
           resourceType,
 
-        // CLEAN FILE NAME
-
         public_id:
           Date.now() +
           "-" +
@@ -112,15 +91,11 @@ const storage =
             .split(".")[0]
             .replace(/\s+/g, "-"),
 
-        // BETTER LARGE VIDEO UPLOADS
-
         chunk_size:
           6000000
       }
     }
   })
-
-// ================= FILE FILTER =================
 
 const fileFilter = (
   req,
@@ -130,25 +105,17 @@ const fileFilter = (
 
   const allowedTypes = [
 
-    // ================= IMAGES =================
-
     "image/png",
     "image/jpeg",
     "image/jpg",
     "image/webp",
 
-    // ================= PDF =================
-
     "application/pdf",
-
-    // ================= VIDEOS =================
 
     "video/mp4",
     "video/webm",
     "video/quicktime",
     "video/x-matroska",
-
-    // ================= AUDIOS =================
 
     "audio/mpeg",
     "audio/mp3",
@@ -176,8 +143,6 @@ const fileFilter = (
   }
 }
 
-// ================= MULTER =================
-
 const upload = multer({
 
   storage,
@@ -185,8 +150,6 @@ const upload = multer({
   fileFilter,
 
   limits: {
-
-    // 100MB
 
     fileSize:
       100 * 1024 * 1024
