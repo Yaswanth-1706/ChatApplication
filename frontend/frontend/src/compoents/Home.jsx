@@ -412,11 +412,11 @@ const Home = () => {
                     </audio>
                   )}
 
-                  {/* ✅ PDF — force download, always works, no CORS issues */}
+                  {/* ✅ PDF — via backend proxy to bypass Cloudinary CORS */}
                   {msg.file && msg.fileType === "application/pdf" && (
                     <a
-                      href={msg.file}
-                      download="document.pdf"
+                      href={`${BASE_URL}/message/pdf-proxy?url=${encodeURIComponent(msg.file)}`}
+                      target="_blank"
                       rel="noopener noreferrer"
                       style={{
                         display: "inline-flex",
