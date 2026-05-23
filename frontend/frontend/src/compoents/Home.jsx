@@ -10,7 +10,6 @@ const Home = () => {
   const navigate = useNavigate()
   const location = useLocation()
 
-  // STATES
   const [searchTerm, setSearchTerm] = useState("")
   const [userList, setUserList] = useState([])
   const [selectedChat, setSelectedChat] = useState(null)
@@ -22,11 +21,9 @@ const Home = () => {
   const [fullscreenImage, setFullscreenImage] = useState(null)
   const [currentUser, setCurrentUser] = useState(location.state || null)
 
-  // MOBILE
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 720)
   const [showChatMobile, setShowChatMobile] = useState(false)
 
-  // REFS
   const messagesEndRef = useRef(null)
   const socket = useRef(null)
   const fileInputRef = useRef(null)
@@ -34,7 +31,7 @@ const Home = () => {
   const currentUserId = localStorage.getItem("userId")
   const token = localStorage.getItem("token")
 
-  // RESIZE
+  // ================= RESIZE =================
   useEffect(() => {
     const handleResize = () => {
       const mobile = window.innerWidth <= 720
@@ -46,14 +43,13 @@ const Home = () => {
     return () => window.removeEventListener("resize", handleResize)
   }, [])
 
-  // PROFILE PIC
+  // ================= PROFILE =================
   const getProfilePic = (pic) => {
     if (!pic) return null
     if (pic.startsWith("http")) return pic
     return `${BASE_URL}${pic}`
   }
 
-  // FALLBACK
   const getAvatarFallback = (name) => {
     const initials = (name || "?")
       .split(" ")
@@ -62,38 +58,19 @@ const Home = () => {
       .toUpperCase()
       .slice(0, 2)
 
-    return `data:image/svg+xml;base64,${btoa(`
+    const svg = `
       <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120">
         <rect width="100%" height="100%" fill="#128C7E"/>
-        <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="42" fill="white">
+        <text x="50%" y="54%" text-anchor="middle" font-size="42" fill="white">
           ${initials}
         </text>
       </svg>
-    `)}`
+    `
+
+    return `data:image/svg+xml;base64,${btoa(svg)}`
   }
 
-  // CURRENT USER
-  useEffect(() => {
-    const fetchMyProfile = async () => {
-      try {
-        const res = await axios.get(`${BASE_URL}/user/getUsers`, {
-          headers: { Authorization: `Bearer ${token}` }
-        })
-        setCurrentUser(res.data)
-      } catch (err) {
-        console.log(err)
-      }
-    }
-
-    if (token) fetchMyProfile()
-  }, [token])
-
-  // AUTO SCROLL
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }, [chatMessages])
-
-  // SOCKET
+  // ================= SOCKET =================
   useEffect(() => {
     if (!currentUserId) return
 
@@ -116,30 +93,9 @@ const Home = () => {
     return () => socket.current?.disconnect()
   }, [currentUserId, selectedChat])
 
-  // USERS
-  const fetchUsers = async () => {
-    try {
-      const res = await axios.get(
-        `${BASE_URL}/user/search?search=${searchTerm || "a"}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      )
-
-      setUserList(
-        res.data.filter((u) => String(u._id) !== String(currentUserId))
-      )
-    } catch (err) {
-      console.log(err)
-    }
-  }
-
-  useEffect(() => {
-    fetchUsers()
-  }, [searchTerm])
-
-  // CHAT
+  // ================= FETCH CHAT =================
   const fetchChat = async () => {
     if (!selectedChat) return
-
     try {
       const res = await axios.get(
         `${BASE_URL}/message/${selectedChat._id}`,
@@ -155,17 +111,14 @@ const Home = () => {
     fetchChat()
   }, [selectedChat])
 
-  // OPEN CHAT
-  const openChat = (user) => {
-    setSelectedChat(user)
-    if (isMobile) setShowChatMobile(true)
-  }
+  // ================= AUTO SCROLL =================
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }, [chatMessages])
 
-  const backToUsers = () => setShowChatMobile(false)
-
-  // SEND MESSAGE
+  // ================= SEND =================
   const sendMessage = async () => {
-    if ((!newMessage.trim() && !file) || !selectedChat) return
+    if (!selectedChat || (!newMessage.trim() && !file)) return
 
     try {
       const formData = new FormData()
@@ -189,48 +142,49 @@ const Home = () => {
     }
   }
 
-  // DELETE MESSAGE
-  const singleDelete = async (id) => {
-    try {
-      await axios.delete(
-        `${BASE_URL}/message/singleDelete/${id}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      )
-
-      setChatMessages((prev) => prev.filter((m) => m._id !== id))
-    } catch (err) {
-      console.log(err)
-    }
+  // ================= MEDIA URL FIX =================
+  const getFileUrl = (url) => {
+    if (!url) return ""
+    if (url.startsWith("http")) return url
+    return `${BASE_URL}${url}`
   }
 
-  if (!currentUser) return <h1>No User Data Found</h1>
-
+  // ================= UI =================
   return (
     <div className="container">
 
       {/* SIDEBAR */}
-      <div className={`results ${isMobile && showChatMobile ? "mobile-hide" : ""}`}>
+      <div className="results">
 
         <div className="header-row">
           <img
-            src={getProfilePic(currentUser?.profilepic) || getAvatarFallback(currentUser?.name)}
+            src={
+              getProfilePic(currentUser?.profilepic) ||
+              getAvatarFallback(currentUser?.name)
+            }
             className="searchProfile"
             onClick={() => navigate("/editProfile", { state: currentUser })}
           />
+
           <p className="profile-name">{currentUser?.name}</p>
+
+          <button onClick={() => navigate("/")}>Logout</button>
         </div>
 
         <input
           className="search-box"
+          placeholder="Search User"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Search"
         />
 
         <div className="user-list">
           {userList.map((user) => (
-            <div key={user._id} className="user-card" onClick={() => openChat(user)}>
-              <img className="user-avatar" src={getProfilePic(user.profilepic)} />
+            <div key={user._id} className="user-card" onClick={() => setSelectedChat(user)}>
+              <img
+                className="user-avatar"
+                src={getProfilePic(user.profilepic) || getAvatarFallback(user.name)}
+              />
               <div>
                 <h3>{user.name}</h3>
               </div>
@@ -240,74 +194,74 @@ const Home = () => {
       </div>
 
       {/* CHAT */}
-      <div className={`chat-window ${isMobile ? (showChatMobile ? "active" : "") : ""}`}>
+      <div className="chat-window">
 
         {selectedChat ? (
           <>
             <div className="chat-header">
-              {isMobile && <button onClick={backToUsers}>←</button>}
               <h2>{selectedChat.name}</h2>
             </div>
 
-            {/* MESSAGES */}
             <div className="messages-area">
               {chatMessages.map((msg) => (
-                <div key={msg._id} className={`message-bubble ${String(msg.senderId) === String(currentUserId) ? "sent" : "received"}`}>
-
-                  <button onClick={() => singleDelete(msg._id)}>🗑</button>
-
-                  {/* TEXT */}
-                  {msg.message && <p>{msg.message}</p>}
+                <div key={msg._id} className="message-bubble">
 
                   {/* IMAGE */}
-                  {msg.file && msg.fileType?.startsWith("image") && (
-                    <img src={msg.file} className="message-media" onClick={() => setFullscreenImage(msg.file)} />
+                  {msg.fileType?.startsWith("image") && (
+                    <img
+                      className="message-media"
+                      src={getFileUrl(msg.file)}
+                      onClick={() => setFullscreenImage(getFileUrl(msg.file))}
+                    />
                   )}
 
                   {/* VIDEO */}
-                  {msg.file && msg.fileType?.startsWith("video") && (
-                    <video controls className="message-media">
-                      <source src={msg.file} type={msg.fileType} />
+                  {msg.fileType?.startsWith("video") && (
+                    <video className="message-media" controls>
+                      <source src={getFileUrl(msg.file)} type={msg.fileType} />
                     </video>
                   )}
 
                   {/* AUDIO */}
-                  {msg.file && msg.fileType?.startsWith("audio") && (
+                  {msg.fileType?.startsWith("audio") && (
                     <audio controls>
-                      <source src={msg.file} />
+                      <source src={getFileUrl(msg.file)} type={msg.fileType} />
                     </audio>
                   )}
 
-                  {/* PDF */}
-                  {msg.file && msg.fileType === "application/pdf" && (
-                    <a href={msg.file} target="_blank">Open PDF</a>
+                  {/* PDF FIX */}
+                  {msg.fileType === "application/pdf" && (
+                    <a
+                      href={getFileUrl(msg.file)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Open PDF
+                    </a>
                   )}
 
+                  {/* TEXT */}
+                  {msg.message && <p>{msg.message}</p>}
                 </div>
               ))}
+
               <div ref={messagesEndRef} />
             </div>
 
-            {/* INPUT */}
             <div className="input-area">
-
               <input
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && sendMessage()}
                 placeholder="Type message"
               />
 
               <input
                 type="file"
                 ref={fileInputRef}
-                accept="image/*,video/*,audio/*,application/pdf"
                 onChange={(e) => {
                   const f = e.target.files[0]
-                  if (f) {
-                    setFile(f)
-                    setPreview(URL.createObjectURL(f))
-                  }
+                  setFile(f)
+                  setPreview(URL.createObjectURL(f))
                 }}
               />
 
@@ -315,16 +269,17 @@ const Home = () => {
             </div>
           </>
         ) : (
-          <h2>Select Chat</h2>
+          <h2>Select a chat</h2>
         )}
       </div>
 
-      {/* FULLSCREEN IMAGE */}
+      {/* FULLSCREEN */}
       {fullscreenImage && (
-        <div onClick={() => setFullscreenImage(null)} className="fullscreen-overlay">
+        <div onClick={() => setFullscreenImage(null)}>
           <img src={fullscreenImage} />
         </div>
       )}
+
     </div>
   )
 }
