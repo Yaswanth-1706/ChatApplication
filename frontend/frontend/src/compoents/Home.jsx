@@ -24,6 +24,11 @@ const Home = () => {
   const [fullscreenImage, setFullscreenImage] = useState(null)
   const [currentUser, setCurrentUser] = useState(location.state || null)
 
+  // ✅ NEW — upload progress states
+  const [uploading, setUploading] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState(0)
+  const [uploadError, setUploadError] = useState("")
+
   // ================= MOBILE VIEW =================
 
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 720)
@@ -188,7 +193,34 @@ const Home = () => {
   const clearFileSelection = () => {
     setFile(null)
     setPreview(null)
+    setUploadError("")
     if (fileInputRef.current) fileInputRef.current.value = ""
+  }
+
+  // ================= FILE SELECT WITH VALIDATION =================
+
+  const handleFileSelect = (e) => {
+    const selectedFile = e.target.files[0]
+    if (!selectedFile) return
+
+    setUploadError("")
+
+    // ✅ Video size limit — 20MB max (Render free tier times out on large uploads)
+    if (selectedFile.type.startsWith("video") && selectedFile.size > 20 * 1024 * 1024) {
+      setUploadError("Video too large! Please send videos under 20MB.")
+      if (fileInputRef.current) fileInputRef.current.value = ""
+      return
+    }
+
+    // ✅ General file size limit — 50MB max
+    if (selectedFile.size > 50 * 1024 * 1024) {
+      setUploadError("File too large! Maximum size is 50MB.")
+      if (fileInputRef.current) fileInputRef.current.value = ""
+      return
+    }
+
+    setFile(selectedFile)
+    setPreview(URL.createObjectURL(selectedFile))
   }
 
   // ================= SEND MESSAGE =================
@@ -197,6 +229,10 @@ const Home = () => {
     if ((!newMessage.trim() && !file) || !selectedChat) return
 
     try {
+      setUploading(true)
+      setUploadProgress(0)
+      setUploadError("")
+
       const formData = new FormData()
       formData.append("message", newMessage)
       if (file) formData.append("file", file)
@@ -204,7 +240,18 @@ const Home = () => {
       const res = await axios.post(
         `${BASE_URL}/message/send/${selectedChat._id}`,
         formData,
-        { headers: { Authorization: `Bearer ${token}` } }
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          timeout: 120000, // ✅ 2 min timeout for large videos
+          onUploadProgress: (progressEvent) => {
+            if (progressEvent.total) {
+              const percent = Math.round(
+                (progressEvent.loaded * 100) / progressEvent.total
+              )
+              setUploadProgress(percent)
+            }
+          }
+        }
       )
 
       if (res.data.success) {
@@ -212,8 +259,17 @@ const Home = () => {
         setNewMessage("")
         clearFileSelection()
       }
+
     } catch (err) {
       console.log(err)
+      if (err.code === "ECONNABORTED") {
+        setUploadError("Upload timed out. Try a smaller file.")
+      } else {
+        setUploadError("Failed to send. Please try again.")
+      }
+    } finally {
+      setUploading(false)
+      setUploadProgress(0)
     }
   }
 
@@ -266,16 +322,6 @@ const Home = () => {
     socket.current?.disconnect()
     localStorage.clear()
     navigate("/")
-  }
-
-  // ================= FILE TYPE HELPERS =================
-
-  // ✅ Determines what icon/label to show for non-image files
-  const getFileLabel = (fileType, fileName) => {
-    if (fileType === "application/pdf") return "📄 PDF"
-    if (fileType?.startsWith("video")) return "🎥 Video"
-    if (fileType?.startsWith("audio")) return "🎵 Audio"
-    return "📎 File"
   }
 
   if (!currentUser) return <h1>No User Data Found</h1>
@@ -394,7 +440,7 @@ const Home = () => {
                     />
                   )}
 
-                  {/* ✅ VIDEO — hardcoded mp4 fallback fixes playback issues */}
+                  {/* ✅ VIDEO */}
                   {msg.file && msg.fileType?.startsWith("video") && (
                     <video className="message-media" controls>
                       <source src={msg.file} type="video/mp4" />
@@ -412,7 +458,7 @@ const Home = () => {
                     </audio>
                   )}
 
-                  {/* ✅ PDF — via backend proxy to bypass Cloudinary CORS */}
+                  {/* ✅ PDF */}
                   {msg.file && msg.fileType === "application/pdf" && (
                     <a
                       href={`${BASE_URL}/message/pdf-proxy?url=${encodeURIComponent(msg.file)}`}
@@ -444,6 +490,42 @@ const Home = () => {
             {/* ================= INPUT AREA ================= */}
 
             <div className="input-area">
+
+              {/* ✅ UPLOAD PROGRESS BAR */}
+              {uploading && (
+                <div style={{
+                  padding: "6px 12px",
+                  background: "#f0f0f0",
+                  borderRadius: "8px",
+                  marginBottom: "6px",
+                  fontSize: "13px",
+                  color: "#333"
+                }}>
+                  <div style={{
+                    background: "#128C7E",
+                    height: "4px",
+                    borderRadius: "4px",
+                    width: `${uploadProgress}%`,
+                    transition: "width 0.3s ease",
+                    marginBottom: "4px"
+                  }} />
+                  Uploading... {uploadProgress}%
+                </div>
+              )}
+
+              {/* ✅ ERROR MESSAGE */}
+              {uploadError && (
+                <div style={{
+                  padding: "6px 12px",
+                  background: "#ffe0e0",
+                  borderRadius: "8px",
+                  marginBottom: "6px",
+                  fontSize: "13px",
+                  color: "#c0392b"
+                }}>
+                  ⚠️ {uploadError}
+                </div>
+              )}
 
               {/* FILE PREVIEW */}
               {preview && (
@@ -484,7 +566,8 @@ const Home = () => {
                   placeholder="Type a message"
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+                  onKeyDown={(e) => e.key === "Enter" && !uploading && sendMessage()}
+                  disabled={uploading}
                 />
 
                 {/* FILE INPUT */}
@@ -496,17 +579,19 @@ const Home = () => {
                     ref={fileInputRef}
                     hidden
                     accept="image/*,video/*,audio/*,application/pdf"
-                    onChange={(e) => {
-                      const selectedFile = e.target.files[0]
-                      if (selectedFile) {
-                        setFile(selectedFile)
-                        setPreview(URL.createObjectURL(selectedFile))
-                      }
-                    }}
+                    onChange={handleFileSelect}
                   />
                 </label>
 
-                <button className="send-button" onClick={sendMessage}>Send</button>
+                {/* ✅ SEND BUTTON — shows progress % while uploading */}
+                <button
+                  className="send-button"
+                  onClick={sendMessage}
+                  disabled={uploading}
+                  style={{ opacity: uploading ? 0.7 : 1 }}
+                >
+                  {uploading ? `${uploadProgress}%` : "Send"}
+                </button>
 
               </div>
             </div>

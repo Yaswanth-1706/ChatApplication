@@ -28,23 +28,25 @@ const storage = new CloudinaryStorage({
       resource_type = "raw" // PDF, docs, etc
     }
 
-    // ✅ FIX: Keep file extension for raw files (PDFs won't open without it)
     const ext = file.originalname.split(".").pop().toLowerCase()
     const baseName = file.originalname
       .split(".")[0]
       .replace(/\s+/g, "-")
-      .replace(/[^a-zA-Z0-9_-]/g, "") // remove special chars
+      .replace(/[^a-zA-Z0-9_-]/g, "")
 
     const public_id =
       resource_type === "raw"
-        ? `${Date.now()}-${baseName}.${ext}` // ✅ e.g. 1234567890-resume.pdf
-        : `${Date.now()}-${baseName}`         // images/videos don't need extension
+        ? `${Date.now()}-${baseName}.${ext}`
+        : `${Date.now()}-${baseName}`
 
     return {
       folder,
       resource_type,
       public_id,
-      chunk_size: 6000000 // 6MB chunks for large videos
+      // ✅ THIS IS THE KEY FIX — makes raw files publicly accessible
+      type: "upload",
+      access_mode: "public",
+      chunk_size: 6000000
     }
   }
 })
@@ -56,18 +58,15 @@ const fileFilter = (req, file, cb) => {
     "image/jpg",
     "image/webp",
     "image/gif",
-
     "video/mp4",
     "video/webm",
     "video/quicktime",
     "video/x-matroska",
-
     "audio/mpeg",
     "audio/mp3",
     "audio/wav",
     "audio/ogg",
     "audio/webm",
-
     "application/pdf"
   ]
 
