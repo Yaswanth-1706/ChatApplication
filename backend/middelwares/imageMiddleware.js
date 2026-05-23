@@ -1,79 +1,124 @@
 const multer = require("multer")
-const { CloudinaryStorage } = require("multer-storage-cloudinary")
-const cloudinary = require("../config/cloudinary")
+
+const {
+  CloudinaryStorage
+} = require("multer-storage-cloudinary")
+
+const cloudinary =
+  require("../config/cloudinary")
 
 // ================= STORAGE =================
 
-const storage = new CloudinaryStorage({
+const storage =
+  new CloudinaryStorage({
 
-  cloudinary,
+    cloudinary,
 
-  params: async (req, file) => {
+    params: async (
+      req,
+      file
+    ) => {
 
-    let folder = "chat-app/files"
+      let folder =
+        "chat-app/files"
 
-    // ================= PROFILE PIC =================
+      // ================= PROFILE PIC =================
 
-    if (file.fieldname === "profilepic") {
+      if (
+        file.fieldname ===
+        "profilepic"
+      ) {
 
-      folder = "chat-app/profilepics"
+        folder =
+          "chat-app/profilepics"
+      }
+
+      // ================= CHAT FILES =================
+
+      if (
+        file.fieldname ===
+        "file"
+      ) {
+
+        folder =
+          "chat-app/messages"
+      }
+
+      // ================= RESOURCE TYPE =================
+
+      let resourceType =
+        "auto"
+
+      // IMAGES
+
+      if (
+        file.mimetype.startsWith(
+          "image"
+        )
+      ) {
+
+        resourceType =
+          "image"
+      }
+
+      // VIDEOS
+
+      else if (
+        file.mimetype.startsWith(
+          "video"
+        )
+      ) {
+
+        resourceType =
+          "video"
+      }
+
+      // AUDIOS
+
+      else if (
+        file.mimetype.startsWith(
+          "audio"
+        )
+      ) {
+
+        // Cloudinary stores audio
+        // using video type
+
+        resourceType =
+          "video"
+      }
+
+      // PDF + OTHER FILES
+
+      else {
+
+        resourceType =
+          "raw"
+      }
+
+      return {
+
+        folder,
+
+        resource_type:
+          resourceType,
+
+        // CLEAN FILE NAME
+
+        public_id:
+          Date.now() +
+          "-" +
+          file.originalname
+            .split(".")[0]
+            .replace(/\s+/g, "-"),
+
+        // BETTER LARGE VIDEO UPLOADS
+
+        chunk_size:
+          6000000
+      }
     }
-
-    // ================= CHAT FILES =================
-
-    if (file.fieldname === "file") {
-
-      folder = "chat-app/messages"
-    }
-
-    // ================= RESOURCE TYPE =================
-
-    let resourceType = "auto"
-
-    // IMAGE
-
-    if (
-      file.mimetype.startsWith("image")
-    ) {
-
-      resourceType = "image"
-    }
-
-    // VIDEO
-
-    else if (
-      file.mimetype.startsWith("video")
-    ) {
-
-      resourceType = "video"
-    }
-
-    // AUDIO
-
-    else if (
-      file.mimetype.startsWith("audio")
-    ) {
-
-      // cloudinary stores audio using video resource type
-
-      resourceType = "video"
-    }
-
-    // PDF / OTHER FILES
-
-    else {
-
-      resourceType = "raw"
-    }
-
-    return {
-
-      folder,
-
-      resource_type: resourceType
-    }
-  }
-})
+  })
 
 // ================= FILE FILTER =================
 
@@ -99,9 +144,9 @@ const fileFilter = (
     // ================= VIDEOS =================
 
     "video/mp4",
-    "video/mkv",
     "video/webm",
     "video/quicktime",
+    "video/x-matroska",
 
     // ================= AUDIOS =================
 
@@ -141,10 +186,10 @@ const upload = multer({
 
   limits: {
 
-    // 50MB
+    // 100MB
 
     fileSize:
-      50 * 1024 * 1024
+      100 * 1024 * 1024
   }
 })
 
