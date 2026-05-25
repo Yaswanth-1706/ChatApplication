@@ -94,14 +94,14 @@ const UpdateProfile = () => {
           onChange={changeHandler}
         />
 
-        <label>Profile Picture</label>
+        <label> choose Profile Picture
         <input
           type="file"
           name="profilepic"
           accept="image/*"
-          value="choose profile"
           onChange={changeHandler}
         />
+        </label>
 
         <button className="submit" type="submit" disabled={loading}>
           {loading ? "Updating..." : "Update"}
