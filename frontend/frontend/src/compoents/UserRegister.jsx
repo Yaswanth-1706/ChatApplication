@@ -129,7 +129,7 @@ const UserRegister = () => {
           onChange={changeHandler}
         />
 
-        <button type="submit">Register</button>
+        <button className="register" type="submit">Register</button>
 
         <p>Already have an account?</p>
         <p onClick={() => navigate("/")}>Login here</p>
