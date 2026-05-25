@@ -99,10 +99,11 @@ const UpdateProfile = () => {
           type="file"
           name="profilepic"
           accept="image/*"
+          value="choose profile"
           onChange={changeHandler}
         />
 
-        <button type="submit" disabled={loading}>
+        <button className="submit" type="submit" disabled={loading}>
           {loading ? "Updating..." : "Update"}
         </button>
 

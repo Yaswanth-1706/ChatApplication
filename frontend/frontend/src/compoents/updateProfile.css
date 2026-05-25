@@ -202,7 +202,7 @@ div:has(> .UserRegister) {
 }
 
 /* ── SUBMIT BUTTON ── */
-.UserRegister input[type="submit"] {
+.submit {
   font-family: var(--font);
   font-size: 1rem;
   font-weight: 800;
@@ -219,13 +219,13 @@ div:has(> .UserRegister) {
   transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
 }
 
-.UserRegister input[type="submit"]:hover {
+.submit:hover {
   background: var(--wa-green);
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(37,211,102,0.4);
 }
 
-.UserRegister input[type="submit"]:active {
+.submit:active {
   transform: translateY(0);
   box-shadow: none;
 }
