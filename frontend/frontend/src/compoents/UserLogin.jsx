@@ -5,21 +5,19 @@ import "./userlogin.css"
 
 const UserLogin = () => {
   const navigate = useNavigate()
-
-  const [data, setData] = useState({
-    email: "",
-    password: ""
-  })
+  const [data, setData] = useState({ email: "", password: "" })
+  const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
 
   const changeHandler = (e) => {
-    setData({
-      ...data,
-      [e.target.name]: e.target.value
-    })
+    setData({ ...data, [e.target.name]: e.target.value })
+    setError("")
   }
 
   const submitHandler = async (e) => {
     e.preventDefault()
+    setLoading(true)
+    setError("")
 
     try {
       const response = await axios.post(
@@ -30,23 +28,36 @@ const UserLogin = () => {
       const user = response.data.User
       const token = response.data.token
 
-      // STORE AUTH DATA
       localStorage.setItem("token", token)
       localStorage.setItem("userId", user._id)
 
-      // NAVIGATE WITHOUT SENSITIVE DATA
       navigate("/Home", {
         state: {
           _id: user._id,
           name: user.name,
           email: user.email,
           gender: user.gender,
-          profilepic: user.profilepic // Cloudinary URL
+          profilepic: user.profilepic
         }
       })
 
     } catch (err) {
+      const status = err.response?.status
+      const message = err.response?.data?.message || ""
+
+      if (status === 404 || message.toLowerCase().includes("not found") ||
+          message.toLowerCase().includes("not registered")) {
+        setError("User not registered. Please create an account.")
+      } else if (status === 401 || message.toLowerCase().includes("password") ||
+                 message.toLowerCase().includes("invalid")) {
+        setError("Invalid password. Please try again.")
+      } else {
+        setError("Login failed. Please try again.")
+      }
+
       console.log(err.response?.data || err.message)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -55,6 +66,12 @@ const UserLogin = () => {
       <form className="UserLogin" onSubmit={submitHandler}>
 
         <h2>Login</h2>
+
+        {error && (
+          <div className="error-msg">
+            {error}
+          </div>
+        )}
 
         <label>User Email</label>
         <input
@@ -74,7 +91,11 @@ const UserLogin = () => {
           required
         />
 
-        <input type="submit" value="Login" />
+        <input
+          type="submit"
+          value={loading ? "Logging in..." : "Login"}
+          disabled={loading}
+        />
 
         <div className="form-footer">
           <p>If you do not have an account</p>
