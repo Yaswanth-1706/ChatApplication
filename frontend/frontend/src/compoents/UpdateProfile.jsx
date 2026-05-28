@@ -104,7 +104,7 @@ const UpdateProfile = () => {
         </label>
 
         <button className="submit" type="submit" disabled={loading}>
-          {loading ? "Updating..." : "Update"}
+          {loading ? "Updating..." : "Update"} 
         </button>
 
       </form>

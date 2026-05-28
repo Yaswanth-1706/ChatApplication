@@ -1,5 +1,5 @@
 /* ================================================
-   HOME.CSS — WhatsApp Light (White & Green) Theme
+   HOME.CSS — Ocean Blue Theme
    Mobile Responsive Included
    ================================================ */
 
@@ -12,29 +12,29 @@
 }
 
 :root {
-  --bg-app: #f0f2f5;
-  --bg-sidebar: #ffffff;
-  --bg-sidebar-hdr: #008069;
-  --bg-chat: #efeae2;
-  --bg-chat-header: #008069;
-  --bg-input: #f0f2f5;
-  --bg-input-field: #ffffff;
-  --bg-sent: #d9fdd3;
-  --bg-received: #ffffff;
-  --bg-card-hover: #f5f6f6;
-  --bg-card-active: #e9edef;
-  --bg-search: #f0f2f5;
+  --bg-app: #041628;
+  --bg-sidebar: #051e36;
+  --bg-sidebar-hdr: #063150;
+  --bg-chat: #041628;
+  --bg-chat-header: #063150;
+  --bg-input: #051e36;
+  --bg-input-field: #0a2e4a;
+  --bg-sent: #0d3d6e;
+  --bg-received: #0a2e4a;
+  --bg-card-hover: #0a2540;
+  --bg-card-active: #0d3050;
+  --bg-search: #0a2540;
 
-  --accent: #008069;
-  --accent-hover: #006d59;
+  --accent: #1565c0;
+  --accent-hover: #0d47a1;
   --danger: #e53935;
 
-  --text-primary: #111b21;
-  --text-secondary: #667781;
+  --text-primary: #e0f4ff;
+  --text-secondary: #7eb8d4;
   --text-white: #ffffff;
 
-  --border: #e9edef;
-  --shadow: 0 1px 2px rgba(0,0,0,0.13);
+  --border: #0e3a5a;
+  --shadow: 0 1px 2px rgba(0,0,0,0.35);
 
   --radius-bubble: 7.5px;
   --radius-pill: 24px;
@@ -142,15 +142,16 @@
   outline: none;
 
   font-size: 14px;
+  color: var(--text-primary);
 
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='15' fill='%23667781' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='15' fill='%237eb8d4' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E");
 
   background-repeat: no-repeat;
   background-position: 14px center;
 }
 
 .search-box:focus {
-  background: #fff;
+  background-color: #0a2e4a;
 }
 
 /* USER LIST */
@@ -227,7 +228,7 @@
   overflow: hidden;
 }
 
-/* BACKGROUND */
+/* BACKGROUND — Ocean wave pattern */
 
 .chat-window::before {
   content: "";
@@ -235,11 +236,11 @@
   position: absolute;
   inset: 0;
 
-  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5 L55 20 L55 40 L30 55 L5 40 L5 20 Z' fill='none' stroke='%23b2aca4' stroke-width='0.4'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='60'%3E%3Cg fill='none' stroke='rgba(80,160,255,0.18)' stroke-width='1'%3E%3Cpath d='M0 30 Q25 10 50 30 Q75 50 100 30'/%3E%3Cpath d='M0 45 Q25 25 50 45 Q75 65 100 45'/%3E%3Cpath d='M0 15 Q25 -5 50 15 Q75 35 100 15'/%3E%3C/g%3E%3Ccircle cx='20' cy='10' r='1.5' fill='rgba(150,220,255,0.25)'/%3E%3Ccircle cx='60' cy='5' r='1' fill='rgba(150,220,255,0.25)'/%3E%3Ccircle cx='85' cy='15' r='2' fill='rgba(150,220,255,0.18)'/%3E%3Ccircle cx='35' cy='50' r='1.5' fill='rgba(150,220,255,0.2)'/%3E%3C/svg%3E");
 
-  background-size: 60px 60px;
+  background-size: 100px 60px;
 
-  opacity: 0.25;
+  opacity: 0.6;
 
   z-index: 0;
 }
@@ -348,11 +349,13 @@
 .message-bubble.sent {
   align-self: flex-end;
   background: var(--bg-sent);
+  color: #e0f4ff;
 }
 
 .message-bubble.received {
   align-self: flex-start;
   background: var(--bg-received);
+  color: #e0f4ff;
 }
 
 .delete-message-button {
@@ -403,7 +406,7 @@ audio {
 
   margin-top: 8px;
 
-  color: var(--accent);
+  color: #7eb8d4;
 
   text-decoration: none;
 
@@ -454,7 +457,7 @@ audio {
   outline: none;
 
   font-size: 14px;
-  color:black;
+  color: var(--text-primary);
 }
 
 .message-input:focus {
@@ -497,7 +500,7 @@ audio {
 
   border-radius: 12px;
 
-  background: white;
+  background: #0a2e4a;
 
   border: 1px solid var(--border);
 }
@@ -521,6 +524,7 @@ audio {
   padding: 10px 14px;
   font-size: 14px;
   font-weight: 500;
+  color: var(--text-primary);
 }
 
 .clear-preview-button {
@@ -607,7 +611,7 @@ audio {
 
     height: 100%;
 
-    background: white;
+    background: var(--bg-sidebar);
 
     z-index: 5;
 

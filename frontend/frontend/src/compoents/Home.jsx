@@ -24,7 +24,7 @@ const Home = () => {
   const [fullscreenImage, setFullscreenImage] = useState(null)
   const [currentUser, setCurrentUser] = useState(location.state || null)
 
-  // ✅ NEW — upload progress states
+  //  NEW — upload progress states
   const [uploading, setUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(0)
   const [uploadError, setUploadError] = useState("")
@@ -205,14 +205,14 @@ const Home = () => {
 
     setUploadError("")
 
-    // ✅ Video size limit — 20MB max (Render free tier times out on large uploads)
+    // Video size limit — 20MB max (Render free tier times out on large uploads)
     if (selectedFile.type.startsWith("video") && selectedFile.size > 20 * 1024 * 1024) {
       setUploadError("Video too large! Please send videos under 20MB.")
       if (fileInputRef.current) fileInputRef.current.value = ""
       return
     }
 
-    // ✅ General file size limit — 50MB max
+    //  General file size limit — 50MB max
     if (selectedFile.size > 50 * 1024 * 1024) {
       setUploadError("File too large! Maximum size is 50MB.")
       if (fileInputRef.current) fileInputRef.current.value = ""
@@ -242,7 +242,7 @@ const Home = () => {
         formData,
         {
           headers: { Authorization: `Bearer ${token}` },
-          timeout: 120000, // ✅ 2 min timeout for large videos
+          timeout: 120000, //  2 min timeout for large videos
           onUploadProgress: (progressEvent) => {
             if (progressEvent.total) {
               const percent = Math.round(
@@ -430,7 +430,7 @@ const Home = () => {
                   {/* TEXT MESSAGE */}
                   {msg.message && <p>{msg.message}</p>}
 
-                  {/* ✅ IMAGE */}
+                  {/* IMAGE */}
                   {msg.file && msg.fileType?.startsWith("image") && (
                     <img
                       className="message-media"
@@ -440,7 +440,7 @@ const Home = () => {
                     />
                   )}
 
-                  {/* ✅ VIDEO */}
+                  {/* VIDEO */}
                   {msg.file && msg.fileType?.startsWith("video") && (
                     <video className="message-media" controls>
                       <source src={msg.file} type="video/mp4" />
@@ -449,7 +449,7 @@ const Home = () => {
                     </video>
                   )}
 
-                  {/* ✅ AUDIO */}
+                  {/* AUDIO */}
                   {msg.file && msg.fileType?.startsWith("audio") && (
                     <audio controls style={{ width: "100%", marginTop: "4px" }}>
                       <source src={msg.file} type={msg.fileType} />
@@ -458,7 +458,7 @@ const Home = () => {
                     </audio>
                   )}
 
-                  {/* ✅ PDF */}
+                  {/* PDF */}
                   {msg.file && msg.fileType === "application/pdf" && (
                     <a
                       href={`${BASE_URL}/message/pdf-proxy?url=${encodeURIComponent(msg.file)}`}
@@ -583,7 +583,7 @@ const Home = () => {
                   />
                 </label>
 
-                {/* ✅ SEND BUTTON — shows progress % while uploading */}
+                {/*  SEND BUTTON — shows progress % while uploading */}
                 <button
                   className="send-button"
                   onClick={sendMessage}
@@ -606,7 +606,7 @@ const Home = () => {
 
       {/* ================= FULLSCREEN IMAGE ================= */}
 
-      {fullscreenImage && (
+      {fullscreenImage &&(
         <div className="fullscreen-overlay" onClick={() => setFullscreenImage(null)}>
           <img className="fullscreen-image" src={fullscreenImage} alt="fullscreen" />
         </div>

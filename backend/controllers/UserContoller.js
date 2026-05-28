@@ -1,7 +1,7 @@
 const user=require("../models/User")
 const temporary=require("../models/temporary")
 const bcrypt=require("bcrypt")
-const jwt=require("jsonwebtoken")
+const jwt=require("jsonwebtoken")  
 const dotEnv=require("dotenv")
 const {sendOtpEmail}=require("../email/SendOtp")
 const {generateOtp}=require("../email/GenerateOtp")
@@ -63,60 +63,61 @@ exports.getUser=async(req,res)=>{
         return res.status(500).json({message:err.message})
     }
 }
+//otp
 
-exports.VerifyOtp=async(req,res)=>{
-    try{
-        const {email,otp}=req.body
-        const temporaryRecord=await temporary.findOne({email})
-        if(temporaryRecord)
-        {
-            if(temporaryRecord.otp===otp)
-            {
-                const userRecord=await user.create({
-                    name:temporaryRecord.name,
-                    email:temporaryRecord.email,
-                    password:temporaryRecord.password,
-                    gender:temporaryRecord.gender,
-                    profilepic:temporaryRecord.profilepic,
-                    otp:temporaryRecord.otp,
-                    otpExpires:temporaryRecord.otpExpires
-                })
-                await temporary.deleteOne({email})
-                return res.status(200).json({message:"email verification done",userRecord})
-            }
-        }
-        else
-        {
-            res.status(400).json({message:"invalid otp"})
-        }
-    }catch(err)
-    {
-        return res.status(500).json({message:err.message})
-    }
-}
+// exports.VerifyOtp=async(req,res)=>{
+//     try{
+//         const {email,otp}=req.body
+//         const temporaryRecord=await temporary.findOne({email})
+//         if(temporaryRecord)
+//         {
+//             if(temporaryRecord.otp===otp)
+//             {
+//                 const userRecord=await user.create({
+//                     name:temporaryRecord.name,
+//                     email:temporaryRecord.email,
+//                     password:temporaryRecord.password,
+//                     gender:temporaryRecord.gender,
+//                     profilepic:temporaryRecord.profilepic,
+//                     otp:temporaryRecord.otp,
+//                     otpExpires:temporaryRecord.otpExpires
+//                 })
+//                 await temporary.deleteOne({email})
+//                 return res.status(200).json({message:"email verification done",userRecord})
+//             }
+//         }
+//         else
+//         {
+//             res.status(400).json({message:"invalid otp"})
+//         }
+//     }catch(err)
+//     {
+//         return res.status(500).json({message:err.message})
+//     }
+// }
 
-exports.update=async(req,res)=>{
-    try{
-        const {email}=req.body
-        const temporaryRecord=await temporary.findOne({email})
-        if(temporaryRecord){
-            const otp=generateOtp()
-            temporaryRecord.otp=otp
-            temporaryRecord.otpExpires=Date.now()+5*60*1000
-            await temporaryRecord.save()
-            await sendOtpEmail(email,otp)
-            console.log("otp sent")
-        }
-        else
-        {
-            console.log("update otp error")
-        }
-    }
-    catch(err)
-    {
-        res.status(400).json({message:err.message})
-    }
-}
+// exports.update=async(req,res)=>{
+//     try{
+//         const {email}=req.body
+//         const temporaryRecord=await temporary.findOne({email})
+//         if(temporaryRecord){
+//             const otp=generateOtp()
+//             temporaryRecord.otp=otp
+//             temporaryRecord.otpExpires=Date.now()+5*60*1000
+//             await temporaryRecord.save()
+//             await sendOtpEmail(email,otp)
+//             console.log("otp sent")
+//         }
+//         else
+//         {
+//             console.log("update otp error")
+//         }
+//     }
+//     catch(err)
+//     {
+//         res.status(400).json({message:err.message})
+//     }
+// }
 
 exports.updateProfile=async(req,res)=>{
     try{
